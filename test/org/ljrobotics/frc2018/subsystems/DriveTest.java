@@ -1,4 +1,4 @@
-package org.ljrobotics.frc2018.subsystem;
+package org.ljrobotics.frc2018.subsystems;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
