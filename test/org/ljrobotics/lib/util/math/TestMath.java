@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.ljrobotics.frc2018.Constants;
 
 public class TestMath {
     public static final double kTestEpsilon = 1E-9;
@@ -291,7 +290,5 @@ public class TestMath {
         assertEquals(regression.beta(0), 0.0, kTestEpsilon);
         assertEquals(regression.predict(2.5), 5.0, kTestEpsilon);
 
-        regression = Constants.kFlywheelAutoAimPolynomial;
-        System.out.println(regression);
     }
 }
