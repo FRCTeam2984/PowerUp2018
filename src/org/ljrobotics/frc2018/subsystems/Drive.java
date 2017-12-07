@@ -16,11 +16,6 @@ public class Drive extends Subsystem{
 
 	private static Drive instance;
 
-	private CANTalon frontLeft;
-	private CANTalon frontRight;
-	private CANTalon backLeft;
-	private CANTalon backRight;
-
 	public static Drive getInstance() {
 		if (instance == null) {
 			CANTalon frontLeft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_ID);
@@ -32,6 +27,18 @@ public class Drive extends Subsystem{
 		}
 		return instance;
 	}
+	
+	// The robot drivetrain's various states.
+	public enum DriveControlState {
+		VELOCITY_SETPOINT //Under PID velocity control
+	}
+	
+	private CANTalon frontLeft;
+	private CANTalon frontRight;
+	private CANTalon backLeft;
+	private CANTalon backRight;
+	
+	private DriveControlState driveControlState;
 
 	/**
 	 * Creates a new Drive Subsystem from that controls the given motor controllers.
@@ -47,6 +54,8 @@ public class Drive extends Subsystem{
 		this.frontRight = frontRight;
 		this.backLeft = backLeft;
 		this.backRight = backRight;
+		
+		this.driveControlState = DriveControlState.VELOCITY_SETPOINT;
 
 	}
 
