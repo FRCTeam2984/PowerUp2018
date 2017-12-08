@@ -3,6 +3,7 @@ package org.ljrobotics.frc2018.subsystems;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,12 +37,23 @@ public class DriveTest {
 	}
 	
 	@Test
-	public void setBreakModeSetsBreakModes() {
+	public void setBreakModeSetsBreakModeOnFirstCall() {
+		drive.setBrakeMode(false);
+		drive.setBrakeMode(false);
+		verify(this.frontLeft, times(2)).enableBrakeMode(false);
+		verify(this.frontRight, times(2)).enableBrakeMode(false);
+		verify(this.backLeft, times(2)).enableBrakeMode(false);
+		verify(this.backRight, times(2)).enableBrakeMode(false);
+	}
+	
+	@Test
+	public void setBreakModeSetsBreakModeAfterToggle() {
+		drive.setBrakeMode(false);
 		drive.setBrakeMode(true);
-		verify(this.frontLeft).enableBrakeMode(true);
-		verify(this.frontRight).enableBrakeMode(true);
-		verify(this.frontLeft).enableBrakeMode(true);
-		verify(this.frontLeft).enableBrakeMode(true);
+		verify(this.frontLeft, times(2)).enableBrakeMode(true);
+		verify(this.frontRight, times(2)).enableBrakeMode(true);
+		verify(this.backLeft, times(2)).enableBrakeMode(true);
+		verify(this.backRight, times(2)).enableBrakeMode(true);
 	}
 	
 	private void verifyTalons(double frontLeft, double frontRight, double backLeft, double backRight) {

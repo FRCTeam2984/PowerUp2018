@@ -87,6 +87,8 @@ public class Drive extends Subsystem{
 		
 		this.driveControlState = DriveControlState.VELOCITY_SETPOINT;
 
+		this.isBrakeMode = false;
+		this.setBrakeMode(true);
 	}
 	
 
@@ -105,6 +107,8 @@ public class Drive extends Subsystem{
 	public void registerEnabledLoops(Looper enabledLooper) {
 		
 	}
+	
+	
 	
 	/**
      * Configures talons for velocity control
