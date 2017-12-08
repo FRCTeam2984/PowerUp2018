@@ -35,6 +35,15 @@ public class DriveTest {
 		verifyTalons(0,0,0,0);
 	}
 	
+	@Test
+	public void setBreakModeSetsBreakModes() {
+		drive.setBrakeMode(true);
+		verify(this.frontLeft).enableBrakeMode(true);
+		verify(this.frontRight).enableBrakeMode(true);
+		verify(this.frontLeft).enableBrakeMode(true);
+		verify(this.frontLeft).enableBrakeMode(true);
+	}
+	
 	private void verifyTalons(double frontLeft, double frontRight, double backLeft, double backRight) {
 		final ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
 		verify(this.frontLeft).set(captor.capture());
