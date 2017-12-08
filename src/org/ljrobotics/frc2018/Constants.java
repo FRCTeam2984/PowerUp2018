@@ -14,6 +14,10 @@ public class Constants extends ConstantsBase{
 	public static double PATH_STOP_STEERING_DISTANCE = 9.0;
 
 	public static double DRIVE_HIGH_GEAR_NOMINAL_OUTPUT = 0.5;
+
+	public static double TRACK_SCRUB_FACTOR = 0.924; //Corrective factor for skidding
+
+	public static double TRACK_WIDTH_INCHES = 20;
 	
 	@Override
 	public String getFileLocation() {
