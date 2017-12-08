@@ -19,23 +19,20 @@ public class Constants extends ConstantsBase{
 
 	public static double TRACK_WIDTH_INCHES = 20;
 
-	public static double kMinLookAhead;
-	public static double kMaxLookAhead;
-	public static double kMinLookAheadSpeed;
-	public static double kMaxLookAheadSpeed;
-	public static double kInertiaSteeringGain;
-	public static double kPathFollowingProfileKp;
-	public static double kPathFollowingProfileKi;
-	public static double kPathFollowingProfileKv;
-	public static double kPathFollowingProfileKffv;
-	public static double kPathFollowingProfileKffa;
-	public static double kPathFollowingMaxVel;
-	public static double kPathFollowingMaxAccel;
-	public static double kPathFollowingGoalPosTolerance;
-	public static double kPathFollowingGoalVelTolerance;
-	public static double kPathStopSteeringDistance;
-	public static double kDriveHighGearMaxSetpoint;
-	public static double kDriveWheelDiameterInches;
+	public static double MIN_LOOK_AHEAD;
+	public static double MAX_LOOK_AHEAD;
+	public static double MIN_LOOK_AHEAD_SPEED;
+	public static double MAX_LOOK_AHEAD_SPEED;
+	public static double INERTIA_STEERING_GAIN;
+	public static double PATH_FOLLWOING_PROFILE_Kp;
+	public static double PATH_FOLLWOING_PROFILE_Ki;
+	public static double PATH_FOLLWOING_PROFILE_Kv;
+	public static double PATH_FOLLWOING_PROFILE_Kffv;
+	public static double PATH_FOLLWOING_PROFILE_Kffa;
+	public static double PATH_FOLLOING_GOAL_POS_TOLERANCE;
+	public static double PATH_FOLLOING_GOAL_VEL_TOLERANCE;
+	public static double DRIVE_MAX_SETPOINT;
+	public static double DRIVE_WHEEL_DIAMETER_INCHES;
 
 	
 	@Override
