@@ -29,8 +29,8 @@ public class Constants extends ConstantsBase{
 	public static double PATH_FOLLWOING_PROFILE_Kv;
 	public static double PATH_FOLLWOING_PROFILE_Kffv;
 	public static double PATH_FOLLWOING_PROFILE_Kffa;
-	public static double PATH_FOLLOING_GOAL_POS_TOLERANCE;
-	public static double PATH_FOLLOING_GOAL_VEL_TOLERANCE;
+	public static double PATH_FOLLOING_GOAL_POS_TOLERANCE = 0.75;
+	public static double PATH_FOLLOING_GOAL_VEL_TOLERANCE = 12;
 	public static double DRIVE_MAX_SETPOINT;
 	public static double DRIVE_WHEEL_DIAMETER_INCHES;
 

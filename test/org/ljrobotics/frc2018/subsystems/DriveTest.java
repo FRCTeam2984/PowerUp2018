@@ -86,7 +86,6 @@ public class DriveTest {
 		assertFalse(drive.isDoneWithPath());
 	}
 	
-	@Ignore
 	@Test
 	public void isFinishedReturnsTrueAfterPathFinished() {
 		ArrayList<Waypoint> waypoints = new ArrayList<Waypoint>();
@@ -95,24 +94,26 @@ public class DriveTest {
 		Path path = PathBuilder.buildPathFromWaypoints(waypoints);
 		drive.setWantDrivePath(path, false);
 		
-		InterpolatingDouble time = new InterpolatingDouble(3D);
-		RigidTransform2d pos = new RigidTransform2d(new Translation2d(50, 1), new Rotation2d(0.9, 0.1, true));
-		Entry<InterpolatingDouble, RigidTransform2d> entry = new AbstractMap.SimpleEntry<InterpolatingDouble, RigidTransform2d>(time, pos);;
-		when(robotState.getLatestFieldToVehicle()).thenAnswer(i -> entry);
-		when(robotState.getDistanceDriven()).thenAnswer(i -> 50D);
+		InterpolatingDouble time = new InterpolatingDouble(90D);
+		RigidTransform2d pos = new RigidTransform2d(new Translation2d(0, 1), Rotation2d.fromDegrees(0));
+		Entry<InterpolatingDouble, RigidTransform2d> zeroState = 
+				new AbstractMap.SimpleEntry<InterpolatingDouble, RigidTransform2d>(time, pos);
+		when(robotState.getLatestFieldToVehicle()).thenAnswer(i -> zeroState);
+		when(robotState.getDistanceDriven()).thenAnswer(i -> 0D);
 		
-		Twist2d velocity = new Twist2d(60,0,0);
-		when(robotState.getPredictedVelocity()).thenAnswer(i -> velocity);
+		Twist2d velocityZero = new Twist2d(0,0,0);
+		when(robotState.getPredictedVelocity()).thenAnswer(i -> velocityZero);
 
-		drive.updatePathFollower(1.5);
+		drive.updatePathFollower(0);
 		
 		time = new InterpolatingDouble(3D);
-		pos = RigidTransform2d.fromTranslation(new Translation2d(99.9999, 0.0001));
-		Entry<InterpolatingDouble, RigidTransform2d> entry2 = new AbstractMap.SimpleEntry<InterpolatingDouble, RigidTransform2d>(time, pos);;
+		pos = new RigidTransform2d(new Translation2d(99.9999, 0.0001), Rotation2d.fromDegrees(0));
+		Entry<InterpolatingDouble, RigidTransform2d> entry2 = 
+				new AbstractMap.SimpleEntry<InterpolatingDouble, RigidTransform2d>(time, pos);
 		when(robotState.getLatestFieldToVehicle()).thenAnswer(i -> entry2);
-		when(robotState.getDistanceDriven()).thenAnswer(i -> 100D);
+		when(robotState.getDistanceDriven()).thenAnswer(i -> 99.9999D);
 		
-		Twist2d velocity2 = new Twist2d(3,0,0);
+		Twist2d velocity2 = new Twist2d(0,0,0);
 		when(robotState.getPredictedVelocity()).thenAnswer(i -> velocity2);
 		
 		drive.updatePathFollower(3);
