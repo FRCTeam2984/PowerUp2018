@@ -5,6 +5,7 @@ import org.ljrobotics.frc2018.Kinematics;
 import org.ljrobotics.frc2018.RobotMap;
 import org.ljrobotics.frc2018.RobotState;
 import org.ljrobotics.frc2018.loops.Looper;
+import org.ljrobotics.frc2018.utils.Motion;
 import org.ljrobotics.lib.util.control.Lookahead;
 import org.ljrobotics.lib.util.control.Path;
 import org.ljrobotics.lib.util.control.PathFollower;
@@ -16,10 +17,12 @@ import org.ljrobotics.lib.util.math.Twist2d;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.StatusFrameRate;
 
+import static java.lang.Math.abs;
+
 /**
  * The Drive subsystem. This subsystem is responsible for everything regarding
  * driving. It controls the four drive motors.
- * 
+ *
  * @author Max
  *
  */
@@ -35,7 +38,7 @@ public class Drive extends Subsystem {
 			CANTalon rearRight = new LazyCANTalon(RobotMap.REAR_RIGHT_MOTOR_ID);
 
 			RobotState robotState = RobotState.getInstance();
-			
+
 			instance = new Drive(frontLeft, frontRight, rearLeft, rearRight, robotState);
 		}
 		return instance;
@@ -69,7 +72,7 @@ public class Drive extends Subsystem {
 
 	/**
 	 * Creates a new Drive Subsystem from that controls the given motor controllers.
-	 * 
+	 *
 	 * @param frontLeft
 	 *            the font left talon motor controller
 	 * @param frontRight
@@ -79,10 +82,11 @@ public class Drive extends Subsystem {
 	 * @param backRight
 	 *            the back right talon motor controller
 	 */
-	public Drive(CANTalon frontLeft, CANTalon frontRight, CANTalon backLeft, CANTalon backRight, RobotState robotState) {
+	public Drive(CANTalon frontLeft, CANTalon frontRight, CANTalon backLeft, CANTalon backRight,
+			RobotState robotState) {
 
 		this.robotState = robotState;
-		
+
 		this.leftMaster = frontLeft;
 		this.rightMaster = frontRight;
 		this.leftSlave = backLeft;
@@ -125,8 +129,28 @@ public class Drive extends Subsystem {
 	}
 
 	/**
+	 * Move in with given speed forward or backwards while rotating with given speed
+	 */
+	public void setToNum(double num) {
+		this.leftMaster.set(num);
+		this.rightMaster.set(num);
+	}
+
+	public void move(Motion motion) {
+		double left = motion.getY() + motion.getRotation();
+		double right = motion.getY() - motion.getRotation();
+		double max = Math.max(abs(left), abs(right));
+		if (max > 1 || max < -1) {
+			left /= abs(max);
+			right /= abs(max);
+		}
+		this.leftMaster.set(left);
+		this.rightMaster.set(right);
+	}
+
+	/**
 	 * Start up velocity mode. This sets the drive train in high gear as well.
-	 * 
+	 *
 	 * @param left_inches_per_sec
 	 * @param right_inches_per_sec
 	 */
@@ -137,32 +161,32 @@ public class Drive extends Subsystem {
 	}
 
 	/**
-     * Called periodically when the robot is in path following mode. Updates the path follower with the robots latest
-     * pose, distance driven, and velocity, the updates the wheel velocity setpoints.
-     */
-    public void updatePathFollower(double timestamp) {
-        RigidTransform2d robot_pose = robotState.getLatestFieldToVehicle().getValue();
-        Twist2d command = pathFollower.update(timestamp, robot_pose,
-        		robotState.getDistanceDriven(), robotState.getPredictedVelocity().dx);
-        if (!pathFollower.isFinished()) {
-            Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
-            updateVelocitySetpoint(setpoint.left, setpoint.right);
-        } else {
-            updateVelocitySetpoint(0, 0);
-        }
-    }
-	
+	 * Called periodically when the robot is in path following mode. Updates the
+	 * path follower with the robots latest pose, distance driven, and velocity, the
+	 * updates the wheel velocity setpoints.
+	 */
+	public void updatePathFollower(double timestamp) {
+		RigidTransform2d robot_pose = robotState.getLatestFieldToVehicle().getValue();
+		Twist2d command = pathFollower.update(timestamp, robot_pose, robotState.getDistanceDriven(),
+				robotState.getPredictedVelocity().dx);
+		if (!pathFollower.isFinished()) {
+			Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
+			updateVelocitySetpoint(setpoint.left, setpoint.right);
+		} else {
+			updateVelocitySetpoint(0, 0);
+		}
+	}
+
 	/**
 	 * Adjust Velocity setpoint (if already in velocity mode)
-	 * 
+	 *
 	 * @param left_inches_per_sec
 	 * @param right_inches_per_sec
 	 */
 	private synchronized void updateVelocitySetpoint(double left_inches_per_sec, double right_inches_per_sec) {
 		if (usesTalonVelocityControl(driveControlState)) {
 			final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
-			final double scale = max_desired > Constants.DRIVE_MAX_SETPOINT
-					? Constants.DRIVE_MAX_SETPOINT / max_desired
+			final double scale = max_desired > Constants.DRIVE_MAX_SETPOINT ? Constants.DRIVE_MAX_SETPOINT / max_desired
 					: 1.0;
 			leftMaster.set(inchesPerSecondToRpm(left_inches_per_sec * scale));
 			rightMaster.set(inchesPerSecondToRpm(right_inches_per_sec * scale));
@@ -174,25 +198,25 @@ public class Drive extends Subsystem {
 	}
 
 	public synchronized boolean isDoneWithPath() {
-        if (driveControlState == DriveControlState.PATH_FOLLOWING && pathFollower != null) {
-            return pathFollower.isFinished();
-        } else {
-            System.out.println("Robot is not in path following mode");
-            return true;
-        }
-    }
-	
+		if (driveControlState == DriveControlState.PATH_FOLLOWING && pathFollower != null) {
+			return pathFollower.isFinished();
+		} else {
+			System.out.println("Robot is not in path following mode");
+			return true;
+		}
+	}
+
 	private static double inchesToRotations(double inches) {
-        return inches / (Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI);
-    }
-	
+		return inches / (Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI);
+	}
+
 	private static double inchesPerSecondToRpm(double inches_per_second) {
 		return inchesToRotations(inches_per_second) * 60;
 	}
 
 	/**
 	 * Configures the drivebase to drive a path. Used for autonomous driving
-	 * 
+	 *
 	 * @see Path
 	 */
 	public synchronized void setWantDrivePath(Path path, boolean reversed) {
@@ -243,9 +267,11 @@ public class Drive extends Subsystem {
 	}
 
 	/**
-     * Sets the driveTrain into either break or coast mode.
-     * @param on true if break mode false if coast mode.
-     */
+	 * Sets the driveTrain into either break or coast mode.
+	 * 
+	 * @param on
+	 *            true if break mode false if coast mode.
+	 */
 	public synchronized void setBrakeMode(boolean on) {
 		if (isBrakeMode != on) {
 			isBrakeMode = on;
