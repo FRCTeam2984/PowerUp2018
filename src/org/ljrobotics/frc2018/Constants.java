@@ -8,7 +8,7 @@ public class Constants extends ConstantsBase{
 
 	public static double PATH_FOLLOWING_MAX_ACCEL = 120; //inches per second^2
 	public static double PATH_FOLLOWING_MAX_VEL = 120; //inches per second
-	
+
 	public static double PATH_FOLLWOING_GOAL_POS_TOLERANCE = 0.75;
 	public static double PATH_FOLLOWING_GOAL_VEL_TOLERANCE = 12.0;
 	public static double PATH_STOP_STEERING_DISTANCE = 9.0;
@@ -36,7 +36,12 @@ public class Constants extends ConstantsBase{
 
 	public static double LOOPER_Dt;
 
-	
+	public static final int FRONT_LEFT_MOTOR_ID =  0x0;
+	public static final int FRONT_RIGHT_MOTOR_ID = 0x1;
+	public static final int REAR_LEFT_MOTOR_ID =   0x2;
+	public static final int REAR_RIGHT_MOTOR_ID =  0x3;
+
+
 	@Override
 	public String getFileLocation() {
 		// TODO Auto-generated method stub
