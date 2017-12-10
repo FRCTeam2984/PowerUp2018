@@ -1,6 +1,10 @@
 
 package org.ljrobotics.frc2018;
 
+import org.ljrobotics.frc2018.loops.Looper;
+import org.ljrobotics.frc2018.subsystems.Drive;
+import org.ljrobotics.lib.util.CrashTracker;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -18,17 +22,37 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 
 	public static OI oi;
+	
+	private Drive drive;
+	
+	private Looper looper;
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
+	public Robot() {
+		this.drive = Drive.getInstance();
+		this.looper = new Looper();
+		
+		CrashTracker.logRobotConstruction();
+	}
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
-		oi = new OI();
+		try {
+			CrashTracker.logRobotInit();
+			
+			//Initialization Code
+			oi = new OI();
+			
+		} catch( Throwable throwable) {
+			CrashTracker.logThrowableCrash(throwable);
+			throw throwable;
+		}
 	}
 
 	/**
@@ -38,39 +62,33 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		try {
+			CrashTracker.logDisabledInit();
+			
+			this.looper.stop();
+			
+		} catch( Throwable throwable) {
+			CrashTracker.logThrowableCrash(throwable);
+			throw throwable;
+		}
 	}
 
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+		
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString code to get the auto name from the text box below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional commands to the
-	 * chooser code above (like the commented example) or additional comparisons
-	 * to the switch structure below with additional strings & commands.
-	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
-
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
-		 */
-
-		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
-			autonomousCommand.start();
+		try {
+			CrashTracker.logAutoInit();
+			
+			this.looper.start();
+			
+		} catch( Throwable throwable) {
+			CrashTracker.logThrowableCrash(throwable);
+			throw throwable;
+		}
 	}
 
 	/**
@@ -83,12 +101,15 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
-		if (autonomousCommand != null)
-			autonomousCommand.cancel();
+		try {
+			CrashTracker.logTeleopInit();
+			
+			this.looper.start();
+			
+		} catch( Throwable throwable) {
+			CrashTracker.logThrowableCrash(throwable);
+			throw throwable;
+		}
 	}
 
 	/**
@@ -99,6 +120,16 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 	}
 
+	@Override
+	public void testInit() {
+		try {
+			CrashTracker.logDisabledInit();
+		} catch( Throwable throwable) {
+			CrashTracker.logThrowableCrash(throwable);
+			throw throwable;
+		}
+	}
+	
 	/**
 	 * This function is called periodically during test mode
 	 */
