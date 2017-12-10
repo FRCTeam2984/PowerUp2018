@@ -25,6 +25,21 @@ public abstract class Subsystem {
 	public abstract void reset();
 	
 	/**
+	 * Outputs useful information to the Smart Dashboard
+	 */
+	public abstract void outputToSmartDashboard();
+	
+	/**
+	 * Writes useful information to a log file
+	 */
+	public abstract void writeToLog();
+	
+	/**
+	 * Zeros all the sensors with regards to this subsystem
+	 */
+	public abstract void zeroSensors();
+	
+	/**
 	 * Called once after subsystem is created. This allows the subsystem to register any loops.
 	 * 
 	 * @param enabledLooper The looper that will be responsible for calling the subsystems loops.

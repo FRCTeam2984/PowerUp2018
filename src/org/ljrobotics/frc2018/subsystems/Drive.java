@@ -281,4 +281,22 @@ public class Drive extends Subsystem {
 		}
 	}
 
+	@Override
+	public void outputToSmartDashboard() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void writeToLog() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void zeroSensors() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
