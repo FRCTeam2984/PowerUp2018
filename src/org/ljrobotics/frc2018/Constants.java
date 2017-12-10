@@ -34,6 +34,8 @@ public class Constants extends ConstantsBase{
 	public static double DRIVE_MAX_SETPOINT;
 	public static double DRIVE_WHEEL_DIAMETER_INCHES;
 
+	public static double LOOPER_Dt;
+
 	
 	@Override
 	public String getFileLocation() {
