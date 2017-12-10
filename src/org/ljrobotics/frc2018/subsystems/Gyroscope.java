@@ -40,6 +40,9 @@ public class Gyroscope extends Subsystem {
 	 * Returns the subsystem to original state. Ie resets sensors and clears accumulators.
 	 */
 	public void reset(){
+		return;
+	}
+	public void calibrate(){
 		this.gyro.calibrate();
 	}
 	public double getAngle(){
