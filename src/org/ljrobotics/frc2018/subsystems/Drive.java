@@ -2,7 +2,6 @@ package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.Kinematics;
-import org.ljrobotics.frc2018.RobotMap;
 import org.ljrobotics.frc2018.RobotState;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.utils.Motion;
@@ -32,10 +31,10 @@ public class Drive extends Subsystem {
 
 	public static Drive getInstance() {
 		if (instance == null) {
-			CANTalon frontLeft = new LazyCANTalon(RobotMap.FRONT_LEFT_MOTOR_ID);
-			CANTalon frontRight = new LazyCANTalon(RobotMap.FRONT_RIGHT_MOTOR_ID);
-			CANTalon rearLeft = new LazyCANTalon(RobotMap.REAR_LEFT_MOTOR_ID);
-			CANTalon rearRight = new LazyCANTalon(RobotMap.REAR_RIGHT_MOTOR_ID);
+			CANTalon frontLeft = new LazyCANTalon(Constants.FRONT_LEFT_MOTOR_ID);
+			CANTalon frontRight = new LazyCANTalon(Constants.FRONT_RIGHT_MOTOR_ID);
+			CANTalon rearLeft = new LazyCANTalon(Constants.REAR_LEFT_MOTOR_ID);
+			CANTalon rearRight = new LazyCANTalon(Constants.REAR_RIGHT_MOTOR_ID);
 
 			RobotState robotState = RobotState.getInstance();
 
@@ -268,7 +267,7 @@ public class Drive extends Subsystem {
 
 	/**
 	 * Sets the driveTrain into either break or coast mode.
-	 * 
+	 *
 	 * @param on
 	 *            true if break mode false if coast mode.
 	 */
