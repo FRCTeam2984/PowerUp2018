@@ -4,13 +4,13 @@ package org.ljrobotics.frc2018;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.lib.util.CrashTracker;
+import org.ljrobotics.lib.util.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,15 +24,21 @@ public class Robot extends IterativeRobot {
 	public static OI oi;
 	
 	private Drive drive;
+	private RobotState robotState;
 	
 	private Looper looper;
+	
+	private SubsystemManager subsystemManager;
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	public Robot() {
+		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.looper = new Looper();
+		
+		this.subsystemManager = new SubsystemManager(this.drive);
 		
 		CrashTracker.logRobotConstruction();
 	}
@@ -49,10 +55,14 @@ public class Robot extends IterativeRobot {
 			//Initialization Code
 			oi = new OI();
 			
+			this.subsystemManager.registerEnabledLoops(this.looper);
+			
 		} catch( Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
 		}
+		
+		this.zeroAllSensors();
 	}
 
 	/**
@@ -67,6 +77,8 @@ public class Robot extends IterativeRobot {
 			
 			this.looper.stop();
 			
+			this.subsystemManager.stop();
+			
 		} catch( Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -75,13 +87,16 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		
+		this.allPeriodic();
+		this.zeroAllSensors();
 	}
 
 	@Override
 	public void autonomousInit() {
 		try {
 			CrashTracker.logAutoInit();
+			
+			this.zeroAllSensors();
 			
 			this.looper.start();
 			
@@ -96,13 +111,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+		this.allPeriodic();
 	}
 
 	@Override
 	public void teleopInit() {
 		try {
 			CrashTracker.logTeleopInit();
+			
+			this.zeroAllSensors();
 			
 			this.looper.start();
 			
@@ -117,7 +134,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
+		this.allPeriodic();
 	}
 
 	@Override
@@ -136,5 +153,21 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
+	}
+	
+	public void zeroAllSensors() {
+		this.subsystemManager.zeroSensors();
+		this.robotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
+	}
+	
+	/**
+	 * A method that has code that is run in all periodic functions
+	 */
+	public void allPeriodic() {
+		
+		this.robotState.outputToSmartDashboard();
+		this.subsystemManager.outputToSmartDashboard();
+		this.subsystemManager.writeToLog();
+		this.looper.outputToSmartDashboard();
 	}
 }
