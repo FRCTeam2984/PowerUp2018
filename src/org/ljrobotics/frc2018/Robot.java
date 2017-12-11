@@ -4,8 +4,10 @@ package org.ljrobotics.frc2018;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.lib.util.CrashTracker;
+import org.ljrobotics.lib.util.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -59,6 +61,8 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
 		}
+		
+		this.zeroAllSensors();
 	}
 
 	/**
@@ -84,12 +88,15 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledPeriodic() {
 		this.allPeriodic();
+		this.zeroAllSensors();
 	}
 
 	@Override
 	public void autonomousInit() {
 		try {
 			CrashTracker.logAutoInit();
+			
+			this.zeroAllSensors();
 			
 			this.looper.start();
 			
@@ -111,6 +118,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		try {
 			CrashTracker.logTeleopInit();
+			
+			this.zeroAllSensors();
 			
 			this.looper.start();
 			
@@ -144,6 +153,11 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
+	}
+	
+	public void zeroAllSensors() {
+		this.subsystemManager.zeroSensors();
+		this.robotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
 	}
 	
 	/**
