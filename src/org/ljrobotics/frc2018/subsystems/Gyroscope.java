@@ -6,14 +6,8 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 
 /**
- * This is the super class for all subsystems. Every subsystem on the robot will extend this class.
- *
- * The most basic functionality is described in this class. Every subsystem can be stopped and reset.
- * {@link #registerEnabledLoops} method.
- * In addition, all of the subsystems will need to execute code periodically which handled by the
- *
+ * This is the gyroscope subystem. It deals with getting gyroscope data.
  * @author Grant
- *
  */
 public class Gyroscope extends Subsystem {
 	public static Gyroscope instance;
@@ -29,16 +23,9 @@ public class Gyroscope extends Subsystem {
 	public Gyroscope() {
 		this.gyro = new ADXRS450_Gyro();
 	}
-	/**
-	 * Stops all of the activity in the subsystem.
-	 */
 	public void stop(){
 		return;
 	}
-
-	/**
-	 * Returns the subsystem to original state. Ie resets sensors and clears accumulators.
-	 */
 	public void reset(){
 		return;
 	}
