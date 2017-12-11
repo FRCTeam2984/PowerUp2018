@@ -3,6 +3,7 @@ package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.loops.Looper;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -46,6 +47,22 @@ public class Gyroscope extends Subsystem {
 	 */
 	public void registerEnabledLoops(Looper enabledLooper){
 
+	}
+	
+	@Override
+	public void outputToSmartDashboard() {
+		SmartDashboard.putNumber("Gyro Angle", this.getAngle());
+	}
+	
+	@Override
+	public void writeToLog() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void zeroSensors() {
+		this.calibrate();
 	}
 
 }
