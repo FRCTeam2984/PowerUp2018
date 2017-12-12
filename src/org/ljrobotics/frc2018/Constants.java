@@ -36,6 +36,8 @@ public class Constants extends ConstantsBase{
 
 	public static double LOOPER_Dt;
 
+	public static int ANDROID_APP_TCP_PORT = 8254;
+
 	public static final int FRONT_LEFT_MOTOR_ID =  0x0;
 	public static final int FRONT_RIGHT_MOTOR_ID = 0x1;
 	public static final int REAR_LEFT_MOTOR_ID =   0x2;
