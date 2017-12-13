@@ -58,16 +58,6 @@ public class DriveTest {
 	}
 
 	@Test
-	public void setToNumTest() {
-		drive.setToNum(0.1);
-		final ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-		verify(this.frontLeft).set(captor.capture());
-		assertEquals(0.1, (double) captor.getValue(), 0);
-		// verifyTalons(0.1,0.1,0.1,0.1);
-
-	}
-
-	@Test
 	public void moveWithPotitiveY() {
 		drive.move(new Motion(1, 0));
 		verifyTalons(1, 1, 0, 0);

@@ -127,13 +127,6 @@ public class Drive extends Subsystem {
 
 	}
 
-	/**
-	 * Move in with given speed forward or backwards while rotating with given speed
-	 */
-	public void setToNum(double num) {
-		this.leftMaster.set(num);
-		this.rightMaster.set(num);
-	}
 
 	public void move(Motion motion) {
 		double left = motion.getY() + motion.getRotation();
