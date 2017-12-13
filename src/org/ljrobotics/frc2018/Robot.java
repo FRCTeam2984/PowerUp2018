@@ -54,7 +54,7 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logRobotInit();
 			
 			//Initialization Code
-			oi = new OI();
+			oi = OI.getInstance();
 			
 			this.subsystemManager.registerEnabledLoops(this.looper);
 			

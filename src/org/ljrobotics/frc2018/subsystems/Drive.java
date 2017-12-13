@@ -5,6 +5,7 @@ import static java.lang.Math.abs;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.Kinematics;
 import org.ljrobotics.frc2018.RobotState;
+import org.ljrobotics.frc2018.commands.JoystickDrive;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.utils.Motion;
 import org.ljrobotics.lib.util.control.Lookahead;
@@ -296,8 +297,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
+		this.setDefaultCommand(new JoystickDrive());
 	}
 
 }

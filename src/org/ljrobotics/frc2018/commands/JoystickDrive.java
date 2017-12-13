@@ -1,8 +1,8 @@
 package org.ljrobotics.frc2018.commands;
 
+import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.frc2018.utils.Motion;
-import org.ljrobotics.frc2018.Constants;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -14,11 +14,12 @@ public class JoystickDrive extends Command {
 
 	public JoystickDrive() {
 		this.requires(Drive.getInstance());
+		this.multiplier = 1;
+		this.joystick = OI.getInstance().stick;
 	}
 
 	protected void initialize() {
-		this.joystick = new Joystick(Constants.JOYSTICK_DRIVE_ID);
-		this.multiplier=1;
+
 	}
 
 	protected void execute() {
