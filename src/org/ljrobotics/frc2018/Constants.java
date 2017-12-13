@@ -1,6 +1,7 @@
 package org.ljrobotics.frc2018;
 
 import org.ljrobotics.lib.util.ConstantsBase;
+import org.ljrobotics.lib.util.math.Translation2d;
 
 public class Constants extends ConstantsBase{
 
@@ -44,6 +45,9 @@ public class Constants extends ConstantsBase{
 	public static final int REAR_RIGHT_MOTOR_ID =  0x3;
 
 	public static int JOYSTICK_DRIVE_ID =  0x1;
+
+	public static Translation2d kCameraXOffset;
+	public static Translation2d kCameraYOffset;
 
 
 	@Override

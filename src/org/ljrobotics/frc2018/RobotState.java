@@ -1,11 +1,15 @@
 package org.ljrobotics.frc2018;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.ljrobotics.frc2018.vision.TargetInfo;
 import org.ljrobotics.lib.util.InterpolatingDouble;
 import org.ljrobotics.lib.util.InterpolatingTreeMap;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
+import org.ljrobotics.lib.util.math.Translation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,6 +49,8 @@ public class RobotState {
 
     private static final int kObservationBufferSize = 100;
 
+    private static final RigidTransform2d kVehicleToCamera = new RigidTransform2d(
+            new Translation2d(Constants.kCameraXOffset, Constants.kCameraYOffset), new Rotation2d());
 
     // FPGATimestamp -> RigidTransform2d or Rotation2d
     private InterpolatingTreeMap<InterpolatingDouble, RigidTransform2d> field_to_vehicle_;
@@ -77,6 +83,10 @@ public class RobotState {
      */
     public synchronized RigidTransform2d getFieldToVehicle(double timestamp) {
         return field_to_vehicle_.getInterpolated(new InterpolatingDouble(timestamp));
+    }
+    
+    public synchronized RigidTransform2d getFieldToCamera(double timestamp) {
+        return getFieldToVehicle(timestamp).transformBy(kVehicleToCamera);
     }
 
     public synchronized Map.Entry<InterpolatingDouble, RigidTransform2d> getLatestFieldToVehicle() {
@@ -121,6 +131,41 @@ public class RobotState {
         return vehicle_velocity_measured_;
     }
 
+//    public void addVisionUpdate(double timestamp, List<TargetInfo> vision_update) {
+//        List<Translation2d> field_to_goals = new ArrayList<>();
+//        RigidTransform2d field_to_camera = getFieldToCamera(timestamp);
+//        if (!(vision_update == null || vision_update.isEmpty())) {
+//            for (TargetInfo target : vision_update) {
+//                double ydeadband = (target.getY() > -Constants.kCameraDeadband
+//                        && target.getY() < Constants.kCameraDeadband) ? 0.0 : target.getY();
+//
+//                // Compensate for camera yaw
+//                double xyaw = target.getX() * camera_yaw_correction_.cos() + ydeadband * camera_yaw_correction_.sin();
+//                double yyaw = ydeadband * camera_yaw_correction_.cos() - target.getX() * camera_yaw_correction_.sin();
+//                double zyaw = target.getZ();
+//
+//                // Compensate for camera pitch
+//                double xr = zyaw * camera_pitch_correction_.sin() + xyaw * camera_pitch_correction_.cos();
+//                double yr = yyaw;
+//                double zr = zyaw * camera_pitch_correction_.cos() - xyaw * camera_pitch_correction_.sin();
+//
+//                // find intersection with the goal
+//                if (zr > 0) {
+//                    double scaling = differential_height_ / zr;
+//                    double distance = Math.hypot(xr, yr) * scaling + Constants.kBoilerRadius;
+//                    Rotation2d angle = new Rotation2d(xr, yr, true);
+//                    field_to_goals.add(field_to_camera
+//                            .transformBy(RigidTransform2d
+//                                    .fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))
+//                            .getTranslation());
+//                }
+//            }
+//        }
+//        synchronized (this) {
+//            goal_tracker_.update(timestamp, field_to_goals);
+//        }
+//    }
+//    
     public void outputToSmartDashboard() {
         RigidTransform2d odometry = getLatestFieldToVehicle().getValue();
         SmartDashboard.putNumber("robot_pose_x", odometry.getTranslation().x());

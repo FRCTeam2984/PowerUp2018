@@ -9,6 +9,10 @@ package org.ljrobotics.frc2018.vision;
 public class TargetInfo {
 	protected double distance;
 	protected double rotation;
+	
+	private double x;
+	private double y;
+	private double z;
 
 	/**
 	 * Creates a target info
@@ -21,6 +25,12 @@ public class TargetInfo {
 	public TargetInfo(double distance, double rotation) {
 		this.distance = distance;
 		this.rotation = rotation;
+		
+		rotation = Math.toRadians(rotation);
+		
+		this.x = -this.distance * Math.sin(rotation);
+		this.y = this.distance * Math.cos(rotation);
+		this.z = 0;
 	}
 
 	public double getDistance() {
@@ -29,5 +39,17 @@ public class TargetInfo {
 
 	public double getRotation() {
 		return rotation;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public double getZ() {
+		return z;
 	}
 }
