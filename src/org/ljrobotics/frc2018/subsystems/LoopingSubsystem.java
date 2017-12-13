@@ -9,41 +9,39 @@ import org.ljrobotics.frc2018.loops.Looper;
  * In addition, all of the subsystems will need to execute code periodically which handled by the
  * {@link #registerEnabledLoops} method.
  * 
- * @author Max
- *
  */
-public abstract class Subsystem {
+public interface LoopingSubsystem {
 
 	/**
 	 * Stops all of the activity in the subsystem.
 	 */
-	public abstract void stop();
+	public void stop();
 	
 	/**
 	 * Returns the subsystem to original state. Ie resets sensors and clears accumulators.
 	 */
-	public abstract void reset();
+	public void reset();
 	
 	/**
 	 * Outputs useful information to the Smart Dashboard
 	 */
-	public abstract void outputToSmartDashboard();
+	public void outputToSmartDashboard();
 	
 	/**
 	 * Writes useful information to a log file
 	 */
-	public abstract void writeToLog();
+	public void writeToLog();
 	
 	/**
 	 * Zeros all the sensors with regards to this subsystem
 	 */
-	public abstract void zeroSensors();
+	public void zeroSensors ();
 	
 	/**
 	 * Called once after subsystem is created. This allows the subsystem to register any loops.
 	 * 
 	 * @param enabledLooper The looper that will be responsible for calling the subsystems loops.
 	 */
-	public abstract void registerEnabledLoops(Looper enabledLooper);
+	public void registerEnabledLoops(Looper enabledLooper);
 	
 }

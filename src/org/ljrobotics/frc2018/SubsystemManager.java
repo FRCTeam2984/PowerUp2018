@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.ljrobotics.frc2018.loops.Looper;
-import org.ljrobotics.frc2018.subsystems.Subsystem;
+import org.ljrobotics.frc2018.subsystems.LoopingSubsystem;
 
 /**
  * Used to reset, start, stop, and update all subsystems at once
  */
 public class SubsystemManager {
 
-	private final List<Subsystem> subsystems;
+	private final List<LoopingSubsystem> subsystems;
 
 	/**
 	 * Create a new subsystem manager with all of the robots subsystems
@@ -19,7 +19,7 @@ public class SubsystemManager {
 	 * @param subsystems
 	 *            the subsystems as an array
 	 */
-	public SubsystemManager(Subsystem... subsystems) {
+	public SubsystemManager(LoopingSubsystem... subsystems) {
 		this.subsystems = Arrays.asList(subsystems);
 	}
 
