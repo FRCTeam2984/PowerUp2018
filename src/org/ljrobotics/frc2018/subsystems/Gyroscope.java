@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * This is the gyroscope subystem. It deals with getting gyroscope data.
  * @author Grant
  */
-public class Gyroscope extends Subsystem {
+public class Gyroscope implements LoopingSubsystem {
 	public static Gyroscope instance;
 	private ADXRS450_Gyro gyro;
 	public static Gyroscope getInstance() {

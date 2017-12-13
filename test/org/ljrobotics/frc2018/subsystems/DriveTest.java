@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.ljrobotics.frc2018.RobotState;
 import org.ljrobotics.frc2018.utils.Motion;
+import org.ljrobotics.lib.util.DummyReporter;
 import org.ljrobotics.lib.util.InterpolatingDouble;
 import org.ljrobotics.lib.util.control.Path;
 import org.ljrobotics.lib.util.control.PathBuilder;
@@ -29,6 +29,8 @@ import org.mockito.ArgumentCaptor;
 
 import com.ctre.CANTalon;
 
+import edu.wpi.first.wpilibj.HLUsageReporting;
+
 public class DriveTest {
 
 	private Drive drive;
@@ -38,6 +40,11 @@ public class DriveTest {
 	private CANTalon backRight;
 
 	private RobotState robotState;
+	
+	static {
+		// prevents exception during test
+		HLUsageReporting.SetImplementation(new DummyReporter());
+	}
 
 	@Before
 	public void before() {

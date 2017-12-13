@@ -1,5 +1,7 @@
 package org.ljrobotics.frc2018.subsystems;
 
+import static java.lang.Math.abs;
+
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.Kinematics;
 import org.ljrobotics.frc2018.RobotState;
@@ -16,7 +18,7 @@ import org.ljrobotics.lib.util.math.Twist2d;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.StatusFrameRate;
 
-import static java.lang.Math.abs;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  * The Drive subsystem. This subsystem is responsible for everything regarding
@@ -25,7 +27,7 @@ import static java.lang.Math.abs;
  * @author Max
  *
  */
-public class Drive extends Subsystem {
+public class Drive extends Subsystem implements LoopingSubsystem {
 
 	private static Drive instance;
 
@@ -288,6 +290,12 @@ public class Drive extends Subsystem {
 
 	@Override
 	public void zeroSensors() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
 		
 	}
