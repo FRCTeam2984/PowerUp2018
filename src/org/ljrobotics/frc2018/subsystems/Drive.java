@@ -1,8 +1,11 @@
 package org.ljrobotics.frc2018.subsystems;
 
+import static java.lang.Math.abs;
+
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.Kinematics;
 import org.ljrobotics.frc2018.RobotState;
+import org.ljrobotics.frc2018.commands.JoystickDrive;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.utils.Motion;
 import org.ljrobotics.lib.util.control.Lookahead;
@@ -16,7 +19,7 @@ import org.ljrobotics.lib.util.math.Twist2d;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.StatusFrameRate;
 
-import static java.lang.Math.abs;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  * The Drive subsystem. This subsystem is responsible for everything regarding
@@ -25,7 +28,7 @@ import static java.lang.Math.abs;
  * @author Max
  *
  */
-public class Drive extends Subsystem {
+public class Drive extends Subsystem implements LoopingSubsystem {
 
 	private static Drive instance;
 
@@ -127,13 +130,6 @@ public class Drive extends Subsystem {
 
 	}
 
-	/**
-	 * Move in with given speed forward or backwards while rotating with given speed
-	 */
-	public void setToNum(double num) {
-		this.leftMaster.set(num);
-		this.rightMaster.set(num);
-	}
 
 	public void move(Motion motion) {
 		double left = motion.getY() + motion.getRotation();
@@ -297,6 +293,11 @@ public class Drive extends Subsystem {
 	public void zeroSensors() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		this.setDefaultCommand(new JoystickDrive());
 	}
 
 }
