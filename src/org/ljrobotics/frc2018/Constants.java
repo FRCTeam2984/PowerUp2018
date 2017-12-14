@@ -46,8 +46,8 @@ public class Constants extends ConstantsBase{
 
 	public static int JOYSTICK_DRIVE_ID =  0x1;
 
-	public static Translation2d kCameraXOffset;
-	public static Translation2d kCameraYOffset;
+	public static Translation2d kCameraXOffset = Translation2d.identity();
+	public static Translation2d kCameraYOffset = Translation2d.identity();
 
 	public static double kMaxTrackerDistance;
 
