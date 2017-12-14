@@ -3,7 +3,7 @@ package org.ljrobotics.frc2018.subsystems;
 import org.ljrobotics.frc2018.loops.Looper;
 
 /**
- * This is the super class for all subsystems. Every subsystem on the robot will extend this class.
+ * This is the super class for all subsystems. Every subsystem on the robot will implement this class.
  * 
  * The most basic functionality is described in this class. Every subsystem can be stopped and reset.
  * In addition, all of the subsystems will need to execute code periodically which handled by the
