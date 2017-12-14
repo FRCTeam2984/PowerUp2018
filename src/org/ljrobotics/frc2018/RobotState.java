@@ -57,6 +57,7 @@ public class RobotState {
     private Twist2d vehicle_velocity_predicted_;
     private Twist2d vehicle_velocity_measured_;
     private double distance_driven_;
+    private GoalTracker goal_tracker_;
 
     private RobotState() {
         reset(0, new RigidTransform2d());
@@ -71,6 +72,7 @@ public class RobotState {
         vehicle_velocity_predicted_ = Twist2d.identity();
         vehicle_velocity_measured_ = Twist2d.identity();
         distance_driven_ = 0.0;
+        goal_tracker_ = new GoalTracker();
     }
 
     public synchronized void resetDistanceDriven() {
@@ -131,41 +133,26 @@ public class RobotState {
         return vehicle_velocity_measured_;
     }
 
-//    public void addVisionUpdate(double timestamp, List<TargetInfo> vision_update) {
-//        List<Translation2d> field_to_goals = new ArrayList<>();
-//        RigidTransform2d field_to_camera = getFieldToCamera(timestamp);
-//        if (!(vision_update == null || vision_update.isEmpty())) {
-//            for (TargetInfo target : vision_update) {
-//                double ydeadband = (target.getY() > -Constants.kCameraDeadband
-//                        && target.getY() < Constants.kCameraDeadband) ? 0.0 : target.getY();
-//
-//                // Compensate for camera yaw
-//                double xyaw = target.getX() * camera_yaw_correction_.cos() + ydeadband * camera_yaw_correction_.sin();
-//                double yyaw = ydeadband * camera_yaw_correction_.cos() - target.getX() * camera_yaw_correction_.sin();
-//                double zyaw = target.getZ();
-//
-//                // Compensate for camera pitch
-//                double xr = zyaw * camera_pitch_correction_.sin() + xyaw * camera_pitch_correction_.cos();
-//                double yr = yyaw;
-//                double zr = zyaw * camera_pitch_correction_.cos() - xyaw * camera_pitch_correction_.sin();
-//
-//                // find intersection with the goal
-//                if (zr > 0) {
-//                    double scaling = differential_height_ / zr;
-//                    double distance = Math.hypot(xr, yr) * scaling + Constants.kBoilerRadius;
-//                    Rotation2d angle = new Rotation2d(xr, yr, true);
-//                    field_to_goals.add(field_to_camera
-//                            .transformBy(RigidTransform2d
-//                                    .fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))
-//                            .getTranslation());
-//                }
-//            }
-//        }
-//        synchronized (this) {
-//            goal_tracker_.update(timestamp, field_to_goals);
-//        }
-//    }
-//    
+    public void addVisionUpdate(double timestamp, List<TargetInfo> vision_update) {
+        List<Translation2d> field_to_goals = new ArrayList<>();
+        RigidTransform2d field_to_camera = getFieldToCamera(timestamp);
+        if (!(vision_update == null || vision_update.isEmpty())) {
+            for (TargetInfo target : vision_update) {
+
+                // find intersection with the goal
+				double distance = 0;//TODO GET
+				Rotation2d angle = new Rotation2d(0, 1, true);
+				field_to_goals.add(field_to_camera
+						.transformBy(RigidTransform2d
+								.fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))
+						.getTranslation());
+            }
+        }
+        synchronized (this) {
+            goal_tracker_.update(timestamp, field_to_goals);
+        }
+    }
+    
     public void outputToSmartDashboard() {
         RigidTransform2d odometry = getLatestFieldToVehicle().getValue();
         SmartDashboard.putNumber("robot_pose_x", odometry.getTranslation().x());

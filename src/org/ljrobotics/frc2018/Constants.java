@@ -49,6 +49,12 @@ public class Constants extends ConstantsBase{
 	public static Translation2d kCameraXOffset;
 	public static Translation2d kCameraYOffset;
 
+	public static double kMaxTrackerDistance;
+
+	public static double kMaxGoalTrackAge;
+
+	public static double kCameraFrameRate;
+
 
 	@Override
 	public String getFileLocation() {
