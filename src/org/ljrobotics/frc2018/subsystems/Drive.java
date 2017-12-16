@@ -65,10 +65,12 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		public void onLoop( double timestamp ) {
 			switch( driveControlState  ) {
 			case VELOCITY_SETPOINT:
-				//TODO add velocity setpoint function
+				//TODO add a way to get the left and right inches per second
+				//updateVelocitySetpoint(left_inches_per_sec, right_inches_per_sec);
 				break;
 			case PATH_FOLLOWING:
-				//TODO add path followign setpoint function
+				//TODO add a write to CVS file function
+				updatePathFollower( timestamp );
 				break;
 			default:
 				
