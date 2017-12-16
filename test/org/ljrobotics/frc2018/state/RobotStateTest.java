@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.vision.TargetInfo;
 import org.ljrobotics.lib.util.DummyFPGATimer;
@@ -31,6 +32,7 @@ public class RobotStateTest {
 	
 	@Test
 	public void firstVisionUpdateSpecifiesLocation() {
+		setCameraConstants(0,0,0,0);
 		TargetInfo target = new TargetInfo(100, 0);
 		ArrayList<TargetInfo> targets = new ArrayList<>(1);
 		targets.add(target);
@@ -44,6 +46,7 @@ public class RobotStateTest {
 	
 	@Test
 	public void secondVisionUpdateUpdatesLocation() {
+		setCameraConstants(0,0,0,0);
 		TargetInfo target = new TargetInfo(100, 0);
 		ArrayList<TargetInfo> targets = new ArrayList<>(1);
 		targets.add(target);
@@ -62,6 +65,7 @@ public class RobotStateTest {
 	
 	@Test
 	public void nonsequeterSetOfTargetsIgnored() {
+		setCameraConstants(0,0,0,0);
 		TargetInfo target = new TargetInfo(10, 0);
 		ArrayList<TargetInfo> targets = new ArrayList<>(1);
 		targets.add(target);
@@ -85,6 +89,7 @@ public class RobotStateTest {
 	
 	@Test
 	public void robotRotationRotatesTarget() {
+		setCameraConstants(0,0,0,0);
 		this.robotState.reset(0, createExpected(0,0,90));
 		TargetInfo target = new TargetInfo(100, 0);
 		ArrayList<TargetInfo> targets = new ArrayList<>(1);
@@ -100,6 +105,7 @@ public class RobotStateTest {
 	
 	@Test
 	public void robotTransformTransformsTarget() {
+		setCameraConstants(0,0,0,0);
 		this.robotState.reset(0, createExpected(100,-40,45));
 		TargetInfo target = new TargetInfo(10, 0);
 		ArrayList<TargetInfo> targets = new ArrayList<>(1);
@@ -111,6 +117,13 @@ public class RobotStateTest {
 		
 		RigidTransform2d expectedTransform = createExpected(107.07106, -40+7.07106, 0);
 		assertEquals(expectedTransform, actualTransform);
+	}
+	
+	private void setCameraConstants(double x, double y, double pitch, double yaw) {
+		Constants.CAMERA_X_OFFSET = x;
+		Constants.CAMEAR_Y_OFFSET = y;
+		Constants.CAMERA_PITCH = pitch;
+		Constants.CAMERA_YAW = yaw;
 	}
 	
 	private RigidTransform2d createExpected(double x, double y, double rot) {
