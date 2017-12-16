@@ -51,7 +51,7 @@ public class RobotState {
     private static final int kObservationBufferSize = 100;
 
     private static final RigidTransform2d kVehicleToCamera = new RigidTransform2d(
-            new Translation2d(Constants.kCameraXOffset, Constants.kCameraYOffset), new Rotation2d());
+            new Translation2d(Constants.CAMERA_X_OFFSET, Constants.CAMEAR_Y_OFFSET), new Rotation2d());
 
     // FPGATimestamp -> RigidTransform2d or Rotation2d
     private InterpolatingTreeMap<InterpolatingDouble, RigidTransform2d> field_to_vehicle_;

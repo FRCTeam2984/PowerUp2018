@@ -68,10 +68,10 @@ public class GoalTrackerTest {
 	@Test
 	public void secondApropriotTargetAddsToCurrentTrack() {
 		Translation2d[] targets = new Translation2d[] {Translation2d.identity()};
-		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.kMaxTrackerDistance/2, 0)};
+		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.MAX_TRACKER_DISTANCE/2, 0)};
 		timer.setFPGATimestamp(0);
 		tracker.update(0, Arrays.asList(targets));
-		timer.setFPGATimestamp(1D/30D + Constants.kMaxGoalTrackAge/2);
+		timer.setFPGATimestamp(1D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(1D/30D, Arrays.asList(targets2));
 		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.field_to_goal);
@@ -81,13 +81,13 @@ public class GoalTrackerTest {
 	@Test
 	public void thirdInapropriotTargetIsIgnored() {
 		Translation2d[] targets = new Translation2d[] {Translation2d.identity()};
-		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.kMaxTrackerDistance/2, 0)};
-		Translation2d[] targets3 = new Translation2d[] { new Translation2d(-Constants.kMaxTrackerDistance*3, 0)};
+		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.MAX_TRACKER_DISTANCE/2, 0)};
+		Translation2d[] targets3 = new Translation2d[] { new Translation2d(-Constants.MAX_TRACKER_DISTANCE*3, 0)};
 		timer.setFPGATimestamp(0);
 		tracker.update(0, Arrays.asList(targets));
-		timer.setFPGATimestamp(1D/30D + Constants.kMaxGoalTrackAge/2);
+		timer.setFPGATimestamp(1D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(1D/30D, Arrays.asList(targets2));
-		timer.setFPGATimestamp(2D/30D + Constants.kMaxGoalTrackAge/2);
+		timer.setFPGATimestamp(2D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(2D/30D, Arrays.asList(targets3));
 		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.field_to_goal);
@@ -97,14 +97,14 @@ public class GoalTrackerTest {
 	@Test
 	public void thirdInapropriotTargetIsIgnoredWhileCorrectAccepted() {
 		Translation2d[] targets = new Translation2d[] { new Translation2d(0,0)};
-		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.kMaxTrackerDistance/2, 0)};
+		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.MAX_TRACKER_DISTANCE/2, 0)};
 		Translation2d[] targets3 = new Translation2d[] { new Translation2d(0, 0),
-				new Translation2d(-Constants.kMaxTrackerDistance*3, 0)};
+				new Translation2d(-Constants.MAX_TRACKER_DISTANCE*3, 0)};
 		timer.setFPGATimestamp(0);
 		tracker.update(0, Arrays.asList(targets));
-		timer.setFPGATimestamp(1D/30D + Constants.kMaxGoalTrackAge/2);
+		timer.setFPGATimestamp(1D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(1D/30D, Arrays.asList(targets2));
-		timer.setFPGATimestamp(2D/30D + Constants.kMaxGoalTrackAge/2);
+		timer.setFPGATimestamp(2D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(2D/30D, Arrays.asList(targets3));
 		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets2[0].scale(1/3D), report.field_to_goal);
@@ -114,14 +114,14 @@ public class GoalTrackerTest {
 	@Test
 	public void deadTrackIsPrunded() {
 		Translation2d[] targets = new Translation2d[] { new Translation2d(0,0)};
-		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.kMaxTrackerDistance/2, 0)};
+		Translation2d[] targets2 = new Translation2d[] { new Translation2d(Constants.MAX_TRACKER_DISTANCE/2, 0)};
 		Translation2d[] targets3 = new Translation2d[] { new Translation2d(100,0)};
 		timer.setFPGATimestamp(0);
 		tracker.update(0, Arrays.asList(targets));
 		timer.setFPGATimestamp(1D/30D);
 		tracker.update(1D/30D, Arrays.asList(targets2));
-		timer.setFPGATimestamp(2D/30D + Constants.kMaxGoalTrackAge);
-		tracker.update(2D/30D + Constants.kMaxGoalTrackAge, Arrays.asList(targets3));
+		timer.setFPGATimestamp(2D/30D + Constants.MAX_GOAL_TRACK_AGE);
+		tracker.update(2D/30D + Constants.MAX_GOAL_TRACK_AGE, Arrays.asList(targets3));
 		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets3[0], report.field_to_goal);
 		assertEquals(1, tracker.getTracks().size());

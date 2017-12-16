@@ -51,7 +51,7 @@ public class GoalTrack {
             return false;
         }
         double distance = mSmoothedPosition.inverse().translateBy(new_observation).norm();
-        if (distance < Constants.kMaxTrackerDistance) {
+        if (distance < Constants.MAX_TRACKER_DISTANCE) {
             mObservedPositions.put(timestamp, new_observation);
             pruneByTime();
             return true;
@@ -71,7 +71,7 @@ public class GoalTrack {
      * @see Constants.java
      */
     void pruneByTime() {
-        double delete_before = Timer.getFPGATimestamp() - Constants.kMaxGoalTrackAge;
+        double delete_before = Timer.getFPGATimestamp() - Constants.MAX_GOAL_TRACK_AGE;
         for (Iterator<Map.Entry<Double, Translation2d>> it = mObservedPositions.entrySet().iterator(); it.hasNext();) {
             Map.Entry<Double, Translation2d> entry = it.next();
             if (entry.getKey() < delete_before) {
@@ -111,7 +111,7 @@ public class GoalTrack {
     }
 
     public double getStability() {
-        return Math.min(1.0, mObservedPositions.size() / (Constants.kCameraFrameRate * Constants.kMaxGoalTrackAge));
+        return Math.min(1.0, mObservedPositions.size() / (Constants.CAMERA_FRAME_RATE * Constants.MAX_GOAL_TRACK_AGE));
     }
 
     public int getId() {

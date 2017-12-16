@@ -32,8 +32,8 @@ public class TrackReportComparator implements Comparator<TrackReport> {
     double score(TrackReport report) {
         double stability_score = mStabilityWeight * report.stability;
         double age_score = mAgeWeight
-                * Math.max(0, (Constants.kMaxGoalTrackAge - (mCurrentTimestamp - report.latest_timestamp))
-                        / Constants.kMaxGoalTrackAge);
+                * Math.max(0, (Constants.MAX_GOAL_TRACK_AGE - (mCurrentTimestamp - report.latest_timestamp))
+                        / Constants.MAX_GOAL_TRACK_AGE);
         double switching_score = (report.id == mLastTrackId ? mSwitchingWeight : 0);
         return stability_score + age_score + switching_score;
     }

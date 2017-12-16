@@ -1,7 +1,6 @@
 package org.ljrobotics.frc2018;
 
 import org.ljrobotics.lib.util.ConstantsBase;
-import org.ljrobotics.lib.util.math.Translation2d;
 
 public class Constants extends ConstantsBase{
 
@@ -46,14 +45,12 @@ public class Constants extends ConstantsBase{
 
 	public static int JOYSTICK_DRIVE_ID =  0x1;
 
-	public static Translation2d kCameraXOffset = Translation2d.identity();
-	public static Translation2d kCameraYOffset = Translation2d.identity();
+	public static double CAMERA_X_OFFSET = 0;
+	public static double CAMEAR_Y_OFFSET = 0;
 
-	public static double kMaxTrackerDistance = 18;
-
-	public static double kMaxGoalTrackAge = 1;
-
-	public static double kCameraFrameRate = 30;
+	public static double MAX_TRACKER_DISTANCE = 18;
+	public static double MAX_GOAL_TRACK_AGE = 1;
+	public static double CAMERA_FRAME_RATE = 30;
 
 
 	@Override
