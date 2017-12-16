@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.ljrobotics.frc2018.Constants;
-import org.ljrobotics.frc2018.state.GoalTracker.TrackReport;
 import org.ljrobotics.frc2018.vision.TargetInfo;
 import org.ljrobotics.lib.util.InterpolatingDouble;
 import org.ljrobotics.lib.util.InterpolatingTreeMap;

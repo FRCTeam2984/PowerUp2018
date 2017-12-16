@@ -61,7 +61,7 @@ public class GoalTrackerTest {
 	public void firstTrackRunsThroughTargetPoint() {
 		Translation2d[] targets = new Translation2d[] {Translation2d.identity()};
 		tracker.update(0, Arrays.asList(targets));
-		GoalTracker.TrackReport report = tracker.getTracks().get(0);
+		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(Translation2d.identity(), report.field_to_goal);
 	}
 	
@@ -73,7 +73,7 @@ public class GoalTrackerTest {
 		tracker.update(0, Arrays.asList(targets));
 		timer.setFPGATimestamp(1D/30D + Constants.kMaxGoalTrackAge/2);
 		tracker.update(1D/30D, Arrays.asList(targets2));
-		GoalTracker.TrackReport report = tracker.getTracks().get(0);
+		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.field_to_goal);
 		assertEquals(1, tracker.getTracks().size());
 	}
@@ -89,7 +89,7 @@ public class GoalTrackerTest {
 		tracker.update(1D/30D, Arrays.asList(targets2));
 		timer.setFPGATimestamp(2D/30D + Constants.kMaxGoalTrackAge/2);
 		tracker.update(2D/30D, Arrays.asList(targets3));
-		GoalTracker.TrackReport report = tracker.getTracks().get(0);
+		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.field_to_goal);
 		assertEquals(1, tracker.getTracks().size());
 	}
@@ -106,7 +106,7 @@ public class GoalTrackerTest {
 		tracker.update(1D/30D, Arrays.asList(targets2));
 		timer.setFPGATimestamp(2D/30D + Constants.kMaxGoalTrackAge/2);
 		tracker.update(2D/30D, Arrays.asList(targets3));
-		GoalTracker.TrackReport report = tracker.getTracks().get(0);
+		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets2[0].scale(1/3D), report.field_to_goal);
 		assertEquals(1, tracker.getTracks().size());
 	}
@@ -122,7 +122,7 @@ public class GoalTrackerTest {
 		tracker.update(1D/30D, Arrays.asList(targets2));
 		timer.setFPGATimestamp(2D/30D + Constants.kMaxGoalTrackAge);
 		tracker.update(2D/30D + Constants.kMaxGoalTrackAge, Arrays.asList(targets3));
-		GoalTracker.TrackReport report = tracker.getTracks().get(0);
+		TrackReport report = tracker.getTracks().get(0);
 		assertEquals(targets3[0], report.field_to_goal);
 		assertEquals(1, tracker.getTracks().size());
 	}
