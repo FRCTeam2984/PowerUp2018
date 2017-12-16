@@ -1,4 +1,4 @@
-package org.ljrobotics.frc2018;
+package org.ljrobotics.frc2018.state;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,6 +9,8 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.ljrobotics.frc2018.Constants;
+import org.ljrobotics.frc2018.state.GoalTracker;
 import org.ljrobotics.lib.util.DummyFPGATimer;
 import org.ljrobotics.lib.util.math.Translation2d;
 

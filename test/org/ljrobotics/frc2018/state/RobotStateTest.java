@@ -1,4 +1,4 @@
-package org.ljrobotics.frc2018;
+package org.ljrobotics.frc2018.state;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.vision.TargetInfo;
 import org.ljrobotics.lib.util.DummyFPGATimer;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
