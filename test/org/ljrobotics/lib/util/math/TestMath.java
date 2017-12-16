@@ -122,6 +122,14 @@ public class TestMath {
         rot1 = Rotation2d.fromDegrees(45);
         rot2 = Rotation2d.fromDegrees(-135);
         assertTrue(rot1.isParallel(rot2));
+        
+        assertEquals(rot1, rot1);
+        assertNotEquals(rot1, "");
+        assertNotEquals(rot1, null);
+        
+        rot1 = Rotation2d.fromDegrees(0);
+        rot2 = Rotation2d.fromDegrees(0);
+        assertEquals(rot1, rot2);
     }
 
     @Test
@@ -258,6 +266,14 @@ public class TestMath {
         assertEquals(3.0 + 10.0 * Math.cos(expected_angle_rads), pose3.getTranslation().x(), kTestEpsilon);
         assertEquals(-6.0 + 10.0 * Math.sin(expected_angle_rads), pose3.getTranslation().y(), kTestEpsilon);
         assertEquals(expected_angle_rads, pose3.getRotation().getRadians(), kTestEpsilon);
+        
+        assertEquals(pose1, pose1);
+        assertNotEquals(pose1, "");
+        assertNotEquals(pose1, null);
+        
+        pose1 = new RigidTransform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0));
+        pose2 = new RigidTransform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0));
+        assertEquals(pose1, pose2);
     }
 
     @Test

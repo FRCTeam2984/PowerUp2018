@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.ljrobotics.frc2018.GoalTracker.TrackReport;
 import org.ljrobotics.frc2018.vision.TargetInfo;
 import org.ljrobotics.lib.util.InterpolatingDouble;
 import org.ljrobotics.lib.util.InterpolatingTreeMap;
@@ -90,6 +91,14 @@ public class RobotState {
     public synchronized RigidTransform2d getFieldToCamera(double timestamp) {
         return getFieldToVehicle(timestamp).transformBy(kVehicleToCamera);
     }
+    
+    public synchronized List<RigidTransform2d> getCaptureTimeFieldToGoal() {
+        List<RigidTransform2d> rv = new ArrayList<>();
+        for (TrackReport report : goal_tracker_.getTracks()) {
+            rv.add(RigidTransform2d.fromTranslation(report.field_to_goal));
+        }
+        return rv;
+    }
 
     public synchronized Map.Entry<InterpolatingDouble, RigidTransform2d> getLatestFieldToVehicle() {
         return field_to_vehicle_.lastEntry();
@@ -138,10 +147,8 @@ public class RobotState {
         RigidTransform2d field_to_camera = getFieldToCamera(timestamp);
         if (!(vision_update == null || vision_update.isEmpty())) {
             for (TargetInfo target : vision_update) {
-
-                // find intersection with the goal
-				double distance = 0;//TODO GET
-				Rotation2d angle = new Rotation2d(0, 1, true);
+				double distance = target.getDistance();
+				Rotation2d angle = Rotation2d.fromDegrees(target.getRotation());
 				field_to_goals.add(field_to_camera
 						.transformBy(RigidTransform2d
 								.fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))
