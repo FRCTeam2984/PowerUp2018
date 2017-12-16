@@ -63,7 +63,16 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		}
 		
 		public void onLoop( double timestamp ) {
-			
+			switch( driveControlState  ) {
+			case VELOCITY_SETPOINT:
+				//TODO add velocity setpoint function
+				break;
+			case PATH_FOLLOWING:
+				//TODO add path followign setpoint function
+				break;
+			default:
+				
+			}
 		}
 		
 		public void onStop( double timestamp ) {
