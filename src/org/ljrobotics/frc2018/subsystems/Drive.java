@@ -6,6 +6,7 @@ import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.Kinematics;
 import org.ljrobotics.frc2018.RobotState;
 import org.ljrobotics.frc2018.commands.JoystickDrive;
+import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.utils.Motion;
 import org.ljrobotics.lib.util.control.Lookahead;
@@ -54,6 +55,25 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
 
+	// The drive loop definition
+	private class DriveLoop implements Loop {
+		
+		public void onStart( double timestamp ) {
+			
+		}
+		
+		public void onLoop( double timestamp ) {
+			
+		}
+		
+		public void onStop( double timestamp ) {
+			
+		}
+		
+	}
+	// The local drive loop
+	private DriveLoop driveLoop = new DriveLoop(); 
+	
 	// Talons
 	private CANTalon leftMaster;
 	private CANTalon rightMaster;
@@ -127,7 +147,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	public void registerEnabledLoops(Looper enabledLooper) {
-
+		enabledLooper.register(driveLoop);
 	}
 
 
