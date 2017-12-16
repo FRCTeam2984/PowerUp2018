@@ -2,6 +2,7 @@ package org.ljrobotics.lib.util.math;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class TestMath {
         rot1 = Rotation2d.fromDegrees(270);
         assertEquals(0, rot1.cos(), kTestEpsilon);
         assertEquals(-1, rot1.sin(), kTestEpsilon);
-        System.out.println(rot1.tan());
+//        System.out.println(rot1.tan());
         assertTrue(-1 / kTestEpsilon > rot1.tan());
         assertEquals(-90, rot1.getDegrees(), kTestEpsilon);
         assertEquals(-Math.PI / 2, rot1.getRadians(), kTestEpsilon);
@@ -192,6 +193,16 @@ public class TestMath {
         pos3 = pos1.interpolate(pos2, .75);
         assertEquals(7.5, pos3.x(), kTestEpsilon);
         assertEquals(-.5, pos3.y(), kTestEpsilon);
+        
+        assertEquals(pos1, pos1);
+        
+        pos1 = new Translation2d(0,0);
+        pos2 = new Translation2d(0,0);
+        assertEquals(pos1, pos2);
+        assertNotEquals(pos1, "");
+        
+        pos2 = new Translation2d(1,0);
+        assertNotEquals(pos1, pos2);
     }
 
     @Test

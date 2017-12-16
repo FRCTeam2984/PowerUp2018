@@ -49,11 +49,11 @@ public class Constants extends ConstantsBase{
 	public static Translation2d kCameraXOffset = Translation2d.identity();
 	public static Translation2d kCameraYOffset = Translation2d.identity();
 
-	public static double kMaxTrackerDistance;
+	public static double kMaxTrackerDistance = 18;
 
-	public static double kMaxGoalTrackAge;
+	public static double kMaxGoalTrackAge = 1;
 
-	public static double kCameraFrameRate;
+	public static double kCameraFrameRate = 30;
 
 
 	@Override
