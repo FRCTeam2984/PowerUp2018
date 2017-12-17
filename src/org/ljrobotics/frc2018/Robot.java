@@ -2,7 +2,10 @@
 package org.ljrobotics.frc2018;
 
 import org.ljrobotics.frc2018.loops.Looper;
+import org.ljrobotics.frc2018.loops.VisionProcessor;
+import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
+import org.ljrobotics.frc2018.vision.VisionServer;
 import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 
@@ -12,6 +15,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,6 +34,8 @@ public class Robot extends IterativeRobot {
 	private Looper looper;
 	
 	private SubsystemManager subsystemManager;
+	
+	private VisionServer visionServer;
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
@@ -38,6 +44,7 @@ public class Robot extends IterativeRobot {
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.looper = new Looper();
+		this.visionServer = VisionServer.getInstance();
 		
 		this.subsystemManager = new SubsystemManager(this.drive);
 		
@@ -57,7 +64,9 @@ public class Robot extends IterativeRobot {
 			oi = OI.getInstance();
 			
 			this.subsystemManager.registerEnabledLoops(this.looper);
+			this.looper.register(VisionProcessor.getInstance());
 			
+			this.visionServer.addVisionUpdateReceiver(VisionProcessor.getInstance());
 		} catch( Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -171,5 +180,6 @@ public class Robot extends IterativeRobot {
 		this.subsystemManager.outputToSmartDashboard();
 		this.subsystemManager.writeToLog();
 		this.looper.outputToSmartDashboard();
+        SmartDashboard.putBoolean("cameraConnected", this.visionServer.isConnected());
 	}
 }

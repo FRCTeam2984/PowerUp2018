@@ -8,7 +8,9 @@ import org.ljrobotics.lib.util.Interpolable;
  * A translation in a 2d coordinate frame. Translations are simply shifts in an (x, y) plane.
  */
 public class Translation2d implements Interpolable<Translation2d> {
-    protected static final Translation2d kIdentity = new Translation2d();
+    private static final double EQUALS_EPSILON = 0.00001;
+	
+	protected static final Translation2d kIdentity = new Translation2d();
 
     public static final Translation2d identity() {
         return kIdentity;
@@ -139,5 +141,20 @@ public class Translation2d implements Interpolable<Translation2d> {
 
     public static double cross(Translation2d a, Translation2d b) {
         return a.x_ * b.y_ - a.y_ * b.x_;
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+    	if(this == other) {
+    		return true;
+    	}
+    	if(other.getClass() != this.getClass()) {
+    		return false;
+    	}
+    	Translation2d translation = (Translation2d) other;
+    	double dx = Math.abs(this.x_ - translation.x_);
+    	double dy = Math.abs(this.y_ - translation.y_);
+    	return dx < EQUALS_EPSILON && dy < EQUALS_EPSILON;
+    	
     }
 }

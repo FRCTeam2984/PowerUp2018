@@ -181,4 +181,16 @@ public class RigidTransform2d implements Interpolable<RigidTransform2d> {
     public String toString() {
         return "T:" + translation_.toString() + ", R:" + rotation_.toString();
     }
+    
+    @Override
+    public boolean equals(Object o) {
+    	if(o == this) {
+    		return true;
+    	}
+    	if(o == null || o.getClass() != this.getClass()) {
+    		return false;
+    	}
+    	RigidTransform2d other = (RigidTransform2d) o;
+    	return this.rotation_.equals(other.rotation_) && this.translation_.equals(other.translation_);
+    }
 }
