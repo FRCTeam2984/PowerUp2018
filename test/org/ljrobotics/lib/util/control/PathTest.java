@@ -83,6 +83,7 @@ public class PathTest {
         assertEquals(0, dist, kTestEpsilon);
     }
 
+    @Test
     public void testArcPathSegment() {
         PathSegment segment = new PathSegment(0.0, 0.0, 100.0, 0.0, 50.0, stopped, 0.0);
         assertEquals(100, segment.getLength(), kTestEpsilon);
