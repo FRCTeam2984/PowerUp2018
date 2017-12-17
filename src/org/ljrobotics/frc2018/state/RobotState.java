@@ -51,7 +51,7 @@ public class RobotState {
     private static final int kObservationBufferSize = 100;
 
     private static final RigidTransform2d kVehicleToCamera = new RigidTransform2d(
-            new Translation2d(Constants.CAMERA_X_OFFSET, Constants.CAMEAR_Y_OFFSET), new Rotation2d());
+            new Translation2d(Constants.CAMERA_X_OFFSET, Constants.CAMERA_Y_OFFSET), new Rotation2d());
 
     // FPGATimestamp -> RigidTransform2d or Rotation2d
     private InterpolatingTreeMap<InterpolatingDouble, RigidTransform2d> field_to_vehicle_;
@@ -147,8 +147,14 @@ public class RobotState {
         RigidTransform2d field_to_camera = getFieldToCamera(timestamp);
         if (!(vision_update == null || vision_update.isEmpty())) {
             for (TargetInfo target : vision_update) {
+            	
 				double distance = target.getDistance();
-				Rotation2d angle = Rotation2d.fromDegrees(target.getRotation());
+				double yaw = target.getRotation();
+				
+				//Correct for camera yaw
+				yaw += Constants.CAMERA_YAW;
+				
+				Rotation2d angle = Rotation2d.fromDegrees(yaw);
 				field_to_goals.add(field_to_camera
 						.transformBy(RigidTransform2d
 								.fromTranslation(new Translation2d(distance * angle.cos(), distance * angle.sin())))
@@ -166,5 +172,12 @@ public class RobotState {
         SmartDashboard.putNumber("robot_pose_y", odometry.getTranslation().y());
         SmartDashboard.putNumber("robot_pose_theta", odometry.getRotation().getDegrees());
         SmartDashboard.putNumber("robot velocity", vehicle_velocity_measured_.dx);
+        List<RigidTransform2d> poses = getCaptureTimeFieldToGoal();
+        for (RigidTransform2d pose : poses) {
+            // Only output first goal
+            SmartDashboard.putNumber("goal_pose_x", pose.getTranslation().x());
+            SmartDashboard.putNumber("goal_pose_y", pose.getTranslation().y());
+            break;
+        }
     }
 }

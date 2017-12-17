@@ -119,10 +119,26 @@ public class RobotStateTest {
 		assertEquals(expectedTransform, actualTransform);
 	}
 	
+	@Test
+	public void yawOffsetActsAsRotation() {
+		setCameraConstants(0,0,0,10);
+		this.robotState.reset(0, createExpected(0,0,0));
+		TargetInfo target = new TargetInfo(10, 0);
+		ArrayList<TargetInfo> targets = new ArrayList<>(1);
+		targets.add(target);
+		
+		this.robotState.addVisionUpdate(1, targets);
+		assertEquals(1, this.robotState.getCaptureTimeFieldToGoal().size());
+		RigidTransform2d actualTransform = this.robotState.getCaptureTimeFieldToGoal().get(0);
+		
+		double radians = Math.toRadians(10);
+		RigidTransform2d expectedTransform = createExpected(Math.cos(radians)*10, Math.sin(radians)*10, 0);
+		assertEquals(expectedTransform, actualTransform);
+	}
+	
 	private void setCameraConstants(double x, double y, double pitch, double yaw) {
 		Constants.CAMERA_X_OFFSET = x;
-		Constants.CAMEAR_Y_OFFSET = y;
-		Constants.CAMERA_PITCH = pitch;
+		Constants.CAMERA_Y_OFFSET = y;
 		Constants.CAMERA_YAW = yaw;
 	}
 	

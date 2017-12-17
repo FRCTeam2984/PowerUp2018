@@ -46,10 +46,9 @@ public class Constants extends ConstantsBase{
 	public static int JOYSTICK_DRIVE_ID =  0x1;
 
 	//Camera position and rotation
-	public static double CAMERA_X_OFFSET = 0;
-	public static double CAMEAR_Y_OFFSET = 0;
-	public static double CAMERA_PITCH = 0;
-	public static double CAMERA_YAW = 0;
+	public static double CAMERA_X_OFFSET = 0; //From wheelbase center, looking down
+	public static double CAMERA_Y_OFFSET = 0; //From wheelbase center, looking down
+	public static double CAMERA_YAW = 0; //In degrees, + is anti-clockwise viewed from above
 
 	public static double MAX_TRACKER_DISTANCE = 18;
 	public static double MAX_GOAL_TRACK_AGE = 1;
