@@ -4,7 +4,7 @@ package org.ljrobotics.frc2018.vision;
  * Tests the vision system by getting targets
  * Remember to set the environment variable USE_JAVA_TIME to "true" or an error will be thrown
  */
-public class VisionServerTest {
+public class VisionServerTester {
     public static class TestReceiver implements VisionUpdateReceiver {
         @Override
         public void gotUpdate(VisionUpdate update) {
