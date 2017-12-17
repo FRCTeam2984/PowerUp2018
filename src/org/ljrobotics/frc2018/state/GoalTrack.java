@@ -10,18 +10,19 @@ import org.ljrobotics.lib.util.math.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
- * A class that is used to keep track of all goals detected by the vision system. As goals are detected/not detected
- * anymore by the vision system, function calls will be made to create, destroy, or update a goal track.
+ * A class that is used to keep track of all goals detected by the vision
+ * system. As goals are detected/not detected anymore by the vision system,
+ * function calls will be made to create, destroy, or update a goal track.
  * 
- * This helps in the goal ranking process that determines which goal to fire into, and helps to smooth measurements of
- * the goal's location over time.
+ * This helps in the goal ranking process that determines which goal to fire
+ * into, and helps to smooth measurements of the goal's location over time.
  * 
  * @see GoalTracker.java
  */
 public class GoalTrack {
-    Map<Double, Translation2d> mObservedPositions = new TreeMap<>();
-    Translation2d mSmoothedPosition = null;
-    int mId;
+    Map<Double, Translation2d> observedPositions = new TreeMap<>();
+    Translation2d smoothedPosition = null;
+    int id;
 
     private GoalTrack() {
     }
@@ -29,11 +30,11 @@ public class GoalTrack {
     /**
      * Makes a new track based on the timestamp and the goal's coordinates (from vision)
      */
-    public static GoalTrack makeNewTrack(double timestamp, Translation2d first_observation, int id) {
+    public static GoalTrack makeNewTrack(double timestamp, Translation2d firstObservation, int id) {
         GoalTrack rv = new GoalTrack();
-        rv.mObservedPositions.put(timestamp, first_observation);
-        rv.mSmoothedPosition = first_observation;
-        rv.mId = id;
+        rv.observedPositions.put(timestamp, firstObservation);
+        rv.smoothedPosition = firstObservation;
+        rv.id = id;
         return rv;
     }
 
@@ -46,13 +47,13 @@ public class GoalTrack {
      * 
      * @return True if the track was updated
      */
-    public boolean tryUpdate(double timestamp, Translation2d new_observation) {
+    public boolean tryUpdate(double timestamp, Translation2d newObservation) {
         if (!isAlive()) {
             return false;
         }
-        double distance = mSmoothedPosition.inverse().translateBy(new_observation).norm();
+        double distance = smoothedPosition.inverse().translateBy(newObservation).norm();
         if (distance < Constants.MAX_TRACKER_DISTANCE) {
-            mObservedPositions.put(timestamp, new_observation);
+            observedPositions.put(timestamp, newObservation);
             pruneByTime();
             return true;
         } else {
@@ -62,7 +63,7 @@ public class GoalTrack {
     }
 
     public boolean isAlive() {
-        return mObservedPositions.size() > 0;
+        return observedPositions.size() > 0;
     }
 
     /**
@@ -71,15 +72,15 @@ public class GoalTrack {
      * @see Constants.java
      */
     void pruneByTime() {
-        double delete_before = Timer.getFPGATimestamp() - Constants.MAX_GOAL_TRACK_AGE;
-        for (Iterator<Map.Entry<Double, Translation2d>> it = mObservedPositions.entrySet().iterator(); it.hasNext();) {
+        double deleteBefore = Timer.getFPGATimestamp() - Constants.MAX_GOAL_TRACK_AGE;
+        for (Iterator<Map.Entry<Double, Translation2d>> it = observedPositions.entrySet().iterator(); it.hasNext();) {
             Map.Entry<Double, Translation2d> entry = it.next();
-            if (entry.getKey() < delete_before) {
+            if (entry.getKey() < deleteBefore) {
                 it.remove();
             }
         }
-        if (mObservedPositions.isEmpty()) {
-            mSmoothedPosition = null;
+        if (observedPositions.isEmpty()) {
+            smoothedPosition = null;
         } else {
             smooth();
         }
@@ -92,29 +93,29 @@ public class GoalTrack {
         if (isAlive()) {
             double x = 0;
             double y = 0;
-            for (Map.Entry<Double, Translation2d> entry : mObservedPositions.entrySet()) {
+            for (Map.Entry<Double, Translation2d> entry : observedPositions.entrySet()) {
                 x += entry.getValue().x();
                 y += entry.getValue().y();
             }
-            x /= mObservedPositions.size();
-            y /= mObservedPositions.size();
-            mSmoothedPosition = new Translation2d(x, y);
+            x /= observedPositions.size();
+            y /= observedPositions.size();
+            smoothedPosition = new Translation2d(x, y);
         }
     }
 
     public Translation2d getSmoothedPosition() {
-        return mSmoothedPosition;
+        return smoothedPosition;
     }
 
     public double getLatestTimestamp() {
-        return mObservedPositions.keySet().stream().max(Double::compareTo).orElse(0.0);
+        return observedPositions.keySet().stream().max(Double::compareTo).orElse(0.0);
     }
 
     public double getStability() {
-        return Math.min(1.0, mObservedPositions.size() / (Constants.CAMERA_FRAME_RATE * Constants.MAX_GOAL_TRACK_AGE));
+        return Math.min(1.0, observedPositions.size() / (Constants.CAMERA_FRAME_RATE * Constants.MAX_GOAL_TRACK_AGE));
     }
 
     public int getId() {
-        return mId;
+        return id;
     }
 }

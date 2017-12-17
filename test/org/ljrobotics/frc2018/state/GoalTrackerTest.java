@@ -62,7 +62,7 @@ public class GoalTrackerTest {
 		Translation2d[] targets = new Translation2d[] {Translation2d.identity()};
 		tracker.update(0, Arrays.asList(targets));
 		TrackReport report = tracker.getTracks().get(0);
-		assertEquals(Translation2d.identity(), report.field_to_goal);
+		assertEquals(Translation2d.identity(), report.fieldToGoal);
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ public class GoalTrackerTest {
 		timer.setFPGATimestamp(1D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(1D/30D, Arrays.asList(targets2));
 		TrackReport report = tracker.getTracks().get(0);
-		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.field_to_goal);
+		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.fieldToGoal);
 		assertEquals(1, tracker.getTracks().size());
 	}
 	
@@ -90,7 +90,7 @@ public class GoalTrackerTest {
 		timer.setFPGATimestamp(2D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(2D/30D, Arrays.asList(targets3));
 		TrackReport report = tracker.getTracks().get(0);
-		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.field_to_goal);
+		assertEquals(targets2[0].translateBy(targets[0]).scale(0.5), report.fieldToGoal);
 		assertEquals(1, tracker.getTracks().size());
 	}
 	
@@ -107,7 +107,7 @@ public class GoalTrackerTest {
 		timer.setFPGATimestamp(2D/30D + Constants.MAX_GOAL_TRACK_AGE/2);
 		tracker.update(2D/30D, Arrays.asList(targets3));
 		TrackReport report = tracker.getTracks().get(0);
-		assertEquals(targets2[0].scale(1/3D), report.field_to_goal);
+		assertEquals(targets2[0].scale(1/3D), report.fieldToGoal);
 		assertEquals(1, tracker.getTracks().size());
 	}
 	
@@ -123,7 +123,7 @@ public class GoalTrackerTest {
 		timer.setFPGATimestamp(2D/30D + Constants.MAX_GOAL_TRACK_AGE);
 		tracker.update(2D/30D + Constants.MAX_GOAL_TRACK_AGE, Arrays.asList(targets3));
 		TrackReport report = tracker.getTracks().get(0);
-		assertEquals(targets3[0], report.field_to_goal);
+		assertEquals(targets3[0], report.fieldToGoal);
 		assertEquals(1, tracker.getTracks().size());
 	}
 	

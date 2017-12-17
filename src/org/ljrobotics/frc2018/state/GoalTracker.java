@@ -15,21 +15,21 @@ import org.ljrobotics.lib.util.math.Translation2d;
  * @see GoalTrack.java
  */
 public class GoalTracker {
-    List<GoalTrack> mCurrentTracks = new ArrayList<>();
-    int mNextId = 0;
+    List<GoalTrack> currentTracks = new ArrayList<>();
+    int nextId = 0;
 
     public GoalTracker() {
     }
 
     public void reset() {
-        mCurrentTracks.clear();
+        currentTracks.clear();
     }
 
-    public void update(double timestamp, List<Translation2d> field_to_goals) {
+    public void update(double timestamp, List<Translation2d> fieldToGoals) {
         // Try to update existing tracks
-        for (Translation2d target : field_to_goals) {
+        for (Translation2d target : fieldToGoals) {
             boolean hasUpdatedTrack = false;
-            for (GoalTrack track : mCurrentTracks) {
+            for (GoalTrack track : currentTracks) {
                 if (!hasUpdatedTrack) {
                     if (track.tryUpdate(timestamp, target)) {
                         hasUpdatedTrack = true;
@@ -40,28 +40,28 @@ public class GoalTracker {
             }
         }
         // Prune any tracks that have died
-        for (Iterator<GoalTrack> it = mCurrentTracks.iterator(); it.hasNext();) {
+        for (Iterator<GoalTrack> it = currentTracks.iterator(); it.hasNext();) {
             GoalTrack track = it.next();
             if (!track.isAlive()) {
                 it.remove();
             }
         }
         // If all tracks are dead, start new tracks for any detections
-        if (mCurrentTracks.isEmpty()) {
-            for (Translation2d target : field_to_goals) {
-                mCurrentTracks.add(GoalTrack.makeNewTrack(timestamp, target, mNextId));
-                ++mNextId;
+        if (currentTracks.isEmpty()) {
+            for (Translation2d target : fieldToGoals) {
+                currentTracks.add(GoalTrack.makeNewTrack(timestamp, target, nextId));
+                ++nextId;
             }
         }
     }
 
     public boolean hasTracks() {
-        return !mCurrentTracks.isEmpty();
+        return !currentTracks.isEmpty();
     }
 
     public List<TrackReport> getTracks() {
         List<TrackReport> rv = new ArrayList<>();
-        for (GoalTrack track : mCurrentTracks) {
+        for (GoalTrack track : currentTracks) {
             rv.add(new TrackReport(track));
         }
         return rv;

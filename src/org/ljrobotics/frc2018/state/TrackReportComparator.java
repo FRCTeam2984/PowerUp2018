@@ -5,37 +5,38 @@ import java.util.Comparator;
 import org.ljrobotics.frc2018.Constants;
 
 /**
- * TrackReportComparators are used in the case that multiple tracks are active (e.g. we see or have recently seen
- * multiple goals). They contain heuristics used to pick which track we should aim at by calculating a score for
- * each track (highest score wins).
+ * TrackReportComparators are used in the case that multiple tracks are active
+ * (e.g. we see or have recently seen multiple goals). They contain heuristics
+ * used to pick which track we should aim at by calculating a score for each
+ * track (highest score wins).
  */
 public class TrackReportComparator implements Comparator<TrackReport> {
     // Reward tracks for being more stable (seen in more frames)
-    double mStabilityWeight;
+    double stabilityWeight;
     // Reward tracks for being recently observed
-    double mAgeWeight;
-    double mCurrentTimestamp;
+    double ageWeight;
+    double currentTimestamp;
     // Reward tracks for being continuations of tracks that we are already
     // tracking
-    double mSwitchingWeight;
-    int mLastTrackId;
+    double switchingWeight;
+    int lastTrackId;
 
-    public TrackReportComparator(double stability_weight, double age_weight, double switching_weight,
-            int last_track_id, double current_timestamp) {
-        this.mStabilityWeight = stability_weight;
-        this.mAgeWeight = age_weight;
-        this.mSwitchingWeight = switching_weight;
-        this.mLastTrackId = last_track_id;
-        this.mCurrentTimestamp = current_timestamp;
+    public TrackReportComparator(double stabilityWeight, double ageWeight, double switchingWeight,
+            int lastTrackid, double currentTimestamp) {
+        this.stabilityWeight = stabilityWeight;
+        this.ageWeight = ageWeight;
+        this.switchingWeight = switchingWeight;
+        this.lastTrackId = lastTrackid;
+        this.currentTimestamp = currentTimestamp;
     }
 
     double score(TrackReport report) {
-        double stability_score = mStabilityWeight * report.stability;
-        double age_score = mAgeWeight
-                * Math.max(0, (Constants.MAX_GOAL_TRACK_AGE - (mCurrentTimestamp - report.latest_timestamp))
+        double stabilityScore = stabilityWeight * report.stability;
+        double ageScore = ageWeight
+                * Math.max(0, (Constants.MAX_GOAL_TRACK_AGE - (currentTimestamp - report.latestTimestamp))
                         / Constants.MAX_GOAL_TRACK_AGE);
-        double switching_score = (report.id == mLastTrackId ? mSwitchingWeight : 0);
-        return stability_score + age_score + switching_score;
+        double switchingScore = (report.id == lastTrackId ? switchingWeight : 0);
+        return stabilityScore + ageScore + switchingScore;
     }
 
     @Override
