@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.ljrobotics.frc2018.RobotState;
+import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.utils.Motion;
 import org.ljrobotics.lib.util.DummyReporter;
 import org.ljrobotics.lib.util.InterpolatingDouble;

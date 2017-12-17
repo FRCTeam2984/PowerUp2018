@@ -2,6 +2,7 @@ package org.ljrobotics.lib.util.math;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class TestMath {
         rot1 = Rotation2d.fromDegrees(270);
         assertEquals(0, rot1.cos(), kTestEpsilon);
         assertEquals(-1, rot1.sin(), kTestEpsilon);
-        System.out.println(rot1.tan());
+//        System.out.println(rot1.tan());
         assertTrue(-1 / kTestEpsilon > rot1.tan());
         assertEquals(-90, rot1.getDegrees(), kTestEpsilon);
         assertEquals(-Math.PI / 2, rot1.getRadians(), kTestEpsilon);
@@ -121,6 +122,14 @@ public class TestMath {
         rot1 = Rotation2d.fromDegrees(45);
         rot2 = Rotation2d.fromDegrees(-135);
         assertTrue(rot1.isParallel(rot2));
+        
+        assertEquals(rot1, rot1);
+        assertNotEquals(rot1, "");
+        assertNotEquals(rot1, null);
+        
+        rot1 = Rotation2d.fromDegrees(0);
+        rot2 = Rotation2d.fromDegrees(0);
+        assertEquals(rot1, rot2);
     }
 
     @Test
@@ -192,6 +201,16 @@ public class TestMath {
         pos3 = pos1.interpolate(pos2, .75);
         assertEquals(7.5, pos3.x(), kTestEpsilon);
         assertEquals(-.5, pos3.y(), kTestEpsilon);
+        
+        assertEquals(pos1, pos1);
+        
+        pos1 = new Translation2d(0,0);
+        pos2 = new Translation2d(0,0);
+        assertEquals(pos1, pos2);
+        assertNotEquals(pos1, "");
+        
+        pos2 = new Translation2d(1,0);
+        assertNotEquals(pos1, pos2);
     }
 
     @Test
@@ -247,6 +266,14 @@ public class TestMath {
         assertEquals(3.0 + 10.0 * Math.cos(expected_angle_rads), pose3.getTranslation().x(), kTestEpsilon);
         assertEquals(-6.0 + 10.0 * Math.sin(expected_angle_rads), pose3.getTranslation().y(), kTestEpsilon);
         assertEquals(expected_angle_rads, pose3.getRotation().getRadians(), kTestEpsilon);
+        
+        assertEquals(pose1, pose1);
+        assertNotEquals(pose1, "");
+        assertNotEquals(pose1, null);
+        
+        pose1 = new RigidTransform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0));
+        pose2 = new RigidTransform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0));
+        assertEquals(pose1, pose2);
     }
 
     @Test

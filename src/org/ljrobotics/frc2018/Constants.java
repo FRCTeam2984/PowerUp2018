@@ -36,12 +36,23 @@ public class Constants extends ConstantsBase{
 
 	public static double LOOPER_Dt;
 
+	public static int ANDROID_APP_TCP_PORT = 8254;
+
 	public static final int FRONT_LEFT_MOTOR_ID =  0x0;
 	public static final int FRONT_RIGHT_MOTOR_ID = 0x1;
 	public static final int REAR_LEFT_MOTOR_ID =   0x2;
 	public static final int REAR_RIGHT_MOTOR_ID =  0x3;
 
 	public static int JOYSTICK_DRIVE_ID =  0x1;
+
+	//Camera position and rotation
+	public static double CAMERA_X_OFFSET = 0; //From wheelbase center, looking down
+	public static double CAMERA_Y_OFFSET = 0; //From wheelbase center, looking down
+	public static double CAMERA_YAW = 0; //In degrees, + is anti-clockwise viewed from above
+
+	public static double MAX_TRACKER_DISTANCE = 18;
+	public static double MAX_GOAL_TRACK_AGE = 1;
+	public static double CAMERA_FRAME_RATE = 30;
 
 
 	@Override
