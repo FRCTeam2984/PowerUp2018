@@ -12,6 +12,8 @@ import org.ljrobotics.lib.util.Interpolable;
  * Inspired by Sophus (https://github.com/strasdat/Sophus/tree/master/sophus)
  */
 public class Rotation2d implements Interpolable<Rotation2d> {
+    private static final double EQUALS_EPSILON = 0.00001;
+
     protected static final Rotation2d kIdentity = new Rotation2d();
 
     public static final Rotation2d identity() {
@@ -142,5 +144,18 @@ public class Rotation2d implements Interpolable<Rotation2d> {
     public String toString() {
         final DecimalFormat fmt = new DecimalFormat("#0.000");
         return "(" + fmt.format(getDegrees()) + " deg)";
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+    	if(o == this) {
+    		return true;
+    	}
+    	if(o == null || o.getClass() != this.getClass()) {
+    		return false;
+    	}
+    	Rotation2d other = (Rotation2d) o;
+    	return epsilonEquals(this.cos_angle_, other.cos_angle_, EQUALS_EPSILON) &&
+    			epsilonEquals(this.sin_angle_, other.sin_angle_, EQUALS_EPSILON);
     }
 }
