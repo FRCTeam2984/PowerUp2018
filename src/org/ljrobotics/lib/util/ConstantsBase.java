@@ -42,10 +42,13 @@ public abstract class ConstantsBase {
 
         @Override
         public boolean equals(Object o) {
+        	if(o == null || !(o instanceof Constant)) {
+        		return false;
+        	}
             String itsName = ((Constant) o).name;
             Class<?> itsType = ((Constant) o).type;
             Object itsValue = ((Constant) o).value;
-            return o instanceof Constant && this.name.equals(itsName) && this.type.equals(itsType)
+            return this.name.equals(itsName) && this.type.equals(itsType)
                     && this.value.equals(itsValue);
         }
     }
@@ -190,7 +193,8 @@ public abstract class ConstantsBase {
         }
     }
 
-    public void saveToFile() {
+    @SuppressWarnings("unchecked")
+	public void saveToFile() {
         File file = getFile();
         if (file == null) {
             return;
