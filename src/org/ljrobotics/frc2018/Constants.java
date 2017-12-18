@@ -43,6 +43,8 @@ public class Constants extends ConstantsBase{
 	public static final int REAR_LEFT_MOTOR_ID =   0x2;
 	public static final int REAR_RIGHT_MOTOR_ID =  0x3;
 
+	public static double EQUALS_EPSILON = 0.00001;
+
 	public static int JOYSTICK_DRIVE_ID =  0x1;
 
 	//Camera position and rotation

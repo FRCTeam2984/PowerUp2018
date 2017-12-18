@@ -134,6 +134,10 @@ public class CheesyDriveHelper {
             leftPwm += overPower * (-1.0 - rightPwm);
             rightPwm = -1.0;
         }
+        
+        leftPwm = Math.min(Math.max(-1, leftPwm), 1);
+        rightPwm = Math.min(Math.max(-1, rightPwm), 1);
+        
         return new DriveSignal(leftPwm, rightPwm);
     }
 
