@@ -51,7 +51,6 @@ public class PathFollowerTest {
 
 		@Override
 		public boolean isReversed() {
-			// TODO Auto-generated method stub
 			return false;
 		}
     	

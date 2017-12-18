@@ -57,7 +57,7 @@ public class Constants extends ConstantsBase{
 
 	@Override
 	public String getFileLocation() {
-		// TODO Auto-generated method stub
+		// TODO Fill in file once a location is chosen
 		return null;
 	}
 
