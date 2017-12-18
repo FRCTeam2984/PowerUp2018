@@ -35,7 +35,6 @@ public class CircularBuffer {
         for (Double val : mSamples) {
             mSum += val;
         }
-        mSum /= mWindowSize;
     }
 
     public void addValue(double val) {
