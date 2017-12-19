@@ -14,6 +14,7 @@ import org.ljrobotics.lib.util.control.PathFollower;
 import org.ljrobotics.lib.util.drivers.CANTalonFactory;
 import org.ljrobotics.lib.util.drivers.LazyCANTalon;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
+import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
 
 import com.ctre.CANTalon;
@@ -300,4 +301,28 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		this.setDefaultCommand(new JoystickDrive());
 	}
 
+	public Rotation2d getGyroAngle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public double getLeftVelocityInchesPerSec() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public double getRightVelocityInchesPerSec() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public double getLeftDistanceInches() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public double getRightDistanceInches() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
