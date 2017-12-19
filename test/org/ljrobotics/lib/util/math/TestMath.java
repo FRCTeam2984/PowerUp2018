@@ -304,6 +304,15 @@ public class TestMath {
         assertEquals(new_pose.getTranslation().x(), pose.getTranslation().x(), kTestEpsilon);
         assertEquals(new_pose.getTranslation().y(), pose.getTranslation().y(), kTestEpsilon);
         assertEquals(new_pose.getRotation().getDegrees(), pose.getRotation().getDegrees(), kTestEpsilon);
+        
+        twist = new Twist2d(0,0,0);
+        assertEquals(twist, twist);
+        Twist2d otherTwist = new Twist2d(0, 1, 0);
+        assertNotEquals(twist, otherTwist);
+        assertNotEquals(twist, null);
+        assertNotEquals(twist, "");
+        twist = new Twist2d(0, 1, 0);
+        assertEquals(twist, otherTwist);
     }
 
     @Test
