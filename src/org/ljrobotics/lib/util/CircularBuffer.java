@@ -3,54 +3,85 @@ package org.ljrobotics.lib.util;
 import java.util.LinkedList;
 
 /**
- * Implements a simple circular buffer.
+ * Implements a simple circular buffer. You can get the average of the last n
+ * values added where n is the window size of the buffer. Recompute average will
+ * make sure that the value of get average is correct as floating point error
+ * can occur while adding values.
  */
 public class CircularBuffer {
-    int mWindowSize;
-    LinkedList<Double> mSamples;
-    double mSum;
+	private int windowSize;
+	private LinkedList<Double> samples;
+	private double sum;
 
-    public CircularBuffer(int window_size) {
-        mWindowSize = window_size;
-        mSamples = new LinkedList<Double>();
-        mSum = 0.0;
-    }
+	/**
+	 * Creates a new Circular buffer with the given window size
+	 * 
+	 * @param windowSize
+	 *            the number of elements to keep track of
+	 */
+	public CircularBuffer(int windowSize) {
+		this.windowSize = windowSize;
+		this.samples = new LinkedList<Double>();
+		this.sum = 0.0;
+	}
 
-    public void clear() {
-        mSamples.clear();
-        mSum = 0.0;
-    }
+	/**
+	 * Clears the buffer
+	 */
+	public void clear() {
+		samples.clear();
+		sum = 0.0;
+	}
 
-    public double getAverage() {
-        if (mSamples.isEmpty())
-            return 0.0;
-        return mSum / mSamples.size();
-    }
+	/**
+	 * 
+	 * @return the average of all the values in the current window
+	 */
+	public double getAverage() {
+		if (samples.isEmpty())
+			return 0.0;
+		return sum / samples.size();
+	}
 
-    public void recomputeAverage() {
-        // Reset any accumulation drift.
-        mSum = 0.0;
-        if (mSamples.isEmpty())
-            return;
-        for (Double val : mSamples) {
-            mSum += val;
-        }
-        mSum /= mWindowSize;
-    }
+	/**
+	 * Removes any floating point error that may have been accrued.
+	 */
+	public void recomputeAverage() {
+		sum = 0.0;
+		if (samples.isEmpty())
+			return;
+		for (Double val : samples) {
+			sum += val;
+		}
+	}
 
-    public void addValue(double val) {
-        mSamples.addLast(val);
-        mSum += val;
-        if (mSamples.size() > mWindowSize) {
-            mSum -= mSamples.removeFirst();
-        }
-    }
+	/**
+	 * Adds a new value to the buffer and if it is full removes the oldest value.
+	 * 
+	 * @param val
+	 *            the new value to add
+	 */
+	public void addValue(double val) {
+		samples.addLast(val);
+		sum += val;
+		if (samples.size() > windowSize) {
+			sum -= samples.removeFirst();
+		}
+	}
 
-    public int getNumValues() {
-        return mSamples.size();
-    }
+	/**
+	 * 
+	 * @return the current number of values in the buffer window
+	 */
+	public int getNumValues() {
+		return samples.size();
+	}
 
-    public boolean isFull() {
-        return mWindowSize == mSamples.size();
-    }
+	/**
+	 * 
+	 * @return whether or not the buffer window is full
+	 */
+	public boolean isFull() {
+		return windowSize == samples.size();
+	}
 }
