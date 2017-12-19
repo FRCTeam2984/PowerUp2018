@@ -23,14 +23,15 @@ public class RobotStateEstimator implements Loop {
 		return instance;
 	}
 
+	private RobotState robotState;
+	private Drive drive;
+	private double prevLeftEncoderDistance = 0;
+	private double prevRightEncoderDistance = 0;
+	
 	public RobotStateEstimator(Drive drive, RobotState robotState) {
-		
+		this.drive = drive;
+		this.robotState = robotState;
 	}
-
-	RobotState robotState = RobotState.getInstance();
-	Drive drive = Drive.getInstance();
-	double prevLeftEncoderDistance = 0;
-	double prevRightEncoderDistance = 0;
 
 	@Override
 	public synchronized void onStart(double timestamp) {
