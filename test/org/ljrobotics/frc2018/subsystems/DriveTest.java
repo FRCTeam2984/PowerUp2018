@@ -29,6 +29,7 @@ import org.ljrobotics.lib.util.math.Twist2d;
 import org.mockito.ArgumentCaptor;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.HLUsageReporting;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -69,51 +70,64 @@ public class DriveTest {
 	}
 
 	@Test
-	public void moveWithPotitiveY() {
-		drive.move(new DriveSignal(1, 1));
+	public void setOpenLoopWithPotitiveY() {
+		drive.setOpenLoop(new DriveSignal(1, 1));
 		verifyTalons(1, 1, 0, 0);
 	}
 
 	@Test
-	public void moveWithNegativeY() {
-		drive.move(new DriveSignal(-1, -1));
+	public void setOpenLoopWithNegativeY() {
+		drive.setOpenLoop(new DriveSignal(-1, -1));
 		verifyTalons(-1, -1, 0, 0);
 	}
 
 	@Test
-	public void moveWithPotitiveRotation() {
-		drive.move(new DriveSignal(1, -1));
+	public void setOpenLoopWithPotitiveRotation() {
+		drive.setOpenLoop(new DriveSignal(1, -1));
 		verifyTalons(1, -1, 0, 0);
 	}
 
 	@Test
-	public void moveWithNegativeRotation() {
-		drive.move(new DriveSignal(-1, 1));
+	public void setOpenLoopWithNegativeRotation() {
+		drive.setOpenLoop(new DriveSignal(-1, 1));
 		verifyTalons(-1, 1, 0, 0);
 	}
 
 	@Test
-	public void moveWithPositiveYAndRotation() {
-		drive.move(new DriveSignal(1, 0));
+	public void setOpenLoopWithPositiveYAndRotation() {
+		drive.setOpenLoop(new DriveSignal(1, 0));
 		verifyTalons(1, 0, 0, 0);
 	}
 
 	@Test
-	public void moveWithNegativeYAndRotation() {
-		drive.move(new DriveSignal(-1, 0));
+	public void setOpenLoopWithNegativeYAndRotation() {
+		drive.setOpenLoop(new DriveSignal(-1, 0));
 		verifyTalons(-1, 0, 0, 0);
 	}
 
 	@Test
-	public void moveWithValuesOverOne() {
-		drive.move(new DriveSignal(10, 5));
+	public void setOpenLoopWithValuesOverOne() {
+		drive.setOpenLoop(new DriveSignal(10, 5));
 		verifyTalons(1, 1, 0, 0);
 	}
 
 	@Test
-	public void moveWithValuesUnderOne() {
-		drive.move(new DriveSignal(-10, -5));
+	public void setOpenLoopWithValuesUnderOne() {
+		drive.setOpenLoop(new DriveSignal(-10, -5));
 		verifyTalons(-1, -1, 0, 0);
+	}
+	
+	@Test
+	public void setOpenLoopSetsToOpenLoopMode() {
+		drive.setOpenLoop(DriveSignal.NEUTRAL);
+		verify(this.frontLeft, times(1)).changeControlMode(TalonControlMode.PercentVbus);
+	}
+	
+	@Test
+	public void setOpenLoopSetsToOpenLoopAfterBeingSetToPathFollowing() {
+		drive.setWantDrivePath(null, false);
+		drive.setOpenLoop(DriveSignal.NEUTRAL);
+		verify(this.frontLeft, times(2)).changeControlMode(TalonControlMode.PercentVbus);
 	}
 
 	@Test

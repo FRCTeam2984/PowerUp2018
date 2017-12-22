@@ -51,14 +51,15 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	// The robot drivetrain's various states.
 	public enum DriveControlState {
 		VELOCITY_SETPOINT, // Under PID velocity control
-		PATH_FOLLOWING // Following a path
+		PATH_FOLLOWING, // Following a path
+		OPEN_LOOP // Used to drive control
 	}
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
 
-	//Sensors
+	// Sensors
 	private Gyro gyro;
-	
+
 	// Talons
 	private CANTalon leftMaster;
 	private CANTalon rightMaster;
@@ -89,8 +90,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	 * @param backRight
 	 *            the back right talon motor controller
 	 */
-	public Drive(CANTalon frontLeft, CANTalon frontRight, CANTalon backLeft, CANTalon backRight,
-			RobotState robotState, Gyro gyro) {
+	public Drive(CANTalon frontLeft, CANTalon frontRight, CANTalon backLeft, CANTalon backRight, RobotState robotState,
+			Gyro gyro) {
 
 		this.robotState = robotState;
 		this.gyro = gyro;
@@ -114,7 +115,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		rightSlave.reverseOutput(false);
 		rightMaster.setStatusFrameRateMs(StatusFrameRate.Feedback, 5);
 
-		this.driveControlState = DriveControlState.VELOCITY_SETPOINT;
+		this.driveControlState = DriveControlState.OPEN_LOOP;
 
 		this.isBrakeMode = false;
 		this.setBrakeMode(true);
@@ -136,8 +137,15 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	}
 
-
-	public void move(DriveSignal driveSignal) {
+	public void setOpenLoop(DriveSignal driveSignal) {
+		if (this.driveControlState != DriveControlState.OPEN_LOOP) {
+            this.leftMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+            this.rightMaster.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+            this.leftMaster.configNominalOutputVoltage(0.0, 0.0);
+            this.rightMaster.configNominalOutputVoltage(0.0, 0.0);
+            this.driveControlState = DriveControlState.OPEN_LOOP;
+            setBrakeMode(false);
+        }
 		double left = driveSignal.getLeft();
 		double right = driveSignal.getRight();
 		left = Math.min(Math.max(left, -1), 1);
@@ -279,29 +287,29 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			leftSlave.enableBrakeMode(on);
 		}
 	}
-	
+
 	public double encoderTicksToInches(double ticksPerSecond) {
 		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION;
 		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
 		return rotationsPerSecond * wheelCircumference;
 	}
-	
+
 	@Override
 	public void outputToSmartDashboard() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void writeToLog() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void zeroSensors() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -317,11 +325,11 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	public double getLeftVelocityInchesPerSec() {
 		return encoderTicksToInches(this.leftMaster.getSpeed() * 10);
 	}
-	
+
 	public double getRightVelocityInchesPerSec() {
 		return encoderTicksToInches(this.rightMaster.getSpeed() * 10);
 	}
-	
+
 	public double getLeftDistanceInches() {
 		return encoderTicksToInches(this.leftMaster.getPosition());
 	}
