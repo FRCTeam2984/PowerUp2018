@@ -2,6 +2,7 @@ package org.ljrobotics.frc2018.state;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.state.Kinematics.DriveVelocity;
@@ -24,6 +25,12 @@ import org.ljrobotics.lib.util.math.Twist2d;
  */
 public class KinematicsTest {
 
+	@Before
+	public void before() {
+		Constants.TRACK_SCRUB_FACTOR = 0.9;
+		Constants.TRACK_WIDTH_INCHES = 1;
+	}
+	
 	@Test
 	public void exRelFKGivesZeroMotionWithAllZeroInputs() {
 		Twist2d expected = new Twist2d(0, 0, 0);
@@ -106,10 +113,10 @@ public class KinematicsTest {
 	
 	@Test
 	public void inverseKinematicsGivesCurvedDriveVelocityFromCurvedTwist2d() {
-		Twist2d vel = new Twist2d(-1, 0, -1);
+		Twist2d vel = new Twist2d(-1, 0, -1*0.9);
 		DriveVelocity actual = Kinematics.inverseKinematics(vel);
-		assertEquals(1, actual.left, 0.00001);
-		assertEquals(1, actual.right, 0.00001);
+		assertEquals(-0.5, actual.left, 0.00001);
+		assertEquals(-1.5, actual.right, 0.00001);
 	}
 
 }
