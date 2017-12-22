@@ -7,7 +7,7 @@ import org.ljrobotics.frc2018.commands.JoystickDrive;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.state.Kinematics;
 import org.ljrobotics.frc2018.state.RobotState;
-import org.ljrobotics.frc2018.utils.Motion;
+import org.ljrobotics.lib.util.DriveSignal;
 import org.ljrobotics.lib.util.control.Lookahead;
 import org.ljrobotics.lib.util.control.Path;
 import org.ljrobotics.lib.util.control.PathFollower;
@@ -139,14 +139,11 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 
-	public void move(Motion motion) {
-		double left = motion.getY() + motion.getRotation();
-		double right = motion.getY() - motion.getRotation();
-		double max = Math.max(abs(left), abs(right));
-		if (max > 1 || max < -1) {
-			left /= abs(max);
-			right /= abs(max);
-		}
+	public void move(DriveSignal driveSignal) {
+		double left = driveSignal.getLeft();
+		double right = driveSignal.getRight();
+		left = Math.min(Math.max(left, -1), 1);
+		right = Math.min(Math.max(right, -1), 1);
 		this.leftMaster.set(left);
 		this.rightMaster.set(right);
 	}

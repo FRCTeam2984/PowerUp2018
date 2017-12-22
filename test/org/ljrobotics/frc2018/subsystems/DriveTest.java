@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.state.RobotState;
-import org.ljrobotics.frc2018.utils.Motion;
+import org.ljrobotics.lib.util.DriveSignal;
 import org.ljrobotics.lib.util.DummyReporter;
 import org.ljrobotics.lib.util.InterpolatingDouble;
 import org.ljrobotics.lib.util.control.Path;
@@ -70,50 +70,50 @@ public class DriveTest {
 
 	@Test
 	public void moveWithPotitiveY() {
-		drive.move(new Motion(1, 0));
+		drive.move(new DriveSignal(1, 1));
 		verifyTalons(1, 1, 0, 0);
 	}
 
 	@Test
 	public void moveWithNegativeY() {
-		drive.move(new Motion(-1, 0));
+		drive.move(new DriveSignal(-1, -1));
 		verifyTalons(-1, -1, 0, 0);
 	}
 
 	@Test
 	public void moveWithPotitiveRotation() {
-		drive.move(new Motion(0, 1));
+		drive.move(new DriveSignal(1, -1));
 		verifyTalons(1, -1, 0, 0);
 	}
 
 	@Test
 	public void moveWithNegativeRotation() {
-		drive.move(new Motion(0, -1));
+		drive.move(new DriveSignal(-1, 1));
 		verifyTalons(-1, 1, 0, 0);
 	}
 
 	@Test
 	public void moveWithPositiveYAndRotation() {
-		drive.move(new Motion(0.5, 0.5));
+		drive.move(new DriveSignal(1, 0));
 		verifyTalons(1, 0, 0, 0);
 	}
 
 	@Test
 	public void moveWithNegativeYAndRotation() {
-		drive.move(new Motion(-0.5, -0.5));
+		drive.move(new DriveSignal(-1, 0));
 		verifyTalons(-1, 0, 0, 0);
 	}
 
 	@Test
 	public void moveWithValuesOverOne() {
-		drive.move(new Motion(10, 5));
-		verifyTalons(1, 0.333333, 0, 0);
+		drive.move(new DriveSignal(10, 5));
+		verifyTalons(1, 1, 0, 0);
 	}
 
 	@Test
 	public void moveWithValuesUnderOne() {
-		drive.move(new Motion(-10, -5));
-		verifyTalons(-1, -0.333333, 0, 0);
+		drive.move(new DriveSignal(-10, -5));
+		verifyTalons(-1, -1, 0, 0);
 	}
 
 	@Test
