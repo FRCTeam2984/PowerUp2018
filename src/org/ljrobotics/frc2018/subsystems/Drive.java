@@ -7,6 +7,7 @@ import org.ljrobotics.frc2018.commands.JoystickDrive;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.state.Kinematics;
 import org.ljrobotics.frc2018.state.RobotState;
+import org.ljrobotics.frc2018.utils.LazyGyroscope;
 import org.ljrobotics.frc2018.utils.Motion;
 import org.ljrobotics.lib.util.control.Lookahead;
 import org.ljrobotics.lib.util.control.Path;
@@ -21,6 +22,7 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.StatusFrameRate;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /**
  * The Drive subsystem. This subsystem is responsible for everything regarding
@@ -41,8 +43,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			CANTalon rearRight = new LazyCANTalon(Constants.REAR_RIGHT_MOTOR_ID);
 
 			RobotState robotState = RobotState.getInstance();
+			LazyGyroscope gyro = LazyGyroscope.getInstance();
 
-			instance = new Drive(frontLeft, frontRight, rearLeft, rearRight, robotState);
+			instance = new Drive(frontLeft, frontRight, rearLeft, rearRight, robotState, gyro);
 		}
 		return instance;
 	}
@@ -55,6 +58,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
 
+	//Sensors
+	private Gyro gyro;
+	
 	// Talons
 	private CANTalon leftMaster;
 	private CANTalon rightMaster;
@@ -86,9 +92,10 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	 *            the back right talon motor controller
 	 */
 	public Drive(CANTalon frontLeft, CANTalon frontRight, CANTalon backLeft, CANTalon backRight,
-			RobotState robotState) {
+			RobotState robotState, Gyro gyro) {
 
 		this.robotState = robotState;
+		this.gyro = gyro;
 
 		this.leftMaster = frontLeft;
 		this.rightMaster = frontRight;
@@ -277,7 +284,13 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			leftSlave.enableBrakeMode(on);
 		}
 	}
-
+	
+	public double encoderTicksToInches(double ticksPerSecond) {
+		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION;
+		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
+		return rotationsPerSecond * wheelCircumference;
+	}
+	
 	@Override
 	public void outputToSmartDashboard() {
 		// TODO Auto-generated method stub
@@ -302,27 +315,23 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public Rotation2d getGyroAngle() {
-		// TODO Auto-generated method stub
-		return null;
+		double gyroAngle = this.gyro.getAngle();
+		return Rotation2d.fromDegrees(gyroAngle);
 	}
 
 	public double getLeftVelocityInchesPerSec() {
-		// TODO Auto-generated method stub
-		return 0;
+		return encoderTicksToInches(this.leftMaster.getSpeed() * 10);
 	}
 	
 	public double getRightVelocityInchesPerSec() {
-		// TODO Auto-generated method stub
-		return 0;
+		return encoderTicksToInches(this.rightMaster.getSpeed() * 10);
 	}
 	
 	public double getLeftDistanceInches() {
-		// TODO Auto-generated method stub
-		return 0;
+		return encoderTicksToInches(this.leftMaster.getPosition());
 	}
 
 	public double getRightDistanceInches() {
-		// TODO Auto-generated method stub
-		return 0;
+		return encoderTicksToInches(this.rightMaster.getPosition());
 	}
 }

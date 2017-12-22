@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.utils.Motion;
 import org.ljrobotics.lib.util.DummyReporter;
@@ -30,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.HLUsageReporting;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class DriveTest {
 
@@ -40,6 +42,7 @@ public class DriveTest {
 	private CANTalon backRight;
 
 	private RobotState robotState;
+	private Gyro gyro;
 	
 	static {
 		// prevents exception during test
@@ -54,8 +57,9 @@ public class DriveTest {
 		backRight = mock(CANTalon.class);
 
 		robotState = mock(RobotState.class);
+		gyro = mock(Gyro.class);
 
-		drive = new Drive(frontLeft, frontRight, backLeft, backRight, robotState);
+		drive = new Drive(frontLeft, frontRight, backLeft, backRight, robotState, gyro);
 	}
 
 	@Test
@@ -174,6 +178,29 @@ public class DriveTest {
 
 		drive.updatePathFollower(3);
 		assertTrue(drive.isDoneWithPath());
+	}
+	
+	@Test
+	public void getGyroAngleReturnsRotation2dOfGyroAngle() {
+		when(this.gyro.getAngle()).thenReturn(90D);
+		Rotation2d expected = Rotation2d.fromDegrees(90);
+		assertEquals(expected, this.drive.getGyroAngle());
+	}
+	
+	@Test
+	public void getLeftVelocityInInchesPerSecondReturnsVelocity() {
+		Constants.DRIVE_WHEEL_DIAMETER_INCHES = 1;
+		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION = 200;
+		when(this.frontLeft.getSpeed()).thenReturn(200D);
+		assertEquals(10*Math.PI, this.drive.getLeftVelocityInchesPerSec(), 0.00001);
+	}
+	
+	@Test
+	public void getRightVelocityInInchesPerSecondReturnsVelocity() {
+		Constants.DRIVE_WHEEL_DIAMETER_INCHES = 1;
+		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION = 200;
+		when(this.frontRight.getSpeed()).thenReturn(200D);
+		assertEquals(10*Math.PI, this.drive.getRightVelocityInchesPerSec(), 0.00001);
 	}
 
 	private void verifyTalons(double frontLeft, double frontRight, double backLeft, double backRight) {

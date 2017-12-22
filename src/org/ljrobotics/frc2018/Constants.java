@@ -33,6 +33,7 @@ public class Constants extends ConstantsBase{
 	public static double PATH_FOLLOING_GOAL_VEL_TOLERANCE = 12;
 	public static double DRIVE_MAX_SETPOINT;
 	public static double DRIVE_WHEEL_DIAMETER_INCHES;
+	public static int DRIVE_ENCODER_TICKS_PER_ROTATION;
 
 	public static double LOOPER_Dt;
 
