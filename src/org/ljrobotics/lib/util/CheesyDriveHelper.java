@@ -29,6 +29,15 @@ public class CheesyDriveHelper {
     private static final double QUICK_STOP_WEIGHT = 0.1;
     private static final double QUICK_STOP_SCALAR = 5.0;
 
+    private static CheesyDriveHelper instance;
+    
+    public static CheesyDriveHelper getInstance() {
+    	if(instance == null) {
+    		instance = new CheesyDriveHelper();
+    	}
+    	return instance;
+    }
+    
     private double oldWheel = 0.0;
     private double quickStopAccumulator = 0.0;
     private double negInertiaAccumulator = 0.0;

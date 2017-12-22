@@ -2,7 +2,8 @@ package org.ljrobotics.frc2018.commands;
 
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.subsystems.Drive;
-import org.ljrobotics.frc2018.utils.Motion;
+import org.ljrobotics.lib.util.CheesyDriveHelper;
+import org.ljrobotics.lib.util.DriveSignal;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -23,9 +24,10 @@ public class JoystickDrive extends Command {
 	}
 
 	protected void execute() {
-		double y = -this.joystick.getRawAxis(1)*this.multiplier;
-		double rotation = this.joystick.getRawAxis(2)*this.multiplier;
-		Drive.getInstance().move(new Motion(y,rotation));
+		double power = -this.joystick.getRawAxis(1)*this.multiplier;
+		double wheel = this.joystick.getRawAxis(2)*this.multiplier;
+		DriveSignal driveSignal = CheesyDriveHelper.getInstance().cheesyDrive(power, wheel, false, false);
+		Drive.getInstance().move(driveSignal);
 	}
 
 	protected void end() {

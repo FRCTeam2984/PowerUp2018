@@ -1,7 +1,5 @@
 package org.ljrobotics.frc2018.subsystems;
 
-import static java.lang.Math.abs;
-
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.commands.JoystickDrive;
 import org.ljrobotics.frc2018.loops.Looper;
