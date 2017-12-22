@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.ljrobotics.frc2018.Constants;
-import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.vision.TargetInfo;
 import org.ljrobotics.lib.util.DummyFPGATimer;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Translation2d;
+import org.ljrobotics.lib.util.math.Twist2d;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -134,6 +134,46 @@ public class RobotStateTest {
 		double radians = Math.toRadians(10);
 		RigidTransform2d expectedTransform = createExpected(Math.cos(radians)*10, Math.sin(radians)*10, 0);
 		assertEquals(expectedTransform, actualTransform);
+	}
+	
+	@Test
+	public void generateOdometryFromSensorsReturnsZeroTwistWhenNoMotion() {
+		Twist2d expected = new Twist2d(0,0,0);
+		Twist2d actual = this.robotState.generateOdometryFromSensors(0, 0, new Rotation2d());
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void generateOdometryFromSensorsReturnsStaightForwardTwistWhenMoveingForward() {
+		Twist2d expected = new Twist2d(1,0,0);
+		Twist2d actual = this.robotState.generateOdometryFromSensors(1, 1, new Rotation2d());
+		assertEquals(expected, actual);
+		assertEquals(1, this.robotState.getDistanceDriven(), 0.00001);
+	}
+	
+	@Test
+	public void generateOdometryFromSensorsReturnsSpinTwistWhenMoveingInCircle() {
+		Twist2d expected = new Twist2d(0,0,1);
+		Twist2d actual = this.robotState.generateOdometryFromSensors(1, -1, Rotation2d.fromRadians(1));
+		assertEquals(expected, actual);
+		assertEquals(0, this.robotState.getDistanceDriven(), 0.00001);
+	}
+	
+	@Test
+	public void generateOdometryFromSensorsReturnsCurveAfterSecondCurvingMotion() {
+		Twist2d expected = new Twist2d(0.5,0,1);
+		this.robotState.addFieldToVehicleObservation(0, RigidTransform2d.fromRotation(Rotation2d.fromRadians(1)));
+		Twist2d actual = this.robotState.generateOdometryFromSensors(1, 0, Rotation2d.fromRadians(2));
+		assertEquals(expected, actual);
+		assertEquals(0.5, this.robotState.getDistanceDriven(), 0.00001);
+	}
+	
+	@Test
+	public void getPredictedFieldToVehicleExtrapolatesLastMotion() {
+		RigidTransform2d expected = RigidTransform2d.fromTranslation(new Translation2d(1,0));
+		this.robotState.addObservations(0, new Twist2d(0,0,0), new Twist2d(1,0,0));
+		RigidTransform2d actual = this.robotState.getPredictedFieldToVehicle(1);
+		assertEquals(expected, actual);
 	}
 	
 	private void setCameraConstants(double x, double y, double pitch, double yaw) {
