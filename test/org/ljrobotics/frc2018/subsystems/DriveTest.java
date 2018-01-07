@@ -132,8 +132,8 @@ public class DriveTest {
 
 	@Test
 	public void setBreakModeSetsBreakModeOnFirstCall() {
-		drive.setBrakeMode(false);
-		drive.setBrakeMode(false);
+		drive.setNeutralMode(false);
+		drive.setNeutralMode(false);
 		verify(this.frontLeft, times(2)).enableBrakeMode(false);
 		verify(this.frontRight, times(2)).enableBrakeMode(false);
 		verify(this.backLeft, times(2)).enableBrakeMode(false);
@@ -142,8 +142,8 @@ public class DriveTest {
 
 	@Test
 	public void setBreakModeSetsBreakModeAfterToggle() {
-		drive.setBrakeMode(false);
-		drive.setBrakeMode(true);
+		drive.setNeutralMode(false);
+		drive.setNeutralMode(true);
 		verify(this.frontLeft, times(2)).enableBrakeMode(true);
 		verify(this.frontRight, times(2)).enableBrakeMode(true);
 		verify(this.backLeft, times(2)).enableBrakeMode(true);
