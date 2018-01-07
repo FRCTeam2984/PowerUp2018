@@ -1,5 +1,6 @@
 package org.ljrobotics.lib.util.drivers;
 
+import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -11,6 +12,11 @@ public class LazyCANTalon extends TalonSRX {
     protected double lastSet = Double.NaN;
     protected ControlMode lastControlMode = null;
 
+    public LazyCANTalon(int deviceNumber, int framePeriod) {
+        super(deviceNumber);
+        this.setControlFramePeriod(ControlFrame.Control_3_General, framePeriod);
+    }
+    
     public LazyCANTalon(int deviceNumber) {
         super(deviceNumber);
     }
