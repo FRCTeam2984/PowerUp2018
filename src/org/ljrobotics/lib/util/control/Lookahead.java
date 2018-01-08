@@ -4,25 +4,25 @@ package org.ljrobotics.lib.util.control;
  * A utility class for interpolating lookahead distance based on current speed.
  */
 public class Lookahead {
-    public final double min_distance;
-    public final double max_distance;
-    public final double min_speed;
-    public final double max_speed;
+    public final double minDistance;
+    public final double maxDistance;
+    public final double minSpeed;
+    public final double maxSpeed;
 
-    protected final double delta_distance;
-    protected final double delta_speed;
+    protected final double deltaDistance;
+    protected final double deltaSpeed;
 
-    public Lookahead(double min_distance, double max_distance, double min_speed, double max_speed) {
-        this.min_distance = min_distance;
-        this.max_distance = max_distance;
-        this.min_speed = min_speed;
-        this.max_speed = max_speed;
-        delta_distance = max_distance - min_distance;
-        delta_speed = max_speed - min_speed;
+    public Lookahead(double minDistance, double maxDistance, double minSpeed, double maxSpeed) {
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
+        this.minSpeed = minSpeed;
+        this.maxSpeed = maxSpeed;
+        deltaDistance = maxDistance - minDistance;
+        deltaSpeed = maxSpeed - minSpeed;
     }
 
     public double getLookaheadForSpeed(double speed) {
-        double lookahead = delta_distance * (speed - min_speed) / delta_speed + min_distance;
-        return Double.isNaN(lookahead) ? min_distance : Math.max(min_distance, Math.min(max_distance, lookahead));
+        double lookahead = deltaDistance * (speed - minSpeed) / deltaSpeed + minDistance;
+        return Double.isNaN(lookahead) ? minDistance : Math.max(minDistance, Math.min(maxDistance, lookahead));
     }
 }

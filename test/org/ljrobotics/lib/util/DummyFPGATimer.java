@@ -18,7 +18,7 @@ public class DummyFPGATimer implements StaticInterface{
 
 		@Override
 		public double get() {
-			return 0;
+			return fPGATimestamp;
 		}
 
 		@Override

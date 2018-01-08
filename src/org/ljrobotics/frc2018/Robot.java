@@ -2,6 +2,7 @@
 package org.ljrobotics.frc2018;
 
 import org.ljrobotics.frc2018.loops.Looper;
+import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.loops.VisionProcessor;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
@@ -65,6 +66,7 @@ public class Robot extends IterativeRobot {
 			
 			this.subsystemManager.registerEnabledLoops(this.looper);
 			this.looper.register(VisionProcessor.getInstance());
+			this.looper.register(RobotStateEstimator.getInstance());
 			
 			this.visionServer.addVisionUpdateReceiver(VisionProcessor.getInstance());
 		} catch( Throwable throwable) {

@@ -33,6 +33,7 @@ public class Constants extends ConstantsBase{
 	public static double PATH_FOLLOING_GOAL_VEL_TOLERANCE = 12;
 	public static double DRIVE_MAX_SETPOINT;
 	public static double DRIVE_WHEEL_DIAMETER_INCHES;
+	public static int DRIVE_ENCODER_TICKS_PER_ROTATION;
 
 	public static double LOOPER_Dt;
 
@@ -42,6 +43,8 @@ public class Constants extends ConstantsBase{
 	public static final int FRONT_RIGHT_MOTOR_ID = 0x1;
 	public static final int REAR_LEFT_MOTOR_ID =   0x2;
 	public static final int REAR_RIGHT_MOTOR_ID =  0x3;
+
+	public static double EQUALS_EPSILON = 0.00001;
 
 	public static int JOYSTICK_DRIVE_ID =  0x1;
 
@@ -57,7 +60,7 @@ public class Constants extends ConstantsBase{
 
 	@Override
 	public String getFileLocation() {
-		// TODO Auto-generated method stub
+		// TODO Fill in file once a location is chosen
 		return null;
 	}
 

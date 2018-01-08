@@ -58,9 +58,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
-	//Sensors
-	private Gyro gyro;
 
+<<<<<<< HEAD
 	// The drive loop definition
 	private class DriveLoop implements Loop {
 		
@@ -90,6 +89,10 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 	// The local drive loop
 	private DriveLoop driveLoop = new DriveLoop(); 
+=======
+	//Sensors
+	private Gyro gyro;
+>>>>>>> 1f1dc27fc1bd49b33441586d1391aa0a9bfcf15c
 	
 	// Talons
 	private CANTalon leftMaster;
