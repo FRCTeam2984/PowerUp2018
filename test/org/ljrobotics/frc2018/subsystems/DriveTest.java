@@ -28,19 +28,20 @@ import org.ljrobotics.lib.util.math.Translation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
 import org.mockito.ArgumentCaptor;
 
-import com.ctre.CANTalon;
-import com.ctre.CANTalon.TalonControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTablesJNIWorkaround;
 import edu.wpi.first.wpilibj.HLUsageReporting;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class DriveTest {
 
 	private Drive drive;
-	private CANTalon frontLeft;
-	private CANTalon frontRight;
-	private CANTalon backLeft;
-	private CANTalon backRight;
+	private TalonSRX frontLeft;
+	private TalonSRX frontRight;
+	private TalonSRX backLeft;
+	private TalonSRX backRight;
 
 	private RobotState robotState;
 	private Gyro gyro;
@@ -48,14 +49,15 @@ public class DriveTest {
 	static {
 		// prevents exception during test
 		HLUsageReporting.SetImplementation(new DummyReporter());
+		NetworkTablesJNIWorkaround.applyWorkaround();
 	}
 
 	@Before
 	public void before() {
-		frontLeft = mock(CANTalon.class);
-		frontRight = mock(CANTalon.class);
-		backLeft = mock(CANTalon.class);
-		backRight = mock(CANTalon.class);
+		frontLeft = mock(TalonSRX.class);
+		frontRight = mock(TalonSRX.class);
+		backLeft = mock(TalonSRX.class);
+		backRight = mock(TalonSRX.class);
 
 		robotState = mock(RobotState.class);
 		gyro = mock(Gyro.class);
@@ -116,38 +118,25 @@ public class DriveTest {
 		drive.setOpenLoop(new DriveSignal(-10, -5));
 		verifyTalons(-1, -1, 0, 0);
 	}
-	
-	@Test
-	public void setOpenLoopSetsToOpenLoopMode() {
-		drive.setOpenLoop(DriveSignal.NEUTRAL);
-		verify(this.frontLeft, times(1)).changeControlMode(TalonControlMode.PercentVbus);
-	}
-	
-	@Test
-	public void setOpenLoopSetsToOpenLoopAfterBeingSetToPathFollowing() {
-		drive.setWantDrivePath(null, false);
-		drive.setOpenLoop(DriveSignal.NEUTRAL);
-		verify(this.frontLeft, times(2)).changeControlMode(TalonControlMode.PercentVbus);
-	}
 
 	@Test
 	public void setBreakModeSetsBreakModeOnFirstCall() {
-		drive.setNeutralMode(false);
-		drive.setNeutralMode(false);
-		verify(this.frontLeft, times(2)).enableBrakeMode(false);
-		verify(this.frontRight, times(2)).enableBrakeMode(false);
-		verify(this.backLeft, times(2)).enableBrakeMode(false);
-		verify(this.backRight, times(2)).enableBrakeMode(false);
+		drive.setNeutralMode(NeutralMode.Coast);
+		drive.setNeutralMode(NeutralMode.Coast);
+		verify(this.frontLeft, times(2)).setNeutralMode(NeutralMode.Coast);
+		verify(this.frontRight, times(2)).setNeutralMode(NeutralMode.Coast);
+		verify(this.backLeft, times(2)).setNeutralMode(NeutralMode.Coast);
+		verify(this.backRight, times(2)).setNeutralMode(NeutralMode.Coast);
 	}
 
 	@Test
 	public void setBreakModeSetsBreakModeAfterToggle() {
-		drive.setNeutralMode(false);
-		drive.setNeutralMode(true);
-		verify(this.frontLeft, times(2)).enableBrakeMode(true);
-		verify(this.frontRight, times(2)).enableBrakeMode(true);
-		verify(this.backLeft, times(2)).enableBrakeMode(true);
-		verify(this.backRight, times(2)).enableBrakeMode(true);
+		drive.setNeutralMode(NeutralMode.Coast);
+		drive.setNeutralMode(NeutralMode.Brake);
+		verify(this.frontLeft, times(2)).setNeutralMode(NeutralMode.Brake);
+		verify(this.frontRight, times(2)).setNeutralMode(NeutralMode.Brake);
+		verify(this.backLeft, times(2)).setNeutralMode(NeutralMode.Brake);
+		verify(this.backRight, times(2)).setNeutralMode(NeutralMode.Brake);
 	}
 
 	@Test
@@ -205,7 +194,7 @@ public class DriveTest {
 	public void getLeftVelocityInInchesPerSecondReturnsVelocity() {
 		Constants.DRIVE_WHEEL_DIAMETER_INCHES = 1;
 		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION = 200;
-		when(this.frontLeft.getSpeed()).thenReturn(200D);
+		when(this.frontLeft.getSelectedSensorVelocity(0)).thenReturn(200);
 		assertEquals(10*Math.PI, this.drive.getLeftVelocityInchesPerSec(), 0.00001);
 	}
 	
@@ -213,22 +202,22 @@ public class DriveTest {
 	public void getRightVelocityInInchesPerSecondReturnsVelocity() {
 		Constants.DRIVE_WHEEL_DIAMETER_INCHES = 1;
 		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION = 200;
-		when(this.frontRight.getSpeed()).thenReturn(200D);
+		when(this.frontRight.getSelectedSensorVelocity(0)).thenReturn(200);
 		assertEquals(10*Math.PI, this.drive.getRightVelocityInchesPerSec(), 0.00001);
 	}
 
 	private void verifyTalons(double frontLeft, double frontRight, double backLeft, double backRight) {
 		final ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-		verify(this.frontLeft).set(captor.capture());
+		verify(this.frontLeft).set(null, captor.capture());
 		assertEquals(frontLeft, (double) captor.getValue(), 0.00001);
 
-		verify(this.frontRight).set(captor.capture());
+		verify(this.frontRight).set(null, captor.capture());
 		assertEquals(frontRight, (double) captor.getValue(), 0.00001);
 
-		verify(this.backLeft).set(captor.capture());
+		verify(this.backLeft).set(null, captor.capture());
 		assertEquals(backLeft, (double) captor.getValue(), 0.00001);
 
-		verify(this.backRight).set(captor.capture());
+		verify(this.backRight).set(null, captor.capture());
 		assertEquals(backRight, (double) captor.getValue(), 0.00001);
 	}
 
