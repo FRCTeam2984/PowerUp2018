@@ -27,11 +27,12 @@ import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Translation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.Mockito.eq;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.networktables.NetworkTablesJNIWorkaround;
 import edu.wpi.first.wpilibj.HLUsageReporting;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
@@ -49,7 +50,6 @@ public class DriveTest {
 	static {
 		// prevents exception during test
 		HLUsageReporting.SetImplementation(new DummyReporter());
-		NetworkTablesJNIWorkaround.applyWorkaround();
 	}
 
 	@Before
@@ -68,55 +68,55 @@ public class DriveTest {
 	@Test
 	public void stopSetsTalonsToZero() {
 		drive.stop();
-		verifyTalons(0, 0, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, 0, 0);
 	}
 
 	@Test
 	public void setOpenLoopWithPotitiveY() {
 		drive.setOpenLoop(new DriveSignal(1, 1));
-		verifyTalons(1, 1, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, 1, 1);
 	}
 
 	@Test
 	public void setOpenLoopWithNegativeY() {
 		drive.setOpenLoop(new DriveSignal(-1, -1));
-		verifyTalons(-1, -1, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, -1, -1);
 	}
 
 	@Test
 	public void setOpenLoopWithPotitiveRotation() {
 		drive.setOpenLoop(new DriveSignal(1, -1));
-		verifyTalons(1, -1, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, 1, -1);
 	}
 
 	@Test
 	public void setOpenLoopWithNegativeRotation() {
 		drive.setOpenLoop(new DriveSignal(-1, 1));
-		verifyTalons(-1, 1, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, -1, 1);
 	}
 
 	@Test
 	public void setOpenLoopWithPositiveYAndRotation() {
 		drive.setOpenLoop(new DriveSignal(1, 0));
-		verifyTalons(1, 0, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, 1, 0);
 	}
 
 	@Test
 	public void setOpenLoopWithNegativeYAndRotation() {
 		drive.setOpenLoop(new DriveSignal(-1, 0));
-		verifyTalons(-1, 0, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, -1, 0);
 	}
 
 	@Test
 	public void setOpenLoopWithValuesOverOne() {
 		drive.setOpenLoop(new DriveSignal(10, 5));
-		verifyTalons(1, 1, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, 1, 1);
 	}
 
 	@Test
 	public void setOpenLoopWithValuesUnderOne() {
 		drive.setOpenLoop(new DriveSignal(-10, -5));
-		verifyTalons(-1, -1, 0, 0);
+		verifyTalons(ControlMode.PercentOutput, -1, -1);
 	}
 
 	@Test
@@ -206,19 +206,13 @@ public class DriveTest {
 		assertEquals(10*Math.PI, this.drive.getRightVelocityInchesPerSec(), 0.00001);
 	}
 
-	private void verifyTalons(double frontLeft, double frontRight, double backLeft, double backRight) {
+	private void verifyTalons(ControlMode mode, double frontLeft, double frontRight) {
 		final ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-		verify(this.frontLeft).set(null, captor.capture());
+		verify(this.frontLeft).set(eq(mode), captor.capture());
 		assertEquals(frontLeft, (double) captor.getValue(), 0.00001);
 
-		verify(this.frontRight).set(null, captor.capture());
+		verify(this.frontRight).set(eq(mode), captor.capture());
 		assertEquals(frontRight, (double) captor.getValue(), 0.00001);
-
-		verify(this.backLeft).set(null, captor.capture());
-		assertEquals(backLeft, (double) captor.getValue(), 0.00001);
-
-		verify(this.backRight).set(null, captor.capture());
-		assertEquals(backRight, (double) captor.getValue(), 0.00001);
 	}
 
 }

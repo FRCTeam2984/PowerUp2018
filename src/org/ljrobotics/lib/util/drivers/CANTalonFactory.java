@@ -75,7 +75,6 @@ public class CANTalonFactory {
     }
     
     public static void updateCANTalon(TalonSRX talon, Configuration config) {
-    	talon.set(ControlMode.PercentOutput, 0);
         talon.changeMotionControlFramePeriod(config.MOTION_CONTROL_FRAME_PERIOD_MS);
         talon.setIntegralAccumulator(0, 0, 0);
         talon.clearMotionProfileHasUnderrun(0);
