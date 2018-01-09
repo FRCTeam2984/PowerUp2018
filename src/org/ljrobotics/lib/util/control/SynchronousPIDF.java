@@ -5,35 +5,37 @@ import edu.wpi.first.wpilibj.util.BoundaryException;
 /**
  * This class implements a PID Control Loop.
  * 
- * Does all computation synchronously (i.e. the calculate() function must be called by the user from his own thread)
+ * Does all computation synchronously (i.e. the calculate() function must be
+ * called by the user from his own thread)
  */
 public class SynchronousPIDF {
-    private double m_P; // factor for "proportional" control
-    private double m_I; // factor for "integral" control
-    private double m_D; // factor for "derivative" control
-    private double m_F; // factor for feed forward gain
-    private double m_maximumOutput = 1.0; // |maximum output|
-    private double m_minimumOutput = -1.0; // |minimum output|
-    private double m_maximumInput = 0.0; // maximum input - limit setpoint to
+    private double pConstant; // factor for "proportional" control
+    private double iConstant; // factor for "integral" control
+    private double dConstant; // factor for "derivative" control
+    private double fConstant; // factor for feed forward gain
+    private double maximumOutput = 1.0; // |maximum output|
+    private double minimumOutput = -1.0; // |minimum output|
+    private double maximumInput = 0.0; // maximum input - limit setpoint to
                                          // this
-    private double m_minimumInput = 0.0; // minimum input - limit setpoint to
+    private double minimumInput = 0.0; // minimum input - limit setpoint to
                                          // this
-    private boolean m_continuous = false; // do the endpoints wrap around? eg.
+    private boolean continuous = false; // do the endpoints wrap around? eg.
                                           // Absolute encoder
-    private double m_prevError = 0.0; // the prior sensor input (used to compute
+    private double prevError = 0.0; // the prior sensor input (used to compute
                                       // velocity)
-    private double m_totalError = 0.0; // the sum of the errors for use in the
+    private double totalError = 0.0; // the sum of the errors for use in the
                                        // integral calc
-    private double m_setpoint = 0.0;
-    private double m_error = 0.0;
-    private double m_result = 0.0;
-    private double m_last_input = Double.NaN;
-    private double m_deadband = 0.0; // If the absolute error is less than
+    private double setpoint = 0.0;
+    private double error = 0.0;
+    private double result = 0.0;
+    private double lastInput = Double.NaN;
+    private double deadband = 0.0; // If the absolute error is less than
                                      // deadband
                                      // then treat error for the proportional
                                      // term as 0
 
     public SynchronousPIDF() {
+    	this(0,0,0);
     }
 
     /**
@@ -47,10 +49,7 @@ public class SynchronousPIDF {
      *            the derivative coefficient
      */
     public SynchronousPIDF(double Kp, double Ki, double Kd) {
-        m_P = Kp;
-        m_I = Ki;
-        m_D = Kd;
-        m_F = 0;
+        this(Kp, Ki, Kd, 0);
     }
 
     /**
@@ -66,90 +65,90 @@ public class SynchronousPIDF {
      *            the feed forward gain coefficient
      */
     public SynchronousPIDF(double Kp, double Ki, double Kd, double Kf) {
-        m_P = Kp;
-        m_I = Ki;
-        m_D = Kd;
-        m_F = Kf;
+        pConstant = Kp;
+        iConstant = Ki;
+        dConstant = Kd;
+        fConstant = Kf;
     }
 
-    /**
-     * Read the input, calculate the output accordingly, and write to the output. This should be called at a constant
-     * rate by the user (ex. in a timed thread)
-     *
-     * @param input
-     *            the input
-     * @param dt
-     *            time passed since previous call to calculate
-     */
+	/**
+	 * Read the input, calculate the output accordingly, and write to the output.
+	 * This should be called at a constant rate by the user (ex. in a timed thread)
+	 *
+	 * @param input
+	 *            the input
+	 * @param dt
+	 *            time passed since previous call to calculate
+	 */
     public double calculate(double input, double dt) {
         if (dt < 1E-6)
             dt = 1E-6;
-        m_last_input = input;
-        m_error = m_setpoint - input;
-        if (m_continuous) {
-            if (Math.abs(m_error) > (m_maximumInput - m_minimumInput) / 2) {
-                if (m_error > 0) {
-                    m_error = m_error - m_maximumInput + m_minimumInput;
+        lastInput = input;
+        error = setpoint - input;
+        if (continuous) {
+            if (Math.abs(error) > (maximumInput - minimumInput) / 2) {
+                if (error > 0) {
+                    error = error - maximumInput + minimumInput;
                 } else {
-                    m_error = m_error + m_maximumInput - m_minimumInput;
+                    error = error + maximumInput - minimumInput;
                 }
             }
         }
 
-        if ((m_error * m_P < m_maximumOutput) && (m_error * m_P > m_minimumOutput)) {
-            m_totalError += m_error * dt;
+        if ((error * pConstant < maximumOutput) && (error * pConstant > minimumOutput)) {
+            totalError += error * dt;
         } else {
-            m_totalError = 0;
+            totalError = 0;
         }
 
         // Don't blow away m_error so as to not break derivative
-        double proportionalError = Math.abs(m_error) < m_deadband ? 0 : m_error;
+        double proportionalError = Math.abs(error) < deadband ? 0 : error;
 
-        m_result = (m_P * proportionalError + m_I * m_totalError + m_D * (m_error - m_prevError) / dt
-                + m_F * m_setpoint);
-        m_prevError = m_error;
+        result = (pConstant * proportionalError + iConstant * totalError + dConstant * (error - prevError) / dt
+                + fConstant * setpoint);
+        prevError = error;
 
-        if (m_result > m_maximumOutput) {
-            m_result = m_maximumOutput;
-        } else if (m_result < m_minimumOutput) {
-            m_result = m_minimumOutput;
+        if (result > maximumOutput) {
+            result = maximumOutput;
+        } else if (result < minimumOutput) {
+            result = minimumOutput;
         }
-        return m_result;
+        return result;
     }
 
-    /**
-     * Set the PID controller gain parameters. Set the proportional, integral, and differential coefficients.
-     *
-     * @param p
-     *            Proportional coefficient
-     * @param i
-     *            Integral coefficient
-     * @param d
-     *            Differential coefficient
-     */
+	/**
+	 * Set the PID controller gain parameters. Set the proportional, integral, and
+	 * differential coefficients.
+	 *
+	 * @param p
+	 *            Proportional coefficient
+	 * @param i
+	 *            Integral coefficient
+	 * @param d
+	 *            Differential coefficient
+	 */
     public void setPID(double p, double i, double d) {
-        m_P = p;
-        m_I = i;
-        m_D = d;
+        this.setPID(p, i, d, this.fConstant);
     }
 
-    /**
-     * Set the PID controller gain parameters. Set the proportional, integral, and differential coefficients.
-     *
-     * @param p
-     *            Proportional coefficient
-     * @param i
-     *            Integral coefficient
-     * @param d
-     *            Differential coefficient
-     * @param f
-     *            Feed forward coefficient
-     */
+	/**
+	 * Set the PID controller gain parameters. Set the proportional, integral, and
+	 * differential coefficients.
+	 *
+	 * @param p
+	 *            Proportional coefficient
+	 * @param i
+	 *            Integral coefficient
+	 * @param d
+	 *            Differential coefficient
+	 * @param f
+	 *            Feed forward coefficient
+	 */
     public void setPID(double p, double i, double d, double f) {
-        m_P = p;
-        m_I = i;
-        m_D = d;
-        m_F = f;
+        pConstant = p;
+        iConstant = i;
+        dConstant = d;
+        fConstant = f;
     }
 
     /**
@@ -158,7 +157,7 @@ public class SynchronousPIDF {
      * @return proportional coefficient
      */
     public double getP() {
-        return m_P;
+        return pConstant;
     }
 
     /**
@@ -167,7 +166,7 @@ public class SynchronousPIDF {
      * @return integral coefficient
      */
     public double getI() {
-        return m_I;
+        return iConstant;
     }
 
     /**
@@ -176,7 +175,7 @@ public class SynchronousPIDF {
      * @return differential coefficient
      */
     public double getD() {
-        return m_D;
+        return dConstant;
     }
 
     /**
@@ -185,38 +184,41 @@ public class SynchronousPIDF {
      * @return feed forward coefficient
      */
     public double getF() {
-        return m_F;
+        return fConstant;
     }
 
-    /**
-     * Return the current PID result This is always centered on zero and constrained the the max and min outs
-     *
-     * @return the latest calculated output
-     */
+	/**
+	 * Return the current PID result This is always centered on zero and constrained
+	 * the the max and min outs
+	 *
+	 * @return the latest calculated output
+	 */
     public double get() {
-        return m_result;
+        return result;
     }
 
-    /**
-     * Set the PID controller to consider the input to be continuous, Rather then using the max and min in as
-     * constraints, it considers them to be the same point and automatically calculates the shortest route to the
-     * setpoint.
-     *
-     * @param continuous
-     *            Set to true turns on continuous, false turns off continuous
-     */
+	/**
+	 * Set the PID controller to consider the input to be continuous, Rather then
+	 * using the max and min in as constraints, it considers them to be the same
+	 * point and automatically calculates the shortest route to the setpoint.
+	 * 
+	 * This will cause the controller to wrap around as is the case with positioning
+	 * a turret. Instead of going from 350 to 0 degrees the long way it will go the
+	 * short way.
+	 *
+	 * @param continuous
+	 *            Set to true turns on continuous, false turns off continuous
+	 */
     public void setContinuous(boolean continuous) {
-        m_continuous = continuous;
+        this.continuous = continuous;
     }
 
     public void setDeadband(double deadband) {
-        m_deadband = deadband;
+        this.deadband = deadband;
     }
 
     /**
-     * Set the PID controller to consider the input to be continuous, Rather then using the max and min in as
-     * constraints, it considers them to be the same point and automatically calculates the shortest route to the
-     * setpoint.
+     * shorthand for {@link #setContinuous(boolean) setContinous(true)}
      */
     public void setContinuous() {
         this.setContinuous(true);
@@ -234,9 +236,9 @@ public class SynchronousPIDF {
         if (minimumInput > maximumInput) {
             throw new BoundaryException("Lower bound is greater than upper bound");
         }
-        m_minimumInput = minimumInput;
-        m_maximumInput = maximumInput;
-        setSetpoint(m_setpoint);
+        this.minimumInput = minimumInput;
+        this.maximumInput = maximumInput;
+        setSetpoint(setpoint);
     }
 
     /**
@@ -251,8 +253,8 @@ public class SynchronousPIDF {
         if (minimumOutput > maximumOutput) {
             throw new BoundaryException("Lower bound is greater than upper bound");
         }
-        m_minimumOutput = minimumOutput;
-        m_maximumOutput = maximumOutput;
+        this.minimumOutput = minimumOutput;
+        this.maximumOutput = maximumOutput;
     }
 
     /**
@@ -262,16 +264,16 @@ public class SynchronousPIDF {
      *            the desired setpoint
      */
     public void setSetpoint(double setpoint) {
-        if (m_maximumInput > m_minimumInput) {
-            if (setpoint > m_maximumInput) {
-                m_setpoint = m_maximumInput;
-            } else if (setpoint < m_minimumInput) {
-                m_setpoint = m_minimumInput;
+        if (maximumInput > minimumInput) {
+            if (setpoint > maximumInput) {
+                this.setpoint = maximumInput;
+            } else if (setpoint < minimumInput) {
+                this.setpoint = minimumInput;
             } else {
-                m_setpoint = setpoint;
+                this.setpoint = setpoint;
             }
         } else {
-            m_setpoint = setpoint;
+            this.setpoint = setpoint;
         }
     }
 
@@ -281,7 +283,7 @@ public class SynchronousPIDF {
      * @return the current setpoint
      */
     public double getSetpoint() {
-        return m_setpoint;
+        return setpoint;
     }
 
     /**
@@ -290,7 +292,7 @@ public class SynchronousPIDF {
      * @return the current error
      */
     public double getError() {
-        return m_error;
+        return error;
     }
 
     /**
@@ -299,30 +301,30 @@ public class SynchronousPIDF {
      * @return true if the error is less than the tolerance
      */
     public boolean onTarget(double tolerance) {
-        return m_last_input != Double.NaN && Math.abs(m_last_input - m_setpoint) < tolerance;
+        return lastInput != Double.NaN && Math.abs(lastInput - setpoint) < tolerance;
     }
 
     /**
      * Reset all internal terms.
      */
     public void reset() {
-        m_last_input = Double.NaN;
-        m_prevError = 0;
-        m_totalError = 0;
-        m_result = 0;
-        m_setpoint = 0;
+        lastInput = Double.NaN;
+        prevError = 0;
+        totalError = 0;
+        result = 0;
+        setpoint = 0;
     }
 
     public void resetIntegrator() {
-        m_totalError = 0;
+        totalError = 0;
     }
 
     public String getState() {
         String lState = "";
 
-        lState += "Kp: " + m_P + "\n";
-        lState += "Ki: " + m_I + "\n";
-        lState += "Kd: " + m_D + "\n";
+        lState += "Kp: " + pConstant + "\n";
+        lState += "Ki: " + iConstant + "\n";
+        lState += "Kd: " + dConstant + "\n";
 
         return lState;
     }

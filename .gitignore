@@ -1,3 +1,9 @@
+# Meld files after fixing merge 
+*.orig
+
+# Eclipse settings
+.settings/
+
 # Compiled class file
 *.class
 

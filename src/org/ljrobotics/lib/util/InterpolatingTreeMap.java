@@ -4,8 +4,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Interpolating Tree Maps are used to get values at points that are not defined by making a guess from points that are
- * defined. This uses linear interpolation.
+ * Interpolating Tree Maps are used to get values at points that are not defined
+ * by making a guess from points that are defined. This uses linear
+ * interpolation.
  * 
  * @param <K>
  *            The type of the key (must implement InverseInterpolable)
@@ -16,10 +17,10 @@ public class InterpolatingTreeMap<K extends InverseInterpolable<K> & Comparable<
         extends TreeMap<K, V> {
     private static final long serialVersionUID = 8347275262778054124L;
 
-    int max_;
+    int maxSize;
 
     public InterpolatingTreeMap(int maximumSize) {
-        max_ = maximumSize;
+        maxSize = maximumSize;
     }
 
     public InterpolatingTreeMap() {
@@ -37,7 +38,7 @@ public class InterpolatingTreeMap<K extends InverseInterpolable<K> & Comparable<
      */
     @Override
     public V put(K key, V value) {
-        if (max_ > 0 && max_ <= size()) {
+        if (maxSize > 0 && maxSize <= size()) {
             // "Prune" the tree if it is oversize
             K first = firstKey();
             remove(first);
