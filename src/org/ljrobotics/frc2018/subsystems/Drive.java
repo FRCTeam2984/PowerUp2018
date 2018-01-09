@@ -2,6 +2,7 @@ package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.commands.JoystickDrive;
+import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.state.Kinematics;
 import org.ljrobotics.frc2018.state.RobotState;
@@ -59,9 +60,38 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
-
-	// Sensors
+	//Sensors
 	private Gyro gyro;
+
+	// The drive loop definition
+	private class DriveLoop implements Loop {
+
+		public void onStart( double timestamp ) {
+
+		}
+
+		public void onLoop( double timestamp ) {
+			switch( driveControlState  ) {
+			case VELOCITY_SETPOINT:
+				//TODO add a way to get the left and right inches per second
+				//updateVelocitySetpoint(left_inches_per_sec, right_inches_per_sec);
+				break;
+			case PATH_FOLLOWING:
+				//TODO add a write to CVS file function
+				updatePathFollower( timestamp );
+				break;
+			default:
+
+			}
+		}
+		
+		public void onStop( double timestamp ) {
+
+		}
+
+	}
+	// The local drive loop
+	private DriveLoop driveLoop = new DriveLoop();
 
 	// Talons
 	private TalonSRX leftMaster;
@@ -133,7 +163,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	public void registerEnabledLoops(Looper enabledLooper) {
-
+		enabledLooper.register(driveLoop);
 	}
 
 	public void setOpenLoop(DriveSignal driveSignal) {
@@ -294,10 +324,10 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Left Velocity", this.getLeftVelocityInchesPerSec());
 		SmartDashboard.putNumber("Right Velocity", this.getRightVelocityInchesPerSec());
-		
+
 		SmartDashboard.putNumber("Left Position", this.getLeftDistanceInches());
 		SmartDashboard.putNumber("Right Position", this.getRightDistanceInches());
-		
+
 		SmartDashboard.putNumber("Gyro Angle", this.getGyroAngle().getDegrees());
 	}
 
