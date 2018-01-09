@@ -17,4 +17,7 @@ After that click on "Add JARs" and select all the JARs in the libs folder. To do
 
 Finally hit "Apply and Close" to close out of this dialog.
 
+This completes adding of libraries excluding NetworkTables. To add network tables you must compile it, instructions can be found at [https://github.com/wpilibsuite/ntcore](https://github.com/wpilibsuite/ntcore). Once you have it compiled open reference libraries in the package explorer and right clock on networktables. Select native library location and browse to ntcore/build/libs/ntcoreJNI where ntcore is the git repository you cloned earlier. These package explorer is depicted below.
+![Package explorer](doc/NetworkTableNativs.png)
+
 Now you are all setup to start programming. Make sure to write unit tests for any code you write.
