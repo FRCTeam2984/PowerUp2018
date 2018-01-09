@@ -60,6 +60,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
+	
 	//Sensors
 	private Gyro gyro;
 
@@ -73,8 +74,6 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		public void onLoop( double timestamp ) {
 			switch( driveControlState  ) {
 			case VELOCITY_SETPOINT:
-				//TODO add a way to get the left and right inches per second
-				//updateVelocitySetpoint(left_inches_per_sec, right_inches_per_sec);
 				break;
 			case PATH_FOLLOWING:
 				//TODO add a write to CVS file function
@@ -339,8 +338,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	public void zeroSensors() {
-		// TODO Auto-generated method stub
-
+		this.leftMaster.setSelectedSensorPosition(0, 0, 0);
+		this.rightMaster.setSelectedSensorPosition(0, 0, 0);
+		this.gyro.calibrate();
 	}
 
 	@Override
