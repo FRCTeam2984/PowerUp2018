@@ -46,7 +46,7 @@ public class Constants extends ConstantsBase{
 	
 	public static double EQUALS_EPSILON = 0.00001;
 
-	public static int JOYSTICK_DRIVE_ID =  0x1;
+	public static int JOYSTICK_DRIVE_ID =  0x0;
 
 	//Camera position and rotation
 	public static double CAMERA_X_OFFSET = 0; //From wheelbase center, looking down
