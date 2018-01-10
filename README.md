@@ -22,3 +22,10 @@ This completes adding of libraries excluding NetworkTables. To add network table
 ![Package explorer](doc/NetworkTableNativs.png)
 
 Now you are all setup to start programming. Make sure to write unit tests for any code you write.
+
+To upload:
+Connect to the roborio with usb
+
+Run nm-connection-editor if it doesn't connect to wired automatically
+
+Click 'run as WPILib deploy'
