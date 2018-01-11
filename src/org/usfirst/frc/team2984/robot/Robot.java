@@ -1,12 +1,14 @@
 
-package org.ljrobotics.frc2018;
+package org.usfirst.frc.team2984.robot;
 
+import org.ljrobotics.frc2018.OI;
+import org.ljrobotics.frc2018.SubsystemManager;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.loops.VisionProcessor;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
-import org.ljrobotics.frc2018.vision.VisionServer;
+//import org.ljrobotics.frc2018.vision.VisionServer;
 import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 
@@ -36,7 +38,7 @@ public class Robot extends IterativeRobot {
 	
 	private SubsystemManager subsystemManager;
 	
-	private VisionServer visionServer;
+//	private VisionServer visionServer;
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
@@ -45,7 +47,7 @@ public class Robot extends IterativeRobot {
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.looper = new Looper();
-		this.visionServer = VisionServer.getInstance();
+//		this.visionServer = VisionServer.getInstance();
 		
 		this.subsystemManager = new SubsystemManager(this.drive);
 		
@@ -65,10 +67,10 @@ public class Robot extends IterativeRobot {
 			oi = OI.getInstance();
 			
 			this.subsystemManager.registerEnabledLoops(this.looper);
-			this.looper.register(VisionProcessor.getInstance());
+//			this.looper.register(VisionProcessor.getInstance());
 			this.looper.register(RobotStateEstimator.getInstance());
 			
-			this.visionServer.addVisionUpdateReceiver(VisionProcessor.getInstance());
+//			this.visionServer.addVisionUpdateReceiver(VisionProcessor.getInstance());
 		} catch( Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -182,6 +184,6 @@ public class Robot extends IterativeRobot {
 		this.subsystemManager.outputToSmartDashboard();
 		this.subsystemManager.writeToLog();
 		this.looper.outputToSmartDashboard();
-        SmartDashboard.putBoolean("cameraConnected", this.visionServer.isConnected());
+//        SmartDashboard.putBoolean("cameraConnected", this.visionServer.isConnected());
 	}
 }

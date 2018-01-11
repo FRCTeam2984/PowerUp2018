@@ -141,7 +141,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		CANTalonFactory.updateCANTalonToDefault(this.rightMaster);
 
 		CANTalonFactory.updatePermanentSlaveTalon(this.rightSlave, this.rightMaster.getDeviceID());
-		leftMaster.getStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5);
+		rightMaster.getStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5);
+		rightMaster.setInverted(true);
 
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
