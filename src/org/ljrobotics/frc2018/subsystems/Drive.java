@@ -18,6 +18,7 @@ import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -143,6 +144,10 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		CANTalonFactory.updatePermanentSlaveTalon(this.rightSlave, this.rightMaster.getDeviceID());
 		rightMaster.getStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5);
 		rightMaster.setInverted(true);
+		
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+
 
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
