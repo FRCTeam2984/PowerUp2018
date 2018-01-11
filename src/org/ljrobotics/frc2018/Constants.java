@@ -1,8 +1,33 @@
+/*
+           _____                    _____                    _____          
+         /\    \                  /\    \                  /\    \         
+        /::\    \                /::\    \                /::\    \        
+       /::::\    \              /::::\    \              /::::\    \       
+      /::::::\    \            /::::::\    \            /::::::\    \      
+     /:::/\:::\    \          /:::/\:::\    \          /:::/\:::\    \     
+    /:::/__\:::\    \        /:::/__\:::\    \        /:::/  \:::\    \    
+   /::::\   \:::\    \      /::::\   \:::\    \      /:::/    \:::\    \   
+  /::::::\   \:::\    \    /::::::\   \:::\    \    /:::/    / \:::\    \  
+ /:::/\:::\   \:::\    \  /:::/\:::\   \:::\____\  /:::/    /   \:::\    \ 
+/:::/  \:::\   \:::\____\/:::/  \:::\   \:::|    |/:::/____/     \:::\____\
+\::/    \:::\   \::/    /\::/   |::::\  /:::|____|\:::\    \      \::/    /
+ \/____/ \:::\   \/____/  \/____|:::::\/:::/    /  \:::\    \      \/____/ 
+          \:::\    \            |:::::::::/    /    \:::\    \             
+           \:::\____\           |::|\::::/    /      \:::\    \            
+            \::/    /           |::| \::/____/        \:::\    \           
+             \/____/            |::|  ~|               \:::\    \          
+                                |::|   |                \:::\    \         
+                                \::|   |                 \:::\____\        
+                                 \:|   |                  \::/    /        
+                                  \|___|                   \/____/         
+                                                                          
+*/  
 package org.ljrobotics.frc2018;
 
 import org.ljrobotics.lib.util.ConstantsBase;
 
 public class Constants extends ConstantsBase{
+	// Path following configuration
 
 	public static double SEGMENT_COMPLETION_TOLERANCE = 0.1; //inches
 
@@ -12,7 +37,6 @@ public class Constants extends ConstantsBase{
 	public static double PATH_FOLLWOING_GOAL_POS_TOLERANCE = 0.75;
 	public static double PATH_FOLLOWING_GOAL_VEL_TOLERANCE = 12.0;
 	public static double PATH_STOP_STEERING_DISTANCE = 9.0;
-
 	public static double DRIVE_HIGH_GEAR_NOMINAL_OUTPUT = 0.5;
 
 	public static double TRACK_SCRUB_FACTOR = 0.924; //Corrective factor for skidding
@@ -35,20 +59,29 @@ public class Constants extends ConstantsBase{
 	public static double DRIVE_WHEEL_DIAMETER_INCHES;
 	public static int DRIVE_ENCODER_TICKS_PER_ROTATION;
 
+	// -----------------------------------------------------------------------------------------------
+	// Loopers
+	
 	public static double LOOPER_Dt;
+	// -----------------------------------------------------------------------------------------------
+	// Android configuration
 
 	public static int ANDROID_APP_TCP_PORT = 8254;
+	// -----------------------------------------------------------------------------------------------
+	// Motor configuration
 
+	public static int JOYSTICK_DRIVE_ID =  0x0;
 	public static final int FRONT_LEFT_MOTOR_ID =  12;
 	public static final int FRONT_RIGHT_MOTOR_ID = 10;
 	public static final int REAR_LEFT_MOTOR_ID =   23;
 	public static final int REAR_RIGHT_MOTOR_ID =  22;
-	
+	// -----------------------------------------------------------------------------------------------
+	// General
 	public static double EQUALS_EPSILON = 0.00001;
 
-	public static int JOYSTICK_DRIVE_ID =  0x0;
-
+	// -----------------------------------------------------------------------------------------------
 	//Camera position and rotation
+	
 	public static double CAMERA_X_OFFSET = 0; //From wheelbase center, looking down
 	public static double CAMERA_Y_OFFSET = 0; //From wheelbase center, looking down
 	public static double CAMERA_YAW = 0; //In degrees, + is anti-clockwise viewed from above
@@ -56,7 +89,8 @@ public class Constants extends ConstantsBase{
 	public static double MAX_TRACKER_DISTANCE = 18;
 	public static double MAX_GOAL_TRACK_AGE = 1;
 	public static double CAMERA_FRAME_RATE = 30;
-
+	// -----------------------------------------------------------------------------------------------
+	// File location
 
 	@Override
 	public String getFileLocation() {
