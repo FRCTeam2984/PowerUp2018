@@ -237,7 +237,7 @@ function init() {
         update();
     }
     imageFlipped = new Image();
-    imageFlipped.src = 'fieldflipped.png';
+    imageFlipped.src = 'field_flip.png';
     $('input').bind("change paste keyup", function() {
 		console.log("change");
 		clearTimeout(wto);
