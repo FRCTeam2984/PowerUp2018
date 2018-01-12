@@ -135,6 +135,9 @@ public class TestMath {
     @Test
     public void testTranslation2d() {
         // Test constructors
+    	Translation2d nullCheck = new Translation2d();
+    	assertTrue(nullCheck.equals(null));
+    	
         Translation2d pos1 = new Translation2d();
         assertEquals(0, pos1.x(), kTestEpsilon);
         assertEquals(0, pos1.y(), kTestEpsilon);
