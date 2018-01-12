@@ -34,7 +34,7 @@ public class Constants extends ConstantsBase{
 	public static double PATH_FOLLOWING_MAX_ACCEL = 120; //inches per second^2
 	public static double PATH_FOLLOWING_MAX_VEL = 120; //inches per second
 
-	public static double PATH_FOLLWOING_GOAL_POS_TOLERANCE = 0.75;
+	public static double PATH_FOLLOWING_GOAL_POS_TOLERANCE = 0.75;
 	public static double PATH_FOLLOWING_GOAL_VEL_TOLERANCE = 12.0;
 	public static double PATH_STOP_STEERING_DISTANCE = 9.0;
 	public static double DRIVE_HIGH_GEAR_NOMINAL_OUTPUT = 0.5;
@@ -48,13 +48,11 @@ public class Constants extends ConstantsBase{
 	public static double MIN_LOOK_AHEAD_SPEED = 9;
 	public static double MAX_LOOK_AHEAD_SPEED = 120;
 	public static double INERTIA_STEERING_GAIN = 0;
-	public static double PATH_FOLLWOING_PROFILE_Kp = 0.1;
-	public static double PATH_FOLLWOING_PROFILE_Ki = 0.002;
-	public static double PATH_FOLLWOING_PROFILE_Kv = 0.02;
-	public static double PATH_FOLLWOING_PROFILE_Kffv = 2.7;
-	public static double PATH_FOLLWOING_PROFILE_Kffa = 0.05;
-	public static double PATH_FOLLOING_GOAL_POS_TOLERANCE = 0.75;
-	public static double PATH_FOLLOING_GOAL_VEL_TOLERANCE = 12;
+	public static double PATH_FOLLOWING_PROFILE_Kp = 0.1;
+	public static double PATH_FOLLOWING_PROFILE_Ki = 0.002;
+	public static double PATH_FOLLOWING_PROFILE_Kv = 0.02;
+	public static double PATH_FOLLOWING_PROFILE_Kffv = 2.7;
+	public static double PATH_FOLLOWING_PROFILE_Kffa = 0.05;
 	public static double DRIVE_MAX_SETPOINT = 100; //Inches Per Second
 	public static double DRIVE_WHEEL_DIAMETER_INCHES = 6;
 	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 360;

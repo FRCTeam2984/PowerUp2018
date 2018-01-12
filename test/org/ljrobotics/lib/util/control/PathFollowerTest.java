@@ -27,7 +27,7 @@ public class PathFollowerTest {
             0.0, // Profile kffa
             Constants.PATH_FOLLOWING_MAX_VEL, // Profile max abs vel
             Constants.PATH_FOLLOWING_MAX_ACCEL, // Profile max abs accel
-            Constants.PATH_FOLLWOING_GOAL_POS_TOLERANCE,
+            Constants.PATH_FOLLOWING_GOAL_POS_TOLERANCE,
             Constants.PATH_FOLLOWING_GOAL_VEL_TOLERANCE,
             Constants.PATH_STOP_STEERING_DISTANCE
     );

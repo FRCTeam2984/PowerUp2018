@@ -150,8 +150,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		
-		configPID(leftMaster, Constants.PATH_FOLLWOING_PROFILE_Kp, Constants.PATH_FOLLWOING_PROFILE_Ki,
-				Constants.PATH_FOLLWOING_PROFILE_Kffv);
+		configPID(leftMaster, Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki,
+				Constants.PATH_FOLLOWING_PROFILE_Kffv);
 
 
 		this.driveControlState = DriveControlState.OPEN_LOOP;
@@ -275,11 +275,11 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			pathFollower = new PathFollower(path, reversed, new PathFollower.Parameters(
 					new Lookahead(Constants.MIN_LOOK_AHEAD, Constants.MAX_LOOK_AHEAD, Constants.MIN_LOOK_AHEAD_SPEED,
 							Constants.MAX_LOOK_AHEAD_SPEED),
-					Constants.INERTIA_STEERING_GAIN, Constants.PATH_FOLLWOING_PROFILE_Kp,
-					Constants.PATH_FOLLWOING_PROFILE_Ki, Constants.PATH_FOLLWOING_PROFILE_Kv,
-					Constants.PATH_FOLLWOING_PROFILE_Kffv, Constants.PATH_FOLLWOING_PROFILE_Kffa,
+					Constants.INERTIA_STEERING_GAIN, Constants.PATH_FOLLOWING_PROFILE_Kp,
+					Constants.PATH_FOLLOWING_PROFILE_Ki, Constants.PATH_FOLLOWING_PROFILE_Kv,
+					Constants.PATH_FOLLOWING_PROFILE_Kffv, Constants.PATH_FOLLOWING_PROFILE_Kffa,
 					Constants.PATH_FOLLOWING_MAX_VEL, Constants.PATH_FOLLOWING_MAX_ACCEL,
-					Constants.PATH_FOLLOING_GOAL_POS_TOLERANCE, Constants.PATH_FOLLOING_GOAL_VEL_TOLERANCE,
+					Constants.PATH_FOLLOWING_GOAL_POS_TOLERANCE, Constants.PATH_FOLLOWING_GOAL_VEL_TOLERANCE,
 					Constants.PATH_STOP_STEERING_DISTANCE));
 			driveControlState = DriveControlState.PATH_FOLLOWING;
 			currentPath = path;
