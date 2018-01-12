@@ -55,7 +55,7 @@ public class Constants extends ConstantsBase{
 	public static double PATH_FOLLWOING_PROFILE_Kffa = 0.05;
 	public static double PATH_FOLLOING_GOAL_POS_TOLERANCE = 0.75;
 	public static double PATH_FOLLOING_GOAL_VEL_TOLERANCE = 12;
-	public static double DRIVE_MAX_SETPOINT = 0.5;
+	public static double DRIVE_MAX_SETPOINT = 100; //Inches Per Second
 	public static double DRIVE_WHEEL_DIAMETER_INCHES = 6;
 	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 360;
 	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT = -1440;

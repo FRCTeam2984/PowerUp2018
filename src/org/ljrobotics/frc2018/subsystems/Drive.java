@@ -245,8 +245,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 					: 1.0;
 			SmartDashboard.putNumber("Left Wanted Vel", left_inches_per_sec);
 			SmartDashboard.putNumber("Right Wanted Vel", right_inches_per_sec);
-			leftMaster.set(ControlMode.Velocity, inchesPerSecondToRpm(left_inches_per_sec * scale));
-			rightMaster.set(ControlMode.Velocity, inchesPerSecondToRpm(right_inches_per_sec * scale));
+			leftMaster.set(ControlMode.Velocity, this.inchesToEncoderTicksLeft(left_inches_per_sec * scale));
+			rightMaster.set(ControlMode.Velocity, this.inchesToEncoderTicksRight(right_inches_per_sec * scale));
 		} else {
 			System.out.println("Hit a bad velocity control state");
 			leftMaster.set(ControlMode.Velocity, 0);
@@ -261,14 +261,6 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			System.out.println("Robot is not in path following mode");
 			return true;
 		}
-	}
-
-	private static double inchesToRotations(double inches) {
-		return inches / (Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI);
-	}
-
-	private static double inchesPerSecondToRpm(double inches_per_second) {
-		return inchesToRotations(inches_per_second) * 60;
 	}
 
 	/**
@@ -345,6 +337,18 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
 		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
 		return rotationsPerSecond * wheelCircumference;
+	}
+	
+	public double inchesToEncoderTicksRight(double inchesPerSecond) {
+		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
+		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
+		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
+	}
+	
+	public double inchesToEncoderTicksLeft(double inchesPerSecond) {
+		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
+		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
+		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
 	}
 
 	@Override
