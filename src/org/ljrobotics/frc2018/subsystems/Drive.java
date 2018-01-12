@@ -152,6 +152,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 		configPID(leftMaster, Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki,
 				Constants.PATH_FOLLOWING_PROFILE_Kffv);
+		
+		configPID(rightMaster, Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki,
+				Constants.PATH_FOLLOWING_PROFILE_Kffv);
 
 
 		this.driveControlState = DriveControlState.OPEN_LOOP;
