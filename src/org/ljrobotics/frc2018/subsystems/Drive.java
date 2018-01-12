@@ -18,6 +18,7 @@ import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -63,6 +64,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	
 	//Sensors
 	private Gyro gyro;
+	
+	private Rotation2d gyroZero;
 
 	// The drive loop definition
 	private class DriveLoop implements Loop {
@@ -143,11 +146,30 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		CANTalonFactory.updatePermanentSlaveTalon(this.rightSlave, this.rightMaster.getDeviceID());
 		rightMaster.getStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5);
 		rightMaster.setInverted(true);
+		
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		
+		configPID(leftMaster, Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki,
+				Constants.PATH_FOLLOWING_PROFILE_Kffv);
+		
+		configPID(rightMaster, Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki,
+				Constants.PATH_FOLLOWING_PROFILE_Kffv);
+
 
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
 		this.isBrakeMode = NeutralMode.Coast;
 		this.setNeutralMode(NeutralMode.Brake);
+		
+		this.gyroZero = Rotation2d.fromDegrees(0);
+	}
+	
+	private void configPID(TalonSRX talon, double p, double i, double f) {
+		talon.config_kP(0, p, 0);
+		talon.config_kI(0, i, 0);
+		talon.config_kD(0, 0, 0);
+		talon.config_kF(0, f, 0);
 	}
 
 	@Override
@@ -224,8 +246,10 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
 			final double scale = max_desired > Constants.DRIVE_MAX_SETPOINT ? Constants.DRIVE_MAX_SETPOINT / max_desired
 					: 1.0;
-			leftMaster.set(ControlMode.Velocity, inchesPerSecondToRpm(left_inches_per_sec * scale));
-			rightMaster.set(ControlMode.Velocity, inchesPerSecondToRpm(right_inches_per_sec * scale));
+			SmartDashboard.putNumber("Left Wanted Vel", left_inches_per_sec);
+			SmartDashboard.putNumber("Right Wanted Vel", right_inches_per_sec);
+			leftMaster.set(ControlMode.Velocity, this.inchesToEncoderTicksLeft(left_inches_per_sec * scale));
+			rightMaster.set(ControlMode.Velocity, this.inchesToEncoderTicksRight(right_inches_per_sec * scale));
 		} else {
 			System.out.println("Hit a bad velocity control state");
 			leftMaster.set(ControlMode.Velocity, 0);
@@ -242,14 +266,6 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		}
 	}
 
-	private static double inchesToRotations(double inches) {
-		return inches / (Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI);
-	}
-
-	private static double inchesPerSecondToRpm(double inches_per_second) {
-		return inchesToRotations(inches_per_second) * 60;
-	}
-
 	/**
 	 * Configures the drivebase to drive a path. Used for autonomous driving
 	 *
@@ -262,11 +278,11 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			pathFollower = new PathFollower(path, reversed, new PathFollower.Parameters(
 					new Lookahead(Constants.MIN_LOOK_AHEAD, Constants.MAX_LOOK_AHEAD, Constants.MIN_LOOK_AHEAD_SPEED,
 							Constants.MAX_LOOK_AHEAD_SPEED),
-					Constants.INERTIA_STEERING_GAIN, Constants.PATH_FOLLWOING_PROFILE_Kp,
-					Constants.PATH_FOLLWOING_PROFILE_Ki, Constants.PATH_FOLLWOING_PROFILE_Kv,
-					Constants.PATH_FOLLWOING_PROFILE_Kffv, Constants.PATH_FOLLWOING_PROFILE_Kffa,
+					Constants.INERTIA_STEERING_GAIN, Constants.PATH_FOLLOWING_PROFILE_Kp,
+					Constants.PATH_FOLLOWING_PROFILE_Ki, Constants.PATH_FOLLOWING_PROFILE_Kv,
+					Constants.PATH_FOLLOWING_PROFILE_Kffv, Constants.PATH_FOLLOWING_PROFILE_Kffa,
 					Constants.PATH_FOLLOWING_MAX_VEL, Constants.PATH_FOLLOWING_MAX_ACCEL,
-					Constants.PATH_FOLLOING_GOAL_POS_TOLERANCE, Constants.PATH_FOLLOING_GOAL_VEL_TOLERANCE,
+					Constants.PATH_FOLLOWING_GOAL_POS_TOLERANCE, Constants.PATH_FOLLOWING_GOAL_VEL_TOLERANCE,
 					Constants.PATH_STOP_STEERING_DISTANCE));
 			driveControlState = DriveControlState.PATH_FOLLOWING;
 			currentPath = path;
@@ -314,10 +330,28 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		}
 	}
 
-	public double encoderTicksToInches(double ticksPerSecond) {
-		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION;
+	public double encoderTicksToInchesRight(double ticksPerSecond) {
+		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
 		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
 		return rotationsPerSecond * wheelCircumference;
+	}
+	
+	public double encoderTicksToInchesLeft(double ticksPerSecond) {
+		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
+		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
+		return rotationsPerSecond * wheelCircumference;
+	}
+	
+	public double inchesToEncoderTicksRight(double inchesPerSecond) {
+		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
+		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
+		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
+	}
+	
+	public double inchesToEncoderTicksLeft(double inchesPerSecond) {
+		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
+		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
+		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
 	}
 
 	@Override
@@ -351,22 +385,26 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	public Rotation2d getGyroAngle() {
 		double gyroAngle = this.gyro.getAngle();
-		return Rotation2d.fromDegrees(gyroAngle);
+		return Rotation2d.fromDegrees(gyroAngle).rotateBy(this.gyroZero.inverse());
 	}
 
 	public double getLeftVelocityInchesPerSec() {
-		return encoderTicksToInches(this.leftMaster.getSelectedSensorVelocity(0) * 10);
+		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getRightVelocityInchesPerSec() {
-		return encoderTicksToInches(this.rightMaster.getSelectedSensorVelocity(0) * 10);
+		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getLeftDistanceInches() {
-		return encoderTicksToInches(this.leftMaster.getSelectedSensorPosition(0));
+		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorPosition(0));
 	}
 
 	public double getRightDistanceInches() {
-		return encoderTicksToInches(this.rightMaster.getSelectedSensorPosition(0));
+		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorPosition(0));
+	}
+
+	public void setGyroAngle(Rotation2d rotation) {
+		this.gyroZero = rotation;
 	}
 }

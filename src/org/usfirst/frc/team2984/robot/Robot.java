@@ -3,18 +3,23 @@ package org.usfirst.frc.team2984.robot;
 
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
+import org.ljrobotics.frc2018.commands.FollowPath;
+import org.ljrobotics.frc2018.commands.ResetToPathHead;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.loops.VisionProcessor;
+import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
 //import org.ljrobotics.frc2018.vision.VisionServer;
 import org.ljrobotics.lib.util.CrashTracker;
+import org.ljrobotics.lib.util.control.PathContainer;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -114,6 +119,14 @@ public class Robot extends IterativeRobot {
 			
 			this.looper.start();
 			
+			PathContainer path = new TestPath();
+			
+			CommandGroup command = new CommandGroup();
+			command.addSequential(new ResetToPathHead(path));
+			command.addSequential(new FollowPath(path));
+			
+			Scheduler.getInstance().add(command);
+			
 		} catch( Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -126,6 +139,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		this.allPeriodic();
+		Scheduler.getInstance().run();
 	}
 
 	@Override
