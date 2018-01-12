@@ -193,7 +193,7 @@ public class DriveTest {
 	@Test
 	public void getLeftVelocityInInchesPerSecondReturnsVelocity() {
 		Constants.DRIVE_WHEEL_DIAMETER_INCHES = 1;
-		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION = 200;
+		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT = Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 200;
 		when(this.frontLeft.getSelectedSensorVelocity(0)).thenReturn(200);
 		assertEquals(10*Math.PI, this.drive.getLeftVelocityInchesPerSec(), 0.00001);
 	}
@@ -201,7 +201,7 @@ public class DriveTest {
 	@Test
 	public void getRightVelocityInInchesPerSecondReturnsVelocity() {
 		Constants.DRIVE_WHEEL_DIAMETER_INCHES = 1;
-		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION = 200;
+		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT = Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 200;
 		when(this.frontRight.getSelectedSensorVelocity(0)).thenReturn(200);
 		assertEquals(10*Math.PI, this.drive.getRightVelocityInchesPerSec(), 0.00001);
 	}

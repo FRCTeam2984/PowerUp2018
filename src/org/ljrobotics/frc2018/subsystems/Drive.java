@@ -64,6 +64,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	
 	//Sensors
 	private Gyro gyro;
+	
+	private Rotation2d gyroZero;
 
 	// The drive loop definition
 	private class DriveLoop implements Loop {
@@ -147,12 +149,24 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		
+		configPID(leftMaster, Constants.PATH_FOLLWOING_PROFILE_Kp, Constants.PATH_FOLLWOING_PROFILE_Ki,
+				Constants.PATH_FOLLWOING_PROFILE_Kffv);
 
 
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
 		this.isBrakeMode = NeutralMode.Coast;
 		this.setNeutralMode(NeutralMode.Brake);
+		
+		this.gyroZero = Rotation2d.fromDegrees(0);
+	}
+	
+	private void configPID(TalonSRX talon, double p, double i, double f) {
+		talon.config_kP(0, p, 0);
+		talon.config_kI(0, i, 0);
+		talon.config_kD(0, 0, 0);
+		talon.config_kF(0, f, 0);
 	}
 
 	@Override
@@ -229,6 +243,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
 			final double scale = max_desired > Constants.DRIVE_MAX_SETPOINT ? Constants.DRIVE_MAX_SETPOINT / max_desired
 					: 1.0;
+			SmartDashboard.putNumber("Left Wanted Vel", left_inches_per_sec);
+			SmartDashboard.putNumber("Right Wanted Vel", right_inches_per_sec);
 			leftMaster.set(ControlMode.Velocity, inchesPerSecondToRpm(left_inches_per_sec * scale));
 			rightMaster.set(ControlMode.Velocity, inchesPerSecondToRpm(right_inches_per_sec * scale));
 		} else {
@@ -319,8 +335,14 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		}
 	}
 
-	public double encoderTicksToInches(double ticksPerSecond) {
-		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION;
+	public double encoderTicksToInchesRight(double ticksPerSecond) {
+		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
+		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
+		return rotationsPerSecond * wheelCircumference;
+	}
+	
+	public double encoderTicksToInchesLeft(double ticksPerSecond) {
+		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
 		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
 		return rotationsPerSecond * wheelCircumference;
 	}
@@ -356,22 +378,26 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	public Rotation2d getGyroAngle() {
 		double gyroAngle = this.gyro.getAngle();
-		return Rotation2d.fromDegrees(gyroAngle);
+		return Rotation2d.fromDegrees(gyroAngle).rotateBy(this.gyroZero.inverse());
 	}
 
 	public double getLeftVelocityInchesPerSec() {
-		return encoderTicksToInches(this.leftMaster.getSelectedSensorVelocity(0) * 10);
+		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getRightVelocityInchesPerSec() {
-		return encoderTicksToInches(this.rightMaster.getSelectedSensorVelocity(0) * 10);
+		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getLeftDistanceInches() {
-		return encoderTicksToInches(this.leftMaster.getSelectedSensorPosition(0));
+		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorPosition(0));
 	}
 
 	public double getRightDistanceInches() {
-		return encoderTicksToInches(this.rightMaster.getSelectedSensorPosition(0));
+		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorPosition(0));
+	}
+
+	public void setGyroAngle(Rotation2d rotation) {
+		this.gyroZero = rotation;
 	}
 }
