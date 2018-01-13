@@ -1,6 +1,7 @@
 package org.ljrobotics.lib.util.drivers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -103,6 +104,7 @@ public class CANTalonFactory {
         talon.configVelocityMeasurementPeriod(config.VELOCITY_MEASUREMENT_PERIOD, 0);
         talon.configVelocityMeasurementWindow(config.VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW, 0);
         talon.configOpenloopRamp(config.VOLTAGE_RAMP_RATE, 0);
+    	talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
     }
     

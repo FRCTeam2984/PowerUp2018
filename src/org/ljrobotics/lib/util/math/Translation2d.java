@@ -145,9 +145,14 @@ public class Translation2d implements Interpolable<Translation2d> {
     
     @Override
     public boolean equals(Object other) {
+     	if(other == null) {
+     		return true;
+    	}
     	if(this == other) {
+    
     		return true;
     	}
+   
     	if(other.getClass() != this.getClass()) {
     		return false;
     	}
