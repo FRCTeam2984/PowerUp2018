@@ -128,5 +128,64 @@ public class PathFollowerTest {
         assertTrue(controller.getAlongTrackError() < 1.0);
         assertTrue(controller.getCrossTrackError() < 1.0);
     }
+    
+    @Test
+    public void testTestPathWithStoppedRobot() {
+    	PathContainer container = new TestPath();
+        PathFollower controller = new PathFollower(container.buildPath(), container.isReversed(), kParameters);
+
+        final double dt = 0.01;
+
+        RigidTransform2d robot_pose = container.getStartPose();
+        double t = 0;
+        while (!controller.isFinished() && t < 10.0) {
+            // Follow the path
+            Twist2d command = controller.update(t, robot_pose, 0, 0);
+//            robot_pose = robot_pose.transformBy(RigidTransform2d.exp(command.scaled(dt)));
+            t += dt;
+        }
+        System.out.println(robot_pose);
+        assertFalse(controller.isFinished());
+    }
+    
+    @Test
+    public void testTestPathWithSlowRobot() {
+    	PathContainer container = new TestPath();
+        PathFollower controller = new PathFollower(container.buildPath(), container.isReversed(), kParameters);
+
+        ReflectingCSVWriter<PathFollower.DebugOutput> writer = new ReflectingCSVWriter<PathFollower.DebugOutput>(
+                "temp-test.csv", PathFollower.DebugOutput.class);
+        
+        final double dt = 0.01;
+
+        RigidTransform2d robot_pose = container.getStartPose();
+        double t = 0;
+        double displacement = 0.0;
+        double velocity = 0.0;
+        double prev_vel = 0;
+        while (!controller.isFinished() && t < 10.0) {
+            // Follow the path
+            Twist2d command = controller.update(t, robot_pose, displacement, velocity);
+            robot_pose = robot_pose.transformBy(RigidTransform2d.exp(command.scaled(dt)));
+
+            writer.add(controller.getDebug());
+            
+            t += dt;
+            double newVel = prev_vel *0.95 + command.dx*0.05;
+            newVel = Math.min(Math.max(newVel, -20), 20);
+            prev_vel = velocity;
+            velocity = newVel;
+            displacement += velocity * dt;
+
+            System.out.println("t = " + t + ", displacement " + displacement + ", lin vel " + command.dx + ", lin acc "
+                    + (velocity - prev_vel) / dt + ", ang vel " + command.dtheta + ", pose " + robot_pose + ", CTE "
+                    + controller.getCrossTrackError() + ", ATE " + controller.getAlongTrackError());
+        }
+        writer.flush();
+        System.out.println(robot_pose);
+        assertTrue(controller.isFinished());
+        assertTrue(controller.getAlongTrackError() < 1.0);
+        assertTrue(controller.getCrossTrackError() < 1.0);
+    }
 
 }
