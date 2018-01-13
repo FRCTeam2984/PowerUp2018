@@ -2,6 +2,8 @@ package org.ljrobotics.lib.util;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 // import edu.wpi.first.wpilibj.DriverStation;
 
 /*
@@ -23,7 +25,9 @@ public class GameData {
 		}
 	}
 	
-	
+	public GameData() throws IncorrectGameData {
+		this(DriverStation.getInstance().getGameSpecificMessage());
+	}
 	
 	/*public void Poll() throws ErrorPollingGameData {
 		String got = DriverStation.getInstance().getGameSpecificMessage();
