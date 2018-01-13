@@ -182,8 +182,8 @@ class Arc {
   draw() {
     var sTrans = Translation2d.diff(this.center, this.lineA.end);
     var eTrans = Translation2d.diff(this.center, this.lineB.start);
-    console.log(sTrans);
-    console.log(eTrans);
+    // console.log(sTrans);
+    // console.log(eTrans);
     var sAngle, eAngle;
     if (Translation2d.cross(sTrans, eTrans) > 0) {
       eAngle = -Math.atan2(sTrans.y, sTrans.x);
@@ -220,34 +220,44 @@ class Arc {
     return new Arc(new Line(a, b), new Line(b, c));
   }
 }
+var prevX = 0;
+var prevY = 0;
+var dCount = 0;
 
-function moved(event) {
+
+
+function down(event) {
 
 
   canvas = document.getElementById('field')
   var ctx = canvas.getContext("2d");
 
-  var rect = canvas.getBoundingClientRect();
-  var x = event.pageX - canvas.offsetLeft;
-  var y = event.pageY - canvas.offsetTop;
+  var x = (event.pageX - canvas.offsetLeft) * (canvas.width / canvas.clientWidth);
+  var y = canvas.height - (event.pageY - canvas.offsetTop) * (canvas.height / canvas.clientHeight);
+  var d = Math.sqrt(Math.pow(x - prevX, 2) + Math.pow(y - prevY, 2))
 
-  ctx.beginPath();
-  ctx.arc(x,y,5,0,2*Math.PI);
-  ctx.stroke();
-  console.log(x)
+  x *= 0.39;
+  y *= 0.39;
+
+  addPointDraw(x, y);
+
+
+  // console.log(x,y)
 
 }
-
+//x=650
+//y=325
+//aspect_ratio=2:1
 function init() {
   $("#field").css("width", (width / 1.5) + "px");
   $("#field").css("height", (height / 1.5) + "px");
   ctx = document.getElementById('field').getContext('2d')
-
   document.addEventListener("mousedown", function(event) {
-    this.addEventListener("mousemove", moved);
+    this.addEventListener("mousemove", down);
   });
+
   document.addEventListener("mouseup", function(e) {
-    this.removeEventListener("mousemove", moved);
+    this.removeEventListener("mousemove", down);
   });
   ctx.canvas.width = width;
   ctx.canvas.height = height;
@@ -290,6 +300,31 @@ function create() {
   f = new Arc(d, e);
 }
 
+function addPointDraw(x, y) {
+  var prev;
+  if (waypoints.length > 0)
+    prev = waypoints[waypoints.length - 1].position;
+  else
+    prev = new Translation2d(x, y, r);
+  $("tbody").append("<tr>" +
+    "<td><input value='" + (x) + "'></td>" +
+    "<td><input value='" + (y) + "'></td>" +
+    "<td><input value='0'> </td>" +
+    "<td><input value='60'></td>" +
+    "<td class='comments'><input placeholder='Comments'></td>" +
+    "<td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td></tr>"
+  );
+  update();
+  $('input').unbind("change paste keyup");
+  $('input').bind("change paste keyup", function() {
+    // console.log("change");
+    clearTimeout(wto);
+    wto = setTimeout(function() {
+      update();
+    }, 500);
+  });
+}
+
 function addPoint() {
   var prev;
   if (waypoints.length > 0)
@@ -319,7 +354,7 @@ function update() {
   waypoints = [];
   $('tbody').children('tr').each(function() {
     var x = parseInt($($($(this).children()).children()[0]).val());
-    console.log(x);
+    // console.log(x);
     var y = parseInt($($($(this).children()).children()[1]).val());
     var radius = parseInt($($($(this).children()).children()[2]).val());
     var speed = parseInt($($($(this).children()).children()[3]).val());
@@ -330,6 +365,13 @@ function update() {
     var comment = ($($($(this).children()).children()[4]).val())
     waypoints.push(new Waypoint(new Translation2d(x, y), speed, radius, comment));
   });
+  drawPoints();
+  drawRobot();
+}
+
+function manualUpdate(x, y, radius, speed, comment) {
+  waypoints = [];
+  waypoints.push(new Waypoint(new Translation2d(x, y), speed, radius, comment));
   drawPoints();
   drawRobot();
 }
