@@ -15,6 +15,7 @@ import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.control.PathContainer;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
+import org.ljrobotics.lib.util.GameData;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -65,6 +66,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		GameData gd = new GameData();
 		try {
 			CrashTracker.logRobotInit();
 			
@@ -79,6 +81,12 @@ public class Robot extends IterativeRobot {
 		} catch( Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
+		}
+		
+		CommandGroup paths = new CommandGroup();
+		
+		if(gd.GetPaddleSide(0) == GameData.PaddleSide.RIGHT) {
+			
 		}
 		
 		this.zeroAllSensors();
@@ -113,6 +121,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		try {
+			
 			CrashTracker.logAutoInit();
 			
 			this.zeroAllSensors();

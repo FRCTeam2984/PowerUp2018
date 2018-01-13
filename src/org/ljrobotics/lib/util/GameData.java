@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.DriverStation;
  * Util to get game data
  */
 
-enum PaddleSide {
-	RIGHT, LEFT
-}
-
 public class GameData {
+	
+	public enum PaddleSide {
+		RIGHT, LEFT
+	}
 	
 	private PaddleSide[] PaddleLocations;
 	private String gameString;
