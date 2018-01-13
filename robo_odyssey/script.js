@@ -220,7 +220,9 @@ class Arc {
 		return new Arc( new Line(a, b), new Line(b, c));
 	}
 }
-
+//x=650
+//y=325
+//aspect_ratio=2:1
 
 function init() {
 	$("#field").css("width", (width / 1.5) + "px");
