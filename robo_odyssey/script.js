@@ -220,44 +220,54 @@ class Arc {
     return new Arc(new Line(a, b), new Line(b, c));
   }
 }
-var prevX = 0;
-var prevY = 0;
-var dCount = 0;
 
+var dragOriginX;
 
-
-function down(event) {
-
-
+function mouseDown(event) {
   canvas = document.getElementById('field')
   var ctx = canvas.getContext("2d");
-
-  var x = (event.pageX - canvas.offsetLeft) * (canvas.width / canvas.clientWidth);
-  var y = canvas.height - (event.pageY - canvas.offsetTop) * (canvas.height / canvas.clientHeight);
-  var d = Math.sqrt(Math.pow(x - prevX, 2) + Math.pow(y - prevY, 2))
-
-  x *= 0.39;
-  y *= 0.39;
-
-  addPointDraw(x, y);
-
-
-  // console.log(x,y)
-
+  var canvasX = (event.pageX - canvas.offsetLeft) * (width / canvas.clientWidth);
+  var canvasY = height - (event.pageY - canvas.offsetTop) * (height / canvas.clientHeight);
+  // var d = Math.sqrt(Math.pow(canvasX - prevX, 2) + Math.pow(canvasY - prevY, 2))
+  var fieldX = canvasX * (fieldWidth / width);
+  var fieldY = canvasY * (fieldHeight / height);
+  dragOriginX = canvasX;
+  console.log("height", height);
+  console.log("canvasY", canvasY);
+  if ((canvasX <= width && canvasX >= 0) && (canvasY >= 0 && canvasY <= height)) {
+    addPointDraw(Math.round(fieldX,0), Math.round(fieldY,0));
+  }
 }
-//x=650
-//y=325
-//aspect_ratio=2:1
+
+function mouseDownMoving(event) {
+  var canvasX = (event.pageX - canvas.offsetLeft) * (width / canvas.clientWidth);
+  var newRadiusVal = canvasX - dragOriginX;
+  if (newRadiusVal < 0) {
+    newRadiusVal = 0;
+  }
+  console.log("newRadiusVal", newRadiusVal);
+  var radii = document.getElementsByClassName("radius");
+  var lastRadius = radii[radii.length - 2].childNodes[0];
+  console.log("value", lastRadius.getAttribute("value"));
+  if (radii.length > 3) {
+    lastRadius.value = Math.round(newRadiusVal,0);
+  }
+  update();
+}
+
+
+
 function init() {
   $("#field").css("width", (width / 1.5) + "px");
   $("#field").css("height", (height / 1.5) + "px");
   ctx = document.getElementById('field').getContext('2d')
   document.addEventListener("mousedown", function(event) {
-    this.addEventListener("mousemove", down);
+    mouseDown(event);
+    this.addEventListener("mousemove", mouseDownMoving);
   });
 
   document.addEventListener("mouseup", function(e) {
-    this.removeEventListener("mousemove", down);
+    this.removeEventListener("mousemove", mouseDownMoving);
   });
   ctx.canvas.width = width;
   ctx.canvas.height = height;
@@ -307,10 +317,10 @@ function addPointDraw(x, y) {
   else
     prev = new Translation2d(x, y, r);
   $("tbody").append("<tr>" +
-    "<td><input value='" + (x) + "'></td>" +
-    "<td><input value='" + (y) + "'></td>" +
-    "<td><input value='0'> </td>" +
-    "<td><input value='60'></td>" +
+    "<td class='x'><input value='" + (x) + "'></td>" +
+    "<td class='y'><input value='" + (y) + "'></td>" +
+    "<td class='radius'><input value='0'> </td>" +
+    "<td class='speed'><input value='60'></td>" +
     "<td class='comments'><input placeholder='Comments'></td>" +
     "<td><button onclick='$(this).parent().parent().remove();update()'>Delete</button></td></tr>"
   );
