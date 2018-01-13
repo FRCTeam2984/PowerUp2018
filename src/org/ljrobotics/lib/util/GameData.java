@@ -2,7 +2,7 @@ package org.ljrobotics.lib.util;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.DriverStation;
 
 /*
  * Util to get game data
@@ -10,22 +10,35 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class GameData {
 	
-	public enum PaddleSide {
-		RIGHT, LEFT
-	}
-	
 	private PaddleSide[] PaddleLocations;
 	private String gameString;
 	
-	public GameData() {
-		this.gameString = DriverStation.getInstance().getGameSpecificMessage();
+	public GameData(String gs) throws IncorrectGameData {
+		this.gameString=gs;
+		try {
+			this.PaddleLocations=stringToPaddleSide(this.gameString);
+		}
+		catch(IncorrectGameData e) {
+			throw e;
+		}
+	}
+	
+	
+	
+	/*public void Poll() throws ErrorPollingGameData {
+		String got = DriverStation.getInstance().getGameSpecificMessage();
+		if( got.length() != 3 ) {
+			throw new ErrorPollingGameData(got.length());
+		} else {
+			this.gameString = got;
+		}
 		try {
 			this.PaddleLocations = stringToPaddleSide(this.gameString);
 		}
 		catch(IncorrectGameData e) {
 			System.out.println(e.getErrorData());
 		}
-	}
+	}*/
 	
 	public PaddleSide[] GetPaddleSides() {
 		return PaddleLocations;
@@ -35,7 +48,10 @@ public class GameData {
 		return PaddleLocations[i];
 	}
 	
-	private PaddleSide[] stringToPaddleSide(String ings) throws IncorrectGameData {
+	public PaddleSide[] stringToPaddleSide(String ings) throws IncorrectGameData {
+		if(ings.length() != 3) {
+			throw new IncorrectGameData("Input string is not 3 characters");
+		}
 		ArrayList<PaddleSide> toReturn = new ArrayList<PaddleSide>();
 		for(int i=0; i < ings.length(); i++) {
 			switch(ings.charAt(i)) {
@@ -49,7 +65,7 @@ public class GameData {
 				throw new IncorrectGameData("Unknown character in string to paddle side");
 			}
 		}
-		return (PaddleSide[]) toReturn.toArray();
+		return toReturn.toArray(new PaddleSide[toReturn.size()]);
 		
 	}
 
