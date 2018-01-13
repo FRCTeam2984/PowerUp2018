@@ -10,6 +10,7 @@ import org.ljrobotics.lib.util.DriveSignal;
 import org.ljrobotics.lib.util.control.Lookahead;
 import org.ljrobotics.lib.util.control.Path;
 import org.ljrobotics.lib.util.control.PathFollower;
+import org.ljrobotics.lib.util.control.SynchronousPIDF;
 import org.ljrobotics.lib.util.drivers.CANTalonFactory;
 import org.ljrobotics.lib.util.drivers.LazyCANTalon;
 import org.ljrobotics.lib.util.drivers.LazyGyroscope;
@@ -81,6 +82,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 			case PATH_FOLLOWING:
 				//TODO add a write to CVS file function
 				updatePathFollower( timestamp );
+				updateTalonOutputs( timestamp );
 				break;
 			default:
 
@@ -103,10 +105,14 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	// Control States
 	private DriveControlState driveControlState;
+	private double lastTimeStamp;
 
 	// Controllers
 	private PathFollower pathFollower;
 	private RobotState robotState;
+	
+	private SynchronousPIDF leftPID;
+	private SynchronousPIDF rightPID;
 
 	// Hardware States
 	private NeutralMode isBrakeMode;
@@ -150,13 +156,15 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		
-		configPID(leftMaster, Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki,
+		leftPID = new SynchronousPIDF(Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki, 0,
 				Constants.PATH_FOLLOWING_PROFILE_Kffv);
 		
-		configPID(rightMaster, Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki,
+		rightPID = new SynchronousPIDF(Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki, 0,
 				Constants.PATH_FOLLOWING_PROFILE_Kffv);
-
-
+		
+//		leftPID.setOutputRange(-0.1, 0.1);
+//		rightPID.setOutputRange(-0.1, 0.1);
+		
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
 		this.isBrakeMode = NeutralMode.Coast;
@@ -165,13 +173,6 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		this.gyroZero = Rotation2d.fromDegrees(0);
 	}
 	
-	private void configPID(TalonSRX talon, double p, double i, double f) {
-		talon.config_kP(0, p, 0);
-		talon.config_kI(0, i, 0);
-		talon.config_kD(0, 0, 0);
-		talon.config_kF(0, f, 0);
-	}
-
 	@Override
 	public void stop() {
 		this.leftMaster.set(ControlMode.PercentOutput, 0);
@@ -217,6 +218,21 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		driveControlState = DriveControlState.VELOCITY_SETPOINT;
 		updateVelocitySetpoint(left_inches_per_sec, right_inches_per_sec);
 	}
+	
+	public synchronized void updateTalonOutputs(double timestamp) {
+		double dt = timestamp - this.lastTimeStamp;
+		this.lastTimeStamp = timestamp;
+		
+		double leftVel = this.getLeftVelocityInchesPerSec();
+		double rightVel = this.getRightVelocityInchesPerSec();
+		double left = this.leftPID.calculate(leftVel, dt);
+		double right = this.rightPID.calculate(rightVel, dt);
+		
+		System.out.println(right + " , " + left);
+		
+		this.leftMaster.set(ControlMode.PercentOutput, left);
+		this.rightMaster.set(ControlMode.PercentOutput, right);
+	}
 
 	/**
 	 * Called periodically when the robot is in path following mode. Updates the
@@ -243,17 +259,17 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	 */
 	private synchronized void updateVelocitySetpoint(double left_inches_per_sec, double right_inches_per_sec) {
 		if (usesTalonVelocityControl(driveControlState)) {
-			final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
-			final double scale = max_desired > Constants.DRIVE_MAX_SETPOINT ? Constants.DRIVE_MAX_SETPOINT / max_desired
+			double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
+			double scale = max_desired > Constants.DRIVE_MAX_SETPOINT ? Constants.DRIVE_MAX_SETPOINT / max_desired
 					: 1.0;
-			SmartDashboard.putNumber("Left Wanted Vel", left_inches_per_sec);
-			SmartDashboard.putNumber("Right Wanted Vel", right_inches_per_sec);
-			leftMaster.set(ControlMode.Velocity, this.inchesToEncoderTicksLeft(left_inches_per_sec * scale));
-			rightMaster.set(ControlMode.Velocity, this.inchesToEncoderTicksRight(right_inches_per_sec * scale));
+			SmartDashboard.putNumber("Left Wanted Vel", left_inches_per_sec * scale);
+			SmartDashboard.putNumber("Right Wanted Vel", right_inches_per_sec * scale);
+			leftPID.setSetpoint(left_inches_per_sec * scale);
+			rightPID.setSetpoint(left_inches_per_sec * scale);
 		} else {
 			System.out.println("Hit a bad velocity control state");
-			leftMaster.set(ControlMode.Velocity, 0);
-			rightMaster.set(ControlMode.Velocity, 0);
+			leftPID.setSetpoint(0);
+			rightPID.setSetpoint(0);
 		}
 	}
 
@@ -297,12 +313,12 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	private void configureTalonsForSpeedControl() {
 		if (!usesTalonVelocityControl(driveControlState)) {
 			// We entered a velocity control state.
-			leftMaster.configNominalOutputForward(1, 0);
-			leftMaster.configNominalOutputReverse(-1, 0);
-			leftMaster.selectProfileSlot(VELOCITY_CONTROL_SLOT, 0);
-			rightMaster.configNominalOutputForward(1, 0);
-			rightMaster.configNominalOutputReverse(-1, 0);
-			rightMaster.selectProfileSlot(VELOCITY_CONTROL_SLOT, 0);
+//			leftMaster.configNominalOutputForward(1, 0);
+//			leftMaster.configNominalOutputReverse(-1, 0);
+//			leftMaster.selectProfileSlot(VELOCITY_CONTROL_SLOT, 0);
+//			rightMaster.configNominalOutputForward(1, 0);
+//			rightMaster.configNominalOutputReverse(-1, 0);
+//			rightMaster.selectProfileSlot(VELOCITY_CONTROL_SLOT, 0);
 			setNeutralMode(NeutralMode.Brake);
 		}
 	}

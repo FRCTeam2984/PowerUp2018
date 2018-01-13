@@ -32,10 +32,6 @@ public class FollowPath extends Command {
 	
 	@Override
 	protected void execute() {
-		// TODO Auto-generated method stub
-		RigidTransform2d startPose = pathContainer.getStartPose();
-        RobotState.getInstance().reset(Timer.getFPGATimestamp(), startPose);
-        Drive.getInstance().setGyroAngle(startPose.getRotation());
 	}
 
 }
