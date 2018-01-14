@@ -1,4 +1,4 @@
-﻿package org.ljrobotics.frc2018.paths;
+package org.ljrobotics.frc2018.paths;
 
 import java.util.ArrayList;
 
