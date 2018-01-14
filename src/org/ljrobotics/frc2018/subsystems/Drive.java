@@ -156,14 +156,14 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		
-		leftPID = new SynchronousPIDF(Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki, 0,
-				Constants.PATH_FOLLOWING_PROFILE_Kffv);
+		leftPID = new SynchronousPIDF(Constants.DRIVE_Kp, Constants.DRIVE_Ki, Constants.DRIVE_Kd,
+				Constants.DRIVE_Kf);
 		
-		rightPID = new SynchronousPIDF(Constants.PATH_FOLLOWING_PROFILE_Kp, Constants.PATH_FOLLOWING_PROFILE_Ki, 0,
-				Constants.PATH_FOLLOWING_PROFILE_Kffv);
+		rightPID = new SynchronousPIDF(Constants.DRIVE_Kp, Constants.DRIVE_Ki, Constants.DRIVE_Kd,
+				Constants.DRIVE_Kf);
 		
-//		leftPID.setOutputRange(-0.1, 0.1);
-//		rightPID.setOutputRange(-0.1, 0.1);
+//		leftPID.setOutputRange(-0.5, 0.5);
+//		rightPID.setOutputRange(-0.5, 0.5);
 		
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
@@ -228,7 +228,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		double left = this.leftPID.calculate(leftVel, dt);
 		double right = this.rightPID.calculate(rightVel, dt);
 		
-		System.out.println(right + " , " + left);
+		SmartDashboard.putNumber("left output", left);
+		SmartDashboard.putNumber("right output", right);
 		
 		this.leftMaster.set(ControlMode.PercentOutput, left);
 		this.rightMaster.set(ControlMode.PercentOutput, right);
@@ -244,6 +245,10 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		Twist2d command = pathFollower.update(timestamp, robot_pose, robotState.getDistanceDriven(),
 				robotState.getPredictedVelocity().dx);
 		if (!pathFollower.isFinished()) {
+//			command = new Twist2d(command.dx, command.dy, command.dtheta*1.5);
+			System.out.println(command);
+			SmartDashboard.putNumber("Turn Command", command.dtheta);
+			SmartDashboard.putNumber("Move Command", command.dx);
 			Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
 			updateVelocitySetpoint(setpoint.left, setpoint.right);
 		} else {
@@ -264,8 +269,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 					: 1.0;
 			SmartDashboard.putNumber("Left Wanted Vel", left_inches_per_sec * scale);
 			SmartDashboard.putNumber("Right Wanted Vel", right_inches_per_sec * scale);
+//			System.out.println(left_inches_per_sec + ", " + right_inches_per_sec + " : " + scale);
 			leftPID.setSetpoint(left_inches_per_sec * scale);
-			rightPID.setSetpoint(left_inches_per_sec * scale);
+			rightPID.setSetpoint(right_inches_per_sec * scale);
 		} else {
 			System.out.println("Hit a bad velocity control state");
 			leftPID.setSetpoint(0);
@@ -400,7 +406,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public Rotation2d getGyroAngle() {
-		double gyroAngle = this.gyro.getAngle();
+		double gyroAngle = -this.gyro.getAngle();
 		return Rotation2d.fromDegrees(gyroAngle).rotateBy(this.gyroZero.inverse());
 	}
 

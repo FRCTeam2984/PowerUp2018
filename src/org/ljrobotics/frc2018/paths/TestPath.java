@@ -15,9 +15,10 @@ public class TestPath implements PathContainer {
 	@Override
 	public Path buildPath() {
 		ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-		sWaypoints.add(new Waypoint(50, 50, 0, 0));
-		sWaypoints.add(new Waypoint(80, 50, 0, 20));
-		// sWaypoints.add(new Waypoint(90,90,0,60));
+		sWaypoints.add(new Waypoint(0, 0, 0, 0));
+		sWaypoints.add(new Waypoint(90, 0, 20, 20));
+		sWaypoints.add(new Waypoint(155, 109, 0, 20));
+		// sWaypoints.add(new Waypoint(80,0,0,30));
 		// sWaypoints.add(new Waypoint(110,110,0,60));
 		// sWaypoints.add(new Waypoint(130,120,0,60));
 		// sWaypoints.add(new Waypoint(150,150,0,60));
@@ -30,7 +31,7 @@ public class TestPath implements PathContainer {
 
 	@Override
 	public RigidTransform2d getStartPose() {
-		return new RigidTransform2d(new Translation2d(50, 50), Rotation2d.fromDegrees(0));
+		return new RigidTransform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0));
 	}
 
 	@Override

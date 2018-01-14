@@ -31,6 +31,11 @@ public class Twist2d {
     }
     
     @Override
+    public String toString() {
+    	return "(" + this.dx + ", " + this.dy + ", " + this.dtheta + ")";
+    }
+    
+    @Override
     public boolean equals(Object o) {
     	if(this == o) {
     		return true;
