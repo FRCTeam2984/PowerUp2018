@@ -249,7 +249,7 @@ function mouseDownMoving(event) {
   var radii = document.getElementsByClassName("radius");
   var lastRadius = radii[radii.length - 2].childNodes[0];
   console.log("value", lastRadius.getAttribute("value"));
-  if (radii.length > 3) {
+  if (radii.length > 2) {
     lastRadius.value = Math.round(newRadiusVal,0);
   }
   update();
@@ -314,8 +314,6 @@ function addPointDraw(x, y) {
   var prev;
   if (waypoints.length > 0)
     prev = waypoints[waypoints.length - 1].position;
-  else
-    prev = new Translation2d(x, y, r);
   $("tbody").append("<tr>" +
     "<td class='x'><input value='" + (x) + "'></td>" +
     "<td class='y'><input value='" + (y) + "'></td>" +
