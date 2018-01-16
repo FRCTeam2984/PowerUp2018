@@ -19,14 +19,14 @@ public class AutoLeftSwitch implements PathContainer {
         sWaypoints.add(new Waypoint(40,155,40,60));
         sWaypoints.add(new Waypoint(80,305,40,60));
         sWaypoints.add(new Waypoint(160,295,40,60));
-        sWaypoints.add(new Waypoint(170,245,0,60));
+        sWaypoints.add(new Waypoint(170,245,0,40));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
 
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(0, 155), Rotation2d.fromDegrees(180.0));
+        return new RigidTransform2d(new Translation2d(0, 155), Rotation2d.fromDegrees(0.0));
     }
 
     @Override

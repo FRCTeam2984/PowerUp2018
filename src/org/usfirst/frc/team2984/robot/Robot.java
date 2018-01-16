@@ -126,7 +126,7 @@ public class Robot extends IterativeRobot {
 
 			this.looper.start();
 
-			PathContainer path = new TestPath();
+			PathContainer path = new AutoLeftSwitch();
 			GameData gd = null;
 
 //			try {
