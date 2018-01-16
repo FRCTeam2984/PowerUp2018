@@ -129,16 +129,16 @@ public class Robot extends IterativeRobot {
 			PathContainer path = new AutoLeftSwitch();
 			GameData gd = null;
 
-//			try {
-//				gd = new GameData();
-//			} catch (IncorrectGameData e) {
-//				System.out.println(e.getErrorData());
-//			}
-//			if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
-//				path = new AutoLeftSwitch();
-//			} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
-//				path = new AutoRightSwitch();
-//			}
+			try {
+				gd = new GameData();
+				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
+					path = new AutoLeftSwitch();
+				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
+					path = new AutoRightSwitch();
+				}
+			} catch (IncorrectGameData e) {
+				System.out.println(e.getErrorData());
+			}
 
 			CommandGroup command = new CommandGroup();
 			command.addSequential(new ResetToPathHead(path));
