@@ -1,4 +1,4 @@
-﻿package org.ljrobotics.frc2018.paths;
+package org.ljrobotics.frc2018.paths;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Translation2d;
 
-public class AutoRightSwitch implements PathContainer {
+public class AutoRightSwitchSide implements PathContainer {
 
     @Override
     public Path buildPath() {
@@ -26,7 +26,7 @@ public class AutoRightSwitch implements PathContainer {
 
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(0, 155), Rotation2d.fromDegrees(180.0));
+        return new RigidTransform2d(new Translation2d(0, 155), Rotation2d.fromDegrees(0));
     }
 
     @Override
