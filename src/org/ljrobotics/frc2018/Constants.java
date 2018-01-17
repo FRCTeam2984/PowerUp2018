@@ -55,8 +55,10 @@ public class Constants extends ConstantsBase{
 	public static double PATH_FOLLOWING_PROFILE_Kffa = 0.05;
 	public static double DRIVE_MAX_SETPOINT = 100; //Inches Per Second
 	public static double DRIVE_WHEEL_DIAMETER_INCHES = 6;
-	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 360;
-	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT = -1440;
+	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 248;
+	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT = -1470;
+	// RIGHT FOR 2018: 141.895/36.25*360, Left for 2018: -34.558/36.25*-1440
+	// RIGHT FOR 2017: 32/39*303    , left for 2017: 24.488/25*-1440
 	
 	public static double DRIVE_Kp = 0.00005;
 	public static double DRIVE_Ki = 0.0000001;
@@ -98,7 +100,7 @@ public class Constants extends ConstantsBase{
 	@Override
 	public String getFileLocation() {
 		// TODO Fill in file once a location is chosen
-		return null;
+		return "/home/lvuser/constants";
 	}
 
 }
