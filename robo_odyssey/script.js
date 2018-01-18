@@ -232,10 +232,8 @@ function mouseDown(event) {
   var fieldX = canvasX * (fieldWidth / width);
   var fieldY = canvasY * (fieldHeight / height);
   dragOriginX = canvasX;
-  console.log("height", height);
-  console.log("canvasY", canvasY);
   if ((canvasX <= width && canvasX >= 0) && (canvasY >= 0 && canvasY <= height)) {
-    addPointDraw(Math.round(fieldX,0), Math.round(fieldY,0));
+    addPointDraw(Math.round(fieldX, 0), Math.round(fieldY, 0));
   }
 }
 
@@ -245,30 +243,105 @@ function mouseDownMoving(event) {
   if (newRadiusVal < 0) {
     newRadiusVal = 0;
   }
-  console.log("newRadiusVal", newRadiusVal);
   var radii = document.getElementsByClassName("radius");
   var lastRadius = radii[radii.length - 2].childNodes[0];
-  console.log("value", lastRadius.getAttribute("value"));
   if (radii.length > 2) {
-    lastRadius.value = Math.round(newRadiusVal,0);
+    lastRadius.value = Math.round(newRadiusVal, 0);
   }
   update();
 }
 
+var count = 0;
+var indexCtrlClick;
+var clicked = false;
 
+function ctrlClick(event) {
+  var canvas = document.getElementById('field')
+  var ctx = canvas.getContext("2d");
+  var canvasX = (event.pageX - canvas.offsetLeft) * (width / canvas.clientWidth);
+  var canvasY = height - (event.pageY - canvas.offsetTop) * (height / canvas.clientHeight);
+  canvasX *= (fieldWidth / width);
+  canvasY *= (fieldHeight / height);
+
+  var mindex = 0;
+  var minval = Math.sqrt(Math.pow(canvasX - waypoints[0].position.x, 2) + Math.pow(canvasY - waypoints[0].position.y, 2));
+  for (i = 0; i < waypoints.length; i++) {
+    var wayX = waypoints[i].position.x;
+    var wayY = waypoints[i].position.y;
+    var dist = Math.sqrt(Math.pow(canvasX - wayX, 2) + Math.pow(canvasY - wayY, 2));
+    if (dist < minval) {
+      minval = dist;
+      mindex = i;
+    }
+  }
+	console.log(minval,(robotWidth+robotHeight)/2)
+if (minval < (robotWidth+robotHeight)/2){indexCtrlClick = mindex;
+var pointsX = document.getElementsByClassName("x");
+var pointsY = document.getElementsByClassName("y");
+
+var minInputX = pointsX[mindex].childNodes[0];
+var minInputY = pointsY[mindex].childNodes[0];
+var valX = parseInt(minInputX.getAttribute("value"));
+var valY = parseInt(minInputY.getAttribute("value"));
+
+document.addEventListener("mousemove", ctrlClickMoving);
+document.removeEventListener("mousedown", isDownMain);
+document.removeEventListener("mouseup", isUpMain);
+document.addEventListener("mousedown", isDownCtrl);
+document.addEventListener("mouseup", isUpCtrl);}
+
+}
+
+function ctrlClickMoving(event) {
+  var canvas = document.getElementById('field')
+  var ctx = canvas.getContext("2d");
+  var canvasX = (event.pageX - canvas.offsetLeft) * (width / canvas.clientWidth);
+  var canvasY = height - (event.pageY - canvas.offsetTop) * (height / canvas.clientHeight);
+  canvasX *= (fieldWidth / width);
+  canvasY *= (fieldHeight / height);
+
+  var pointsX = document.getElementsByClassName("x");
+  var pointsY = document.getElementsByClassName("y");
+  var minInputX = pointsX[indexCtrlClick].childNodes[0];
+  var minInputY = pointsY[indexCtrlClick].childNodes[0];
+  minInputX.value = canvasX;
+  minInputY.value = canvasY;
+  update();
+}
+
+function isDownMain(event) {
+  if (event.ctrlKey) {
+    ctrlClick(event);
+  } else {
+    mouseDown(event);
+    this.addEventListener("mousemove", mouseDownMoving);
+  }
+}
+
+function isUpMain(e) {
+  this.removeEventListener("mousemove", mouseDownMoving);
+  if (clicked) {
+    this.removeEventListener("mousemove", ctrlClickMoving);
+  }
+}
+
+function isDownCtrl(event) {
+  this.removeEventListener("mousemove", ctrlClickMoving);
+  document.addEventListener("mousedown", isDownMain);
+  document.addEventListener("mouseup", isUpMain);
+
+}
+
+function isUpCtrl(e) {
+
+}
 
 function init() {
   $("#field").css("width", (width / 1.5) + "px");
   $("#field").css("height", (height / 1.5) + "px");
   ctx = document.getElementById('field').getContext('2d')
-  document.addEventListener("mousedown", function(event) {
-    mouseDown(event);
-    this.addEventListener("mousemove", mouseDownMoving);
-  });
-
-  document.addEventListener("mouseup", function(e) {
-    this.removeEventListener("mousemove", mouseDownMoving);
-  });
+  document.addEventListener("mousedown", isDownMain);
+  document.addEventListener("mouseup", isUpMain);
   ctx.canvas.width = width;
   ctx.canvas.height = height;
   ctx.clearRect(0, 0, width, height);
@@ -550,18 +623,24 @@ function showData() {
   $("#modalTitle").html(title + ".java");
   $(".modal > pre").text(getDataString());
   showModal();
+
 }
 
 function showModal() {
+  document.removeEventListener("mousedown", isDownMain);
+  document.removeEventListener("mouseup", isUpMain);
   $(".modal, .shade").removeClass("behind");
   $(".modal, .shade").removeClass("hide");
 }
 
 function closeModal() {
+
   $(".modal, .shade").addClass("hide");
   setTimeout(function() {
     $(".modal, .shade").addClass("behind");
   }, 500);
+  document.addEventListener("mousedown", isDownMain);
+  document.addEventListener("mouseup", isUpMain);
 }
 
 var flipped = false;
