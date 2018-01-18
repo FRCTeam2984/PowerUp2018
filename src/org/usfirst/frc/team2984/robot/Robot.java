@@ -103,6 +103,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void disabledInit() {
 		try {
+			Scheduler.getInstance().removeAll();
 			CrashTracker.logDisabledInit();
 
 			this.looper.stop();
