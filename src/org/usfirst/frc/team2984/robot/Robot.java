@@ -1,5 +1,5 @@
 
-package org.usfirst.frc.team2984;
+package org.usfirst.frc.team2984.robot;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
