@@ -341,7 +341,6 @@ function init() {
   $("#field").css("height", (height / 1.5) + "px");
   ctx = document.getElementById('field').getContext('2d')
   document.addEventListener("mousedown", isDownMain);
-
   document.addEventListener("mouseup", isUpMain);
   ctx.canvas.width = width;
   ctx.canvas.height = height;
@@ -624,18 +623,24 @@ function showData() {
   $("#modalTitle").html(title + ".java");
   $(".modal > pre").text(getDataString());
   showModal();
+
 }
 
 function showModal() {
+  document.removeEventListener("mousedown", isDownMain);
+  document.removeEventListener("mouseup", isUpMain);
   $(".modal, .shade").removeClass("behind");
   $(".modal, .shade").removeClass("hide");
 }
 
 function closeModal() {
+
   $(".modal, .shade").addClass("hide");
   setTimeout(function() {
     $(".modal, .shade").addClass("behind");
   }, 500);
+  document.addEventListener("mousedown", isDownMain);
+  document.addEventListener("mouseup", isUpMain);
 }
 
 var flipped = false;
