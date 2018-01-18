@@ -406,7 +406,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public Rotation2d getGyroAngle() {
-		double gyroAngle = -this.gyro.getAngle();
+		double gyroAngle = Constants.GYRO_MODIFIER*this.gyro.getAngle();
 		return Rotation2d.fromDegrees(gyroAngle).rotateBy(this.gyroZero.inverse());
 	}
 

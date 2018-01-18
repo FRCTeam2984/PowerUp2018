@@ -27,6 +27,9 @@ package org.ljrobotics.frc2018;
 import org.ljrobotics.lib.util.ConstantsBase;
 
 public class Constants extends ConstantsBase{
+	// Gyroscope configuration
+	
+	public static double GYRO_MODIFIER = 1;
 	// Path following configuration
 
 	public static double SEGMENT_COMPLETION_TOLERANCE = 0.1; //inches
