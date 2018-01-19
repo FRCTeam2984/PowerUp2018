@@ -186,7 +186,7 @@ public class DriveTest {
 	@Test
 	public void getGyroAngleReturnsRotation2dOfGyroAngle() {
 		when(this.gyro.getAngle()).thenReturn(90D);
-		Rotation2d expected = Rotation2d.fromDegrees(90);
+		Rotation2d expected = Rotation2d.fromDegrees(90*Constants.GYRO_MODIFIER);
 		assertEquals(expected, this.drive.getGyroAngle());
 	}
 	
