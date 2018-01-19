@@ -58,6 +58,8 @@ public class Robot extends IterativeRobot {
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	public Robot() {
+		new Constants().loadFromFile();
+		
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.looper = new Looper();
@@ -67,7 +69,6 @@ public class Robot extends IterativeRobot {
 
 		CrashTracker.logRobotConstruction();
 		
-		new Constants().loadFromFile();
 	}
 
 	/**
@@ -109,6 +110,8 @@ public class Robot extends IterativeRobot {
 			this.looper.stop();
 
 			this.subsystemManager.stop();
+			
+			this.zeroAllSensors();
 
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
@@ -126,8 +129,6 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		try {
 			CrashTracker.logAutoInit();
-
-			this.zeroAllSensors();
 
 			this.looper.start();
 
@@ -170,8 +171,6 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		try {
 			CrashTracker.logTeleopInit();
-
-			this.zeroAllSensors();
 
 			this.looper.start();
 

@@ -16,10 +16,10 @@ public class ShortRightSwitch implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(20,155,0,0));
-        sWaypoints.add(new Waypoint(35,155,10,15));
-        sWaypoints.add(new Waypoint(80,110,20,30));
-        sWaypoints.add(new Waypoint(105,110,0,30));
-        sWaypoints.add(new Waypoint(110,110,0,30));
+        sWaypoints.add(new Waypoint(35,155,10,60));
+        sWaypoints.add(new Waypoint(80,110,20,60));
+        sWaypoints.add(new Waypoint(105,110,0,60));
+        sWaypoints.add(new Waypoint(110,110,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

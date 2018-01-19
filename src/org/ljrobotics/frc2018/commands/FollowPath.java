@@ -37,7 +37,7 @@ public class FollowPath extends Command {
 	
 	@Override
 	protected void end() {
-		SmartDashboard.putNumber("totaltime", (startTime-System.currentTimeMillis())/1000);
+		SmartDashboard.putNumber("totaltime", (startTime-System.currentTimeMillis())/1000D);
 		Drive.getInstance().setOpenLoop(new DriveSignal(0,0));
 	}
 	
