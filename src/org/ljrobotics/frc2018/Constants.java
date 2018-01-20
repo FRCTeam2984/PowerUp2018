@@ -73,6 +73,18 @@ public class Constants extends ConstantsBase{
 	public static double DRIVE_Kd = 0;
 	public static double DRIVE_Kf = 0.035;
 	// -----------------------------------------------------------------------------------------------
+	// Intake
+	public static double SUCK_SPEED = 0.5;
+	public static double SPIT_SPEED = -0.5;
+	
+	public static int LEFT_INTAKE_MOTOR_ID = 29;
+	public static int RIGHT_INTAKE_MOTOR_ID = 28;
+	
+	public static double MAX_SUCK_CURRENT = 20;
+	public static double MAX_SUCK_CURRENT_TIME = 1;
+	public static double INTAKE_OVERCURRENT_PROTECTION_TIME = 1;
+	
+	// -----------------------------------------------------------------------------------------------
 	// Loopers
 	
 	public static double LOOPER_Dt = 0.005;
