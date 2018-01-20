@@ -72,6 +72,18 @@ public class Constants extends ConstantsBase{
 	public static double DRIVE_Ki = 0.0000001;
 	public static double DRIVE_Kd = 0;
 	public static double DRIVE_Kf = 0.035;
+	
+	//turn pid
+	public static double TURN_Kp = 0.00005;
+	public static double TURN_Ki = 0.0000001;
+	public static double TURN_Kd = 0;
+	public static double TURN_Kf = 0.035;
+	
+	//turn constants
+	//degrees
+	public static double TURN_DEGREE_TOLERANCE = 1;
+	//gyroscope is turning under some velocity (in degrees / second)
+	public static double LOW_VELOCITY_THRESHOLD = 1;
 	// -----------------------------------------------------------------------------------------------
 	// Loopers
 	

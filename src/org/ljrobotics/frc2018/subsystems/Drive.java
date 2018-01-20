@@ -58,7 +58,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	public enum DriveControlState {
 		VELOCITY_SETPOINT, // Under PID velocity control
 		PATH_FOLLOWING, // Following a path
-		OPEN_LOOP // Used to drive control
+		TURNING, //turnToAngle
+		OPEN_LOOP// Used to drive control
 	}
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
@@ -83,6 +84,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 				//TODO add a write to CVS file function
 				updatePathFollower( timestamp );
 				updateTalonOutputs( timestamp );
+				break;
+			case TURNING:
+				updateTurn(timestamp);
 				break;
 			default:
 
@@ -113,12 +117,14 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	
 	private SynchronousPIDF leftPID;
 	private SynchronousPIDF rightPID;
+	private SynchronousPIDF speedPID;
 
 	// Hardware States
 	private NeutralMode isBrakeMode;
 
 	private Path currentPath;
-
+	
+	
 	/**
 	 * Creates a new Drive Subsystem from that controls the given motor controllers.
 	 *
@@ -165,6 +171,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 //		leftPID.setOutputRange(-0.5, 0.5);
 //		rightPID.setOutputRange(-0.5, 0.5);
 		
+		speedPID = new SynchronousPIDF(Constants.TURN_Kp, Constants.TURN_Ki, 
+    			Constants.TURN_Kd, Constants.TURN_Kf);
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
 		this.isBrakeMode = NeutralMode.Coast;
@@ -207,6 +215,27 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		this.rightMaster.set(ControlMode.PercentOutput, right);
 	}
 
+	public synchronized void setTurnAngle(double angle) {
+		this.driveControlState = DriveControlState.TURNING;
+		speedPID.reset();
+		speedPID.setSetpoint(angle);
+		
+	}
+	
+	private void updateTurn(double timestamp) {
+		double dt = timestamp - this.lastTimeStamp;
+		this.lastTimeStamp = timestamp;
+		double currentAngle = LazyGyroscope.getInstance().getAngle();
+		double speed = speedPID.calculate(currentAngle, dt);
+		
+		setVelocitySetpoint(-speed, speed);
+	}
+	
+	public boolean isDoneWithTurn() {
+		return (Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE &&
+				LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD);
+	}
+	
 	/**
 	 * Start up velocity mode. This sets the drive train in high gear as well.
 	 *
