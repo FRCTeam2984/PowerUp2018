@@ -110,5 +110,13 @@ public class Constants extends ConstantsBase{
 		// TODO Fill in file once a location is chosen
 		return "/home/lvuser/constants";
 	}
+	
+	/** 2018 COMP BOT
+	{
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1439, 
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":1418, 
+	}
+
+	 */
 
 }

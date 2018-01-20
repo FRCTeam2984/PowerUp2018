@@ -17,12 +17,12 @@ public class LeftScale implements PathContainer {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(20,155,0,0));
         sWaypoints.add(new Waypoint(50,155,20,20));
-        sWaypoints.add(new Waypoint(80,200,0,40));
-        sWaypoints.add(new Waypoint(110,245,40,60));
-        sWaypoints.add(new Waypoint(180,295,40,60));
-        sWaypoints.add(new Waypoint(260,295,0,60));
-        sWaypoints.add(new Waypoint(300,295,0,60));
-        sWaypoints.add(new Waypoint(325,295,15,30));
+        sWaypoints.add(new Waypoint(80,200,0,20));
+        sWaypoints.add(new Waypoint(110,245,40,20));
+        sWaypoints.add(new Waypoint(180,295,40,20));
+        sWaypoints.add(new Waypoint(260,295,0,20));
+        sWaypoints.add(new Waypoint(300,295,0,20));
+        sWaypoints.add(new Waypoint(325,295,15,20));
         sWaypoints.add(new Waypoint(325,265,0,20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
