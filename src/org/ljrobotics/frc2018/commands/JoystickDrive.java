@@ -26,7 +26,13 @@ public class JoystickDrive extends Command {
 	protected void execute() {
 		double power = -this.joystick.getRawAxis(1)*this.multiplier;
 		double wheel = this.joystick.getRawAxis(2)*this.multiplier;
-		DriveSignal driveSignal = CheesyDriveHelper.getInstance().cheesyDrive(power, wheel, false, false);
+		DriveSignal driveSignal;
+		// The rightmost trigger
+		if( this.joystick.getRawButton(7) ) {
+			driveSignal = CheesyDriveHelper.getInstance().cheesyDrive(power, wheel, true, false);
+		} else {
+			driveSignal = CheesyDriveHelper.getInstance().cheesyDrive(power, wheel, false, false);
+		}
 		Drive.getInstance().setOpenLoop(driveSignal);
 	}
 
