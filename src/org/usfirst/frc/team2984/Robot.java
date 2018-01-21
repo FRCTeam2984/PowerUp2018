@@ -8,15 +8,12 @@ import org.ljrobotics.frc2018.commands.FollowPath;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
-import org.ljrobotics.frc2018.loops.VisionProcessor;
-import org.ljrobotics.frc2018.paths.TestPath;
-import org.ljrobotics.frc2018.paths.AutoLeftSwitchSide;
-
-import org.ljrobotics.frc2018.paths.AutoRightSwitchSide;
 import org.ljrobotics.frc2018.paths.LeftScale;
 import org.ljrobotics.frc2018.paths.ShortRightSwitch;
+import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
+import org.ljrobotics.frc2018.subsystems.Intake;
 //import org.ljrobotics.frc2018.vision.VisionServer;
 import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.GameData;
@@ -32,7 +29,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -47,6 +43,7 @@ public class Robot extends IterativeRobot {
 
 	private Drive drive;
 	private RobotState robotState;
+	private Intake intake;
 
 	private Looper looper;
 
@@ -58,16 +55,18 @@ public class Robot extends IterativeRobot {
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	public Robot() {
+		new Constants().loadFromFile();
+		
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
+		this.intake = Intake.getInstance();
 		this.looper = new Looper();
 		// this.visionServer = VisionServer.getInstance();
 
-		this.subsystemManager = new SubsystemManager(this.drive);
+		this.subsystemManager = new SubsystemManager(this.drive, this.intake);
 
 		CrashTracker.logRobotConstruction();
 		
-		new Constants().loadFromFile();
 	}
 
 	/**
@@ -109,6 +108,8 @@ public class Robot extends IterativeRobot {
 			this.looper.stop();
 
 			this.subsystemManager.stop();
+			
+			this.zeroAllSensors();
 
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
@@ -128,10 +129,10 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logAutoInit();
 
 			this.zeroAllSensors();
-
+			
 			this.looper.start();
 
-			PathContainer path = new AutoLeftSwitchSide();
+			PathContainer path = new TestPath();
 			GameData gd = null;
 
 			try {
@@ -170,8 +171,6 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		try {
 			CrashTracker.logTeleopInit();
-
-			this.zeroAllSensors();
 
 			this.looper.start();
 

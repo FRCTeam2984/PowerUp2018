@@ -78,6 +78,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		public void onLoop( double timestamp ) {
 			switch( driveControlState  ) {
 			case VELOCITY_SETPOINT:
+				updateTalonOutputs( timestamp );
 				break;
 			case PATH_FOLLOWING:
 				//TODO add a write to CVS file function
