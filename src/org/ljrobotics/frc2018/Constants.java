@@ -74,8 +74,8 @@ public class Constants extends ConstantsBase{
 	public static double DRIVE_Kf = 0.035;
 	// -----------------------------------------------------------------------------------------------
 	// Intake
-	public static double SUCK_SPEED = 0.5;
-	public static double SPIT_SPEED = -0.5;
+	public static double SUCK_SPEED = 1;
+	public static double SPIT_SPEED = -1;
 	
 	public static int LEFT_INTAKE_MOTOR_ID = 29;
 	public static int RIGHT_INTAKE_MOTOR_ID = 28;
@@ -83,7 +83,11 @@ public class Constants extends ConstantsBase{
 	public static double MAX_SUCK_CURRENT = 20;
 	public static double MAX_SUCK_CURRENT_TIME = 1;
 	public static double INTAKE_OVERCURRENT_PROTECTION_TIME = 1;
+	// -----------------------------------------------------------------------------------------------
+	// Control Config
 	
+	public static int JOYSTICK_ROTATION_AXIS = 2;
+	public static boolean USE_TANK_DRIVE = false;
 	// -----------------------------------------------------------------------------------------------
 	// Loopers
 	

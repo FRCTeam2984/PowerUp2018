@@ -78,6 +78,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		this.right = right;
 		
 		this.left.setInverted(true);
+		this.right.setInverted(true);
 		
 		this.controlState = IntakeControlState.Idle;
 		
@@ -96,9 +97,11 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 
 	}
 	
-	private void setCurrentCheckedSpeed(double timestamp, double speed) {
+	public void setSpeedCurrentChecked(double timestamp, double speed) {
 		double leftCurrent = this.left.getOutputCurrent();
 		double rightCurrent = this.right.getOutputCurrent();
+		this.left.set(ControlMode.PercentOutput, speed);
+		this.right.set(ControlMode.PercentOutput, speed);
 		if(this.overCurrentProtection && timestamp > this.overCurrentTimeStartTime + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME) {
 			
 		}

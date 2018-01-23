@@ -1,7 +1,8 @@
 package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
-import org.ljrobotics.frc2018.commands.JoystickDrive;
+import org.ljrobotics.frc2018.commands.CheesyJoystickDrive;
+import org.ljrobotics.frc2018.commands.TankJoystickDrive;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.state.Kinematics;
@@ -403,7 +404,11 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		this.setDefaultCommand(new JoystickDrive());
+		if(Constants.USE_TANK_DRIVE) {
+			this.setDefaultCommand(new TankJoystickDrive());
+		} else {
+			this.setDefaultCommand(new CheesyJoystickDrive());
+		}
 	}
 
 	public Rotation2d getGyroAngle() {

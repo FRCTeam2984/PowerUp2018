@@ -1,5 +1,5 @@
 
-package org.usfirst.frc.team2984;
+package org.usfirst.frc.team2984.robot;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
@@ -109,8 +109,6 @@ public class Robot extends IterativeRobot {
 
 			this.subsystemManager.stop();
 			
-			this.zeroAllSensors();
-
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
