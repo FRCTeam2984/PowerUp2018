@@ -77,12 +77,12 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		this.left = left;
 		this.right = right;
 		
-		this.left.setInverted(true);
+		this.left.setInverted(false);
 		this.right.setInverted(true);
 		
 		this.controlState = IntakeControlState.Idle;
 		
-		this.overCurrentTimeStartTime = -1;
+		this.overCurrentTimeStartTime = -Constants.INTAKE_OVERCURRENT_PROTECTION_TIME*2;
 		
 		this.overCurrentProtection = false;
 	}
@@ -100,21 +100,33 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	public void setSpeedCurrentChecked(double timestamp, double speed) {
 		double leftCurrent = this.left.getOutputCurrent();
 		double rightCurrent = this.right.getOutputCurrent();
-		this.left.set(ControlMode.PercentOutput, speed);
-		this.right.set(ControlMode.PercentOutput, speed);
-		if(this.overCurrentProtection && timestamp > this.overCurrentTimeStartTime + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME) {
-			
+		if(this.overCurrentProtectionTimeStart + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME > timestamp) {
+			this.left.set(ControlMode.PercentOutput, 0);
+			this.left.set(ControlMode.PercentOutput, 0);
+			return;
 		}
-		if(Math.max(leftCurrent, rightCurrent) > Constants.MAX_SUCK_CURRENT) {
-			if(this.overCurrentTimeStartTime < 0) {
-				this.overCurrentTimeStartTime = timestamp;
-			} else if(this.overCurrentTimeStartTime + Constants.MAX_SUCK_CURRENT_TIME < timestamp) {
-				this.overCurrentProtection = true;
-				this.overCurrentTimeStartTime = timestamp;
-			}
+		if(Math.max(leftCurrent, rightCurrent) < Constants.MAX_SUCK_CURRENT) {
+			this.left.set(ControlMode.PercentOutput, speed);
+			this.right.set(ControlMode.PercentOutput, speed);
 		} else {
-			this.overCurrentTimeStartTime = -1;
+			this.overCurrentProtectionTimeStart = timestamp;
+			this.left.set(ControlMode.PercentOutput, 0);
+			this.right.set(ControlMode.PercentOutput, 0);
 		}
+		
+//		if(this.overCurrentProtection && timestamp > this.overCurrentTimeStartTime + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME) {
+//			
+//		}
+//		if(Math.max(leftCurrent, rightCurrent) > Constants.MAX_SUCK_CURRENT) {
+//			if(this.overCurrentTimeStartTime < 0) {
+//				this.overCurrentTimeStartTime = timestamp;
+//			} else if(this.overCurrentTimeStartTime + Constants.MAX_SUCK_CURRENT_TIME < timestamp) {
+//				this.overCurrentProtection = true;
+//				this.overCurrentTimeStartTime = timestamp;
+//			}
+//		} else {
+//			this.overCurrentTimeStartTime = -1;
+//		}
 	}
 	
 	private void setSpeed(double speed) {

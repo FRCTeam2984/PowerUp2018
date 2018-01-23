@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.junit.Before;
@@ -59,7 +60,25 @@ public class IntakeTest {
 	public void withNoAnaomoliesTalonsArePowered() {
 		setCurrent(0,0);
 		intake.setSpeedCurrentChecked(0, 0.5);
-		verifyTalons(ControlMode.PercentOutput, 0.5, 0.5);
+		verifyTalons(ControlMode.PercentOutput, 0.5, 0.5, 1);
+	}
+	
+	@Test
+	public void withOverCurrentTalonsAreStopped() {
+		setCurrent(Constants.MAX_SUCK_CURRENT + 1,Constants.MAX_SUCK_CURRENT + 1);
+		intake.setSpeedCurrentChecked(0, 0.5);
+		intake.setSpeedCurrentChecked(Constants.MAX_SUCK_CURRENT_TIME + 1, 0.5);
+		verifyTalons(ControlMode.PercentOutput, 0, 0, 2);
+	}
+	
+	@Test
+	public void withOverCurrentTalonsAreStoppedForCorrectTime() {
+		setCurrent(Constants.MAX_SUCK_CURRENT + 1,Constants.MAX_SUCK_CURRENT + 1);
+		intake.setSpeedCurrentChecked(0, 0.5);
+		intake.setSpeedCurrentChecked(Constants.MAX_SUCK_CURRENT_TIME + 1, 0.5);
+		setCurrent(Constants.MAX_SUCK_CURRENT - 1,Constants.MAX_SUCK_CURRENT -1);
+		intake.setSpeedCurrentChecked(Constants.INTAKE_OVERCURRENT_PROTECTION_TIME + Constants.MAX_SUCK_CURRENT_TIME, 0.5);
+		verifyTalons(ControlMode.PercentOutput, 0, 0, 3);
 	}
 	
 	private void setCurrent(double left, double right) {
@@ -67,13 +86,15 @@ public class IntakeTest {
 		when(this.right.getOutputCurrent()).thenReturn(right);
 	}
 
-	private void verifyTalons(ControlMode mode, double frontLeft, double frontRight) {
+	private void verifyTalons(ControlMode mode, double frontLeft, double frontRight, int timesCalled) {
 		final ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-		verify(this.left).set(eq(mode), captor.capture());
-		assertEquals(frontLeft, (double) captor.getValue(), 0.00001);
+		verify(this.left, times(timesCalled)).set(eq(mode), captor.capture());
+		List<Double> captures = captor.getAllValues();
+		assertEquals(frontLeft, (double) captures.get(captures.size()-1), 0.00001);
 
-		verify(this.right).set(eq(mode), captor.capture());
-		assertEquals(frontRight, (double) captor.getValue(), 0.00001);
+		verify(this.right, times(timesCalled)).set(eq(mode), captor.capture());
+		captures = captor.getAllValues();
+		assertEquals(frontRight, (double) captures.get(captures.size()-1), 0.00001);
 	}
 
 }

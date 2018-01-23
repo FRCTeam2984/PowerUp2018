@@ -26,12 +26,13 @@ public class CheesyJoystickDrive extends Command {
 
 	protected void execute() {
 		double power = this.joystick.getRawAxis(1)*this.multiplier;
-		power = Math.pow(power, 5);
+		power = (Math.abs(power) < Constants.JOYSTICK_POWER_DEADBAND) ? 0 : power;
+		power = Math.pow(power, Constants.JOYSTICK_POWER_POWER);
 		double wheel = this.joystick.getRawAxis(Constants.JOYSTICK_ROTATION_AXIS)*this.multiplier;
-		wheel = (Math.abs(wheel) < 0.05) ? 0 : wheel;
+		wheel = (Math.abs(wheel) < Constants.JOYSTICK_WHEEL_DEADBAND) ? 0 : wheel;
 		DriveSignal driveSignal;
 		// The rightmost trigger
-		if( this.joystick.getRawButton(7) ) {
+		if( this.joystick.getRawButton(Constants.QUICKTURN_BUTTON) ) {
 			driveSignal = CheesyDriveHelper.getInstance().cheesyDrive(power, wheel, true, false);
 		} else {
 			driveSignal = CheesyDriveHelper.getInstance().cheesyDrive(power, wheel, false, false);

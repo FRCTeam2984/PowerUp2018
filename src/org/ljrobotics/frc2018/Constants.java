@@ -88,6 +88,10 @@ public class Constants extends ConstantsBase{
 	
 	public static int JOYSTICK_ROTATION_AXIS = 2;
 	public static boolean USE_TANK_DRIVE = false;
+	public static int JOYSTICK_POWER_POWER = 3;
+	public static double JOYSTICK_POWER_DEADBAND = 0.05;
+	public static double JOYSTICK_WHEEL_DEADBAND = 0.05;
+	public static int QUICKTURN_BUTTON = 7;
 	// -----------------------------------------------------------------------------------------------
 	// Loopers
 	
