@@ -1,6 +1,7 @@
 package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
+import org.ljrobotics.frc2018.commands.UpdateTensionPower;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 
@@ -18,7 +19,8 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		if(instance == null) {
 			TalonSRX left = new TalonSRX(Constants.LEFT_INTAKE_MOTOR_ID);
 			TalonSRX right = new TalonSRX(Constants.RIGHT_INTAKE_MOTOR_ID);
-			instance = new Intake(left, right);
+			TalonSRX tension = new TalonSRX(Constants.TENSION_INTAKE_MOTOR_ID);
+			instance = new Intake(left, right, tension);
 		}
 		return instance;
 	}
@@ -26,15 +28,13 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	private TalonSRX left;
 	private TalonSRX right;
 	
+	private TalonSRX tension;
+	
 	private IntakeControlState controlState;
 	
-	/**
-	 * The current over current time. If it is negative not in over current mode.
-	 */
-	private double overCurrentTimeStartTime;
-	
-	private boolean overCurrentProtection;
 	private double overCurrentProtectionTimeStart;
+	
+	private double wantedTensionPower;
 	
 	public static enum IntakeControlState {
 		Suck, //Pull in the Cube
@@ -59,11 +59,12 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 					setSpeed(Constants.SPIT_SPEED);
 					break;
 				case Idle:
-					setSpeed(0);
+					setSpeed( 0);
 					break;
 				default:
 					break;
 			}
+			updateTensionMotor();
 		}
 
 		@Override
@@ -73,18 +74,31 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		
 	}
 	
-	public Intake(TalonSRX left, TalonSRX right) {
+	public Intake(TalonSRX left, TalonSRX right, TalonSRX tension) {
 		this.left = left;
 		this.right = right;
+		this.tension = tension;
+		
+		setCurrentLimit(tension, 20, 10, 500);
+		setCurrentLimit(left, Constants.MAX_SUCK_CURRENT, Constants.NOMINAL_SUCK_CURRENT, Constants.MAX_SUCK_CURRENT_TIME);
+		setCurrentLimit(right, Constants.MAX_SUCK_CURRENT, Constants.NOMINAL_SUCK_CURRENT, Constants.MAX_SUCK_CURRENT_TIME);
 		
 		this.left.setInverted(false);
 		this.right.setInverted(true);
 		
+		this.left.configOpenloopRamp(0.125, 0);
+		this.right.configOpenloopRamp(0.125, 0);
+		
 		this.controlState = IntakeControlState.Idle;
 		
-		this.overCurrentTimeStartTime = -Constants.INTAKE_OVERCURRENT_PROTECTION_TIME*2;
-		
-		this.overCurrentProtection = false;
+		this.wantedTensionPower = 0;
+	}
+	
+	private void setCurrentLimit(TalonSRX talon, int max, int nominal, int time) {
+		talon.configPeakCurrentDuration(time, 0);
+		talon.enableCurrentLimit(true);
+		talon.configContinuousCurrentLimit(nominal, 0);
+		talon.configPeakCurrentLimit(max, 0);
 	}
 	
 	@Override
@@ -97,41 +111,40 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 
 	}
 	
-	public void setSpeedCurrentChecked(double timestamp, double speed) {
-		double leftCurrent = this.left.getOutputCurrent();
-		double rightCurrent = this.right.getOutputCurrent();
-		if(this.overCurrentProtectionTimeStart + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME > timestamp) {
-			this.left.set(ControlMode.PercentOutput, 0);
-			this.left.set(ControlMode.PercentOutput, 0);
-			return;
-		}
-		if(Math.max(leftCurrent, rightCurrent) < Constants.MAX_SUCK_CURRENT) {
-			this.left.set(ControlMode.PercentOutput, speed);
-			this.right.set(ControlMode.PercentOutput, speed);
-		} else {
-			this.overCurrentProtectionTimeStart = timestamp;
-			this.left.set(ControlMode.PercentOutput, 0);
-			this.right.set(ControlMode.PercentOutput, 0);
-		}
-		
-//		if(this.overCurrentProtection && timestamp > this.overCurrentTimeStartTime + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME) {
-//			
-//		}
-//		if(Math.max(leftCurrent, rightCurrent) > Constants.MAX_SUCK_CURRENT) {
-//			if(this.overCurrentTimeStartTime < 0) {
-//				this.overCurrentTimeStartTime = timestamp;
-//			} else if(this.overCurrentTimeStartTime + Constants.MAX_SUCK_CURRENT_TIME < timestamp) {
-//				this.overCurrentProtection = true;
-//				this.overCurrentTimeStartTime = timestamp;
-//			}
-//		} else {
-//			this.overCurrentTimeStartTime = -1;
-//		}
+	public void updateTensionMotor() {
+		this.tension.set(ControlMode.PercentOutput, this.wantedTensionPower);
 	}
+	
+//	public void setSpeedCurrentChecked(double timestamp, double speed) {
+//		double leftCurrent = this.left.getOutputCurrent();
+//		double rightCurrent = this.right.getOutputCurrent();
+//		if(this.overCurrentProtectionTimeStart + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME > timestamp) {
+//			this.left.set(ControlMode.PercentOutput, 0);
+//			this.right.set(ControlMode.PercentOutput, 0);
+//			return;
+//		}
+//		if(Math.max(leftCurrent, rightCurrent) < Constants.MAX_SUCK_CURRENT) {
+//			this.left.set(ControlMode.PercentOutput, speed);
+//			this.right.set(ControlMode.PercentOutput, speed);
+//		} else {
+//			if(this.overCurrentProtectionTimeStart > timestamp - 1) {
+//				this.left.set(ControlMode.PercentOutput, speed);
+//				this.right.set(ControlMode.PercentOutput, speed);
+//			}
+//			this.overCurrentProtectionTimeStart = timestamp;
+//			this.left.set(ControlMode.PercentOutput, 0);
+//			this.right.set(ControlMode.PercentOutput, 0);
+//		}
+//		
+//	}
 	
 	private void setSpeed(double speed) {
 		this.left.set(ControlMode.PercentOutput, speed);
 		this.right.set(ControlMode.PercentOutput, speed);
+	}
+	
+	public void setTensionPower(double power) {
+		this.wantedTensionPower = power;
 	}
 
 	@Override
@@ -162,7 +175,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-
+		this.setDefaultCommand(new UpdateTensionPower());
 	}
 
 }

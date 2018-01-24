@@ -79,10 +79,11 @@ public class Constants extends ConstantsBase{
 	
 	public static int LEFT_INTAKE_MOTOR_ID = 29;
 	public static int RIGHT_INTAKE_MOTOR_ID = 28;
+	public static int TENSION_INTAKE_MOTOR_ID = 20;
 	
-	public static double MAX_SUCK_CURRENT = 20;
-	public static double MAX_SUCK_CURRENT_TIME = 1;
-	public static double INTAKE_OVERCURRENT_PROTECTION_TIME = 1;
+	public static int MAX_SUCK_CURRENT = 20;
+	public static int NOMINAL_SUCK_CURRENT = 10;
+	public static int MAX_SUCK_CURRENT_TIME = 1000;
 	// -----------------------------------------------------------------------------------------------
 	// Control Config
 	
@@ -104,6 +105,7 @@ public class Constants extends ConstantsBase{
 	// Motor configuration
 
 	public static int JOYSTICK_DRIVE_ID =  0x0;
+	public static int JOYSTICK_OPERATOR_ID = 1;
 	public static final int FRONT_LEFT_MOTOR_ID =  12;
 	public static final int FRONT_RIGHT_MOTOR_ID = 10;
 	public static final int REAR_LEFT_MOTOR_ID =   23;
