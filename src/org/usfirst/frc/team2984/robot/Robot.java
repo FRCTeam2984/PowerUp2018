@@ -1,15 +1,15 @@
 
-package org.usfirst.frc.team2984;
+package org.usfirst.frc.team2984.robot;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
 import org.ljrobotics.frc2018.commands.FollowPath;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
+import org.ljrobotics.frc2018.commands.RightSwitchCommand;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.paths.LeftScale;
-import org.ljrobotics.frc2018.paths.ShortRightSwitch;
 import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
@@ -109,8 +109,6 @@ public class Robot extends IterativeRobot {
 
 			this.subsystemManager.stop();
 			
-			this.zeroAllSensors();
-
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -132,23 +130,27 @@ public class Robot extends IterativeRobot {
 			
 			this.looper.start();
 
+			CommandGroup command = new CommandGroup();
+			
+			
 			PathContainer path = new TestPath();
+			command.addSequential(new ResetToPathHead(path));
+			command.addSequential(new FollowPath(path));
 			GameData gd = null;
 
 			try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
 					path = new LeftScale();
+					command = new CommandGroup();
+					command.addSequential(new ResetToPathHead(path));
+					command.addSequential(new FollowPath(path));
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
-					path = new ShortRightSwitch();
+					command = new RightSwitchCommand();
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
 			}
-
-			CommandGroup command = new CommandGroup();
-			command.addSequential(new ResetToPathHead(path));
-			command.addSequential(new FollowPath(path));
 
 			Scheduler.getInstance().add(command);
 

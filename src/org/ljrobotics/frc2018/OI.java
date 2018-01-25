@@ -26,14 +26,17 @@ public class OI {
 	 * The joystick used to control the driving of the robot
 	 */
 	public Joystick stick;
+	
+	public Joystick stick2;
 
 	private OI() {
 		this.stick = new Joystick(Constants.JOYSTICK_DRIVE_ID);
-		JoystickButton suck = new JoystickButton(this.stick, 2);
+		this.stick2 = new Joystick(Constants.JOYSTICK_OPERATOR_ID);
+		JoystickButton suck = new JoystickButton(this.stick2, 1);
 		suck.whenPressed(new IntakeSuck());
 		suck.whenReleased(new IntakeIdle());
 		
-		JoystickButton spit = new JoystickButton(this.stick, 4);
+		JoystickButton spit = new JoystickButton(this.stick2, 4);
 		spit.whenPressed(new IntakeSpit());
 		spit.whenReleased(new IntakeIdle());
 	}
