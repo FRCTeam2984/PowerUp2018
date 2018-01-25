@@ -133,4 +133,27 @@ public class Constants extends ConstantsBase{
 		return "/home/lvuser/constants";
 	}
 
+	
+	/*
+	{
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1439,
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":1418,
+        "GYRO_MODIFIER":-1,
+        "DRIVE_Kf": 0.00875,
+        "DRIVE_Kp": 0.015,
+        "DRIVE_Ki": 0,
+        "DRIVE_Kd": -0.0003,
+        "PATH_FOLLOWING_GOAL_POS_TOLERANCE": 3,
+        "PATH_FOLLOWING_MAX_ACCEL": 60,
+        "PATH_FOLLOWING_MAX_VEL": 80,
+        "PATH_FOLLOWING_PROFILE_Kffa": 0.05,
+        "MIN_LOOK_AHEAD_SPEED": 9,
+        "PATH_FOLLOWING_PROFILE_Kp": 0.4,
+        "MIN_LOOK_AHEAD": 12,
+        "PATH_FOLLOWING_PROFILE_Kv": 0.1,
+        "SEGMENT_COMPLETION_TOLERANCE": 4,
+        "JOYSTICK_ROTATION_AXIS": 2,
+        "USE_TANK_DRIVE": false,
+        "QUICKTURN_BUTTON": 5
+	}*/
 }
