@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class TurnToAngle extends Command {
 	private double angleToTurnTo;
     public TurnToAngle(double angle) {
+    	this.requires(Drive.getInstance());
     	this.angleToTurnTo = angle;
     }
 

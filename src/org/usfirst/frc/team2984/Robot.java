@@ -6,11 +6,18 @@ import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
 import org.ljrobotics.frc2018.commands.FollowPath;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
+import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.commands.RightSwitchCommand;
+import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.paths.LeftScale;
 import org.ljrobotics.frc2018.paths.TestPath;
+import org.ljrobotics.frc2018.paths.AutoLeftSwitchSide;
+
+import org.ljrobotics.frc2018.paths.AutoRightSwitchSide;
+import org.ljrobotics.frc2018.paths.LeftScale;
+import org.ljrobotics.frc2018.paths.ShortRightSwitch;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.frc2018.subsystems.Intake;
@@ -29,6 +36,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -67,6 +75,7 @@ public class Robot extends IterativeRobot {
 
 		CrashTracker.logRobotConstruction();
 		
+		new Constants().loadFromFile();
 	}
 
 	/**
@@ -130,15 +139,15 @@ public class Robot extends IterativeRobot {
 			
 			this.looper.start();
 
-			CommandGroup command = new CommandGroup();
+			// CommandGroup command = new CommandGroup();
 			
 			
-			PathContainer path = new TestPath();
-			command.addSequential(new ResetToPathHead(path));
-			command.addSequential(new FollowPath(path));
-			GameData gd = null;
+			// PathContainer path = new TestPath();
+			// command.addSequential(new ResetToPathHead(path));
+			// command.addSequential(new FollowPath(path));
+			// GameData gd = null;
 
-			try {
+			/*try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
 					path = new LeftScale();
@@ -146,13 +155,20 @@ public class Robot extends IterativeRobot {
 					command.addSequential(new ResetToPathHead(path));
 					command.addSequential(new FollowPath(path));
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
+					path = new ShortRightSwitch();
 					command = new RightSwitchCommand();
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
-			}
+			}*/
 
-			Scheduler.getInstance().add(command);
+			/*CommandGroup command = new CommandGroup();
+			command.addSequential(new ResetToPathHead(path));
+			command.addSequential(new FollowPath(path));
+
+			Scheduler.getInstance().add(command);*/
+			System.out.println("Adding new turn to angle instance");
+			Scheduler.getInstance().add(new TurnToAngle(90));
 
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
@@ -173,6 +189,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		try {
 			CrashTracker.logTeleopInit();
+
+			this.zeroAllSensors();
 
 			this.looper.start();
 
@@ -216,6 +234,7 @@ public class Robot extends IterativeRobot {
 
 	/**
 	 * A method that has code that is run in all periodic functions
+	 * For debugging
 	 */
 	public void allPeriodic() {
 

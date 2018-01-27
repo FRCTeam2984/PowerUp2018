@@ -17,14 +17,12 @@ public class Conversions {
 	}
 	
 	public static double inchesToEncoderTicksRight(double inchesPerSecond) {
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
+		double rotationsPerSecond = inchesPerSecond / Constants.DRIVE_WHEEL_CIRCUMFERENCE;
 		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
 	}
 	
 	public static double inchesToEncoderTicksLeft(double inchesPerSecond) {
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
+		double rotationsPerSecond = inchesPerSecond / Constants.DRIVE_WHEEL_CIRCUMFERENCE;
 		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
 	}
 }

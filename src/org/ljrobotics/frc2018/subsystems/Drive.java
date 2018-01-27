@@ -223,9 +223,14 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	public synchronized void setTurnAngle(double angle) {
 		this.driveControlState = DriveControlState.TURNING;
+		
 		speedPID.reset();
 		speedPID.setSetpoint(angle);
 		
+	}
+	
+	public SynchronousPIDF getSpeedPID() {
+		return speedPID;
 	}
 	
 	private void updateTurn(double timestamp) {
@@ -234,12 +239,16 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		double currentAngle = LazyGyroscope.getInstance().getAngle();
 		double speed = speedPID.calculate(currentAngle, dt);
 		
-		setVelocitySetpoint(-speed, speed);
+		leftMaster.set(ControlMode.PercentOutput, speed);
+		rightMaster.set(ControlMode.PercentOutput, -speed);
+		
+		// setVelocitySetpoint(-speed, speed);
+		
 	}
 	
 	public boolean isDoneWithTurn() {
-		return (Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE &&
-				LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD);
+		System.out.println("I'M DONE WITH THE TURN");
+		return (Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD);
 	}
 	
 	/**

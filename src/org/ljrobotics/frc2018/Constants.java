@@ -63,6 +63,7 @@ public class Constants extends ConstantsBase{
 	
 	public static double DRIVE_MAX_SETPOINT = 100; //Inches Per Second
 	public static double DRIVE_WHEEL_DIAMETER_INCHES = 6;
+	public static double DRIVE_WHEEL_CIRCUMFERENCE = DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
 	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 248;
 	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT = -1470;
 	// RIGHT FOR 2018: 141.895/36.25*360, Left for 2018: -34.558/36.25*-1440
