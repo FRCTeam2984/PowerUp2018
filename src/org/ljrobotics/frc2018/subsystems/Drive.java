@@ -18,6 +18,7 @@ import org.ljrobotics.lib.util.drivers.LazyGyroscope;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
+import org.ljrobotics.lib.util.Conversions;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -386,30 +387,6 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		}
 	}
 
-	public double encoderTicksToInchesRight(double ticksPerSecond) {
-		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		return rotationsPerSecond * wheelCircumference;
-	}
-	
-	public double encoderTicksToInchesLeft(double ticksPerSecond) {
-		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		return rotationsPerSecond * wheelCircumference;
-	}
-	
-	public double inchesToEncoderTicksRight(double inchesPerSecond) {
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
-		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
-	}
-	
-	public double inchesToEncoderTicksLeft(double inchesPerSecond) {
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
-		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
-	}
-
 	@Override
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Left Velocity", this.getLeftVelocityInchesPerSec());
@@ -449,19 +426,19 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public double getLeftVelocityInchesPerSec() {
-		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorVelocity(0) * 10);
+		return Conversions.encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getRightVelocityInchesPerSec() {
-		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorVelocity(0) * 10);
+		return Conversions.encoderTicksToInchesRight(this.rightMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getLeftDistanceInches() {
-		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorPosition(0));
+		return Conversions.encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorPosition(0));
 	}
 
 	public double getRightDistanceInches() {
-		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorPosition(0));
+		return Conversions.encoderTicksToInchesRight(this.rightMaster.getSelectedSensorPosition(0));
 	}
 
 	public void setGyroAngle(Rotation2d rotation) {
