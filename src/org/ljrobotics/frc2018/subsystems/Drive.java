@@ -179,6 +179,11 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 		speedPID = new SynchronousPIDF(Constants.TURN_Kp, Constants.TURN_Ki, 
     			Constants.TURN_Kd, Constants.TURN_Kf);
+		speedPID.setContinuous();
+		speedPID.setInputRange(0D, 360D);
+		//TODO Add constant for output range
+		speedPID.setOutputRange(-0.5, 0.5);
+		
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
 		this.isBrakeMode = NeutralMode.Coast;
@@ -247,8 +252,16 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 	
 	public boolean isDoneWithTurn() {
-		System.out.println("I'M DONE WITH THE TURN");
-		return (Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD);
+		// boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD;
+		boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE;
+		if(toReturn) {
+			leftMaster.set(ControlMode.PercentOutput, 0);
+			rightMaster.set(ControlMode.PercentOutput, 0);
+			System.out.println("I'M STOPPING! " + speedPID.getError());
+		} else {
+			System.out.println("Turning with error " + speedPID.getError());
+		}
+		return (toReturn);
 	}
 	
 	/**
