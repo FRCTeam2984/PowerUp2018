@@ -12,6 +12,7 @@ import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.paths.LeftScale;
+import org.ljrobotics.frc2018.loops.VisionProcessor;
 import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.paths.AutoLeftSwitchSide;
 
@@ -71,7 +72,7 @@ public class Robot extends IterativeRobot {
 		this.looper = new Looper();
 		// this.visionServer = VisionServer.getInstance();
 
-		this.subsystemManager = new SubsystemManager(this.drive, this.intake);
+		this.subsystemManager = new SubsystemManager(this.drive);
 
 		CrashTracker.logRobotConstruction();
 		
@@ -117,7 +118,7 @@ public class Robot extends IterativeRobot {
 			this.looper.stop();
 
 			this.subsystemManager.stop();
-			
+
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -136,7 +137,7 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logAutoInit();
 
 			this.zeroAllSensors();
-			
+
 			this.looper.start();
 
 			// CommandGroup command = new CommandGroup();
