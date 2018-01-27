@@ -1,7 +1,8 @@
 package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
-import org.ljrobotics.frc2018.commands.JoystickDrive;
+import org.ljrobotics.frc2018.commands.CheesyJoystickDrive;
+import org.ljrobotics.frc2018.commands.TankJoystickDrive;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.state.Kinematics;
@@ -79,6 +80,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		public void onLoop( double timestamp ) {
 			switch( driveControlState  ) {
 			case VELOCITY_SETPOINT:
+				updateTalonOutputs( timestamp );
 				break;
 			case PATH_FOLLOWING:
 				//TODO add a write to CVS file function
@@ -161,6 +163,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		
+		leftMaster.configOpenloopRamp(0.05, 0);
+		rightMaster.configOpenloopRamp(0.05, 0);
 		
 		leftPID = new SynchronousPIDF(Constants.DRIVE_Kp, Constants.DRIVE_Ki, Constants.DRIVE_Kd,
 				Constants.DRIVE_Kf);
@@ -431,7 +436,11 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		this.setDefaultCommand(new JoystickDrive());
+		if(Constants.USE_TANK_DRIVE) {
+			this.setDefaultCommand(new TankJoystickDrive());
+		} else {
+			this.setDefaultCommand(new CheesyJoystickDrive());
+		}
 	}
 
 	public Rotation2d getGyroAngle() {
