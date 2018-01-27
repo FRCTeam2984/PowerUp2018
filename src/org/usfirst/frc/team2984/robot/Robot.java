@@ -6,10 +6,10 @@ import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
 import org.ljrobotics.frc2018.commands.FollowPath;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
-import org.ljrobotics.frc2018.commands.RightSwitchCommand;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.paths.LeftScale;
+import org.ljrobotics.frc2018.paths.RightScale;
 import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Drive;
@@ -146,7 +146,10 @@ public class Robot extends IterativeRobot {
 					command.addSequential(new ResetToPathHead(path));
 					command.addSequential(new FollowPath(path));
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
-					command = new RightSwitchCommand();
+					path = new RightScale();
+					command = new CommandGroup();
+					command.addSequential(new ResetToPathHead(path));
+					command.addSequential(new FollowPath(path));
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
