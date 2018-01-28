@@ -148,12 +148,14 @@ public class Constants extends ConstantsBase{
         "PATH_FOLLOWING_MAX_VEL": 80,
         "PATH_FOLLOWING_PROFILE_Kffa": 0.05,
         "MIN_LOOK_AHEAD_SPEED": 9,
-        "PATH_FOLLOWING_PROFILE_Kp": 0.4,
+        "PATH_FOLLOWING_PROFILE_Kp": 1.5,
+        "PATH_FOLLOWING_PROFILE_Ki": 0.002,
         "MIN_LOOK_AHEAD": 12,
         "PATH_FOLLOWING_PROFILE_Kv": 0.1,
         "SEGMENT_COMPLETION_TOLERANCE": 4,
         "JOYSTICK_ROTATION_AXIS": 2,
         "USE_TANK_DRIVE": false,
-        "QUICKTURN_BUTTON": 5
+        "QUICKTURN_BUTTON": 5,
+        "JOYSTICK_POWER_POWER": 1
 	}*/
 }
