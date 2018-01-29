@@ -73,6 +73,27 @@ public class Constants extends ConstantsBase{
 	public static double DRIVE_Kd = 0;
 	public static double DRIVE_Kf = 0.035;
 	// -----------------------------------------------------------------------------------------------
+	// Intake
+	public static double SUCK_SPEED = 1;
+	public static double SPIT_SPEED = -1;
+	
+	public static int LEFT_INTAKE_MOTOR_ID = 29;
+	public static int RIGHT_INTAKE_MOTOR_ID = 28;
+	public static int TENSION_INTAKE_MOTOR_ID = 20;
+	
+	public static int MAX_SUCK_CURRENT = 20;
+	public static int NOMINAL_SUCK_CURRENT = 10;
+	public static int MAX_SUCK_CURRENT_TIME = 1000;
+	// -----------------------------------------------------------------------------------------------
+	// Control Config
+	
+	public static int JOYSTICK_ROTATION_AXIS = 2;
+	public static boolean USE_TANK_DRIVE = false;
+	public static int JOYSTICK_POWER_POWER = 3;
+	public static double JOYSTICK_POWER_DEADBAND = 0.05;
+	public static double JOYSTICK_WHEEL_DEADBAND = 0.05;
+	public static int QUICKTURN_BUTTON = 7;
+	// -----------------------------------------------------------------------------------------------
 	// Loopers
 	
 	public static double LOOPER_Dt = 0.005;
@@ -84,6 +105,7 @@ public class Constants extends ConstantsBase{
 	// Motor configuration
 
 	public static int JOYSTICK_DRIVE_ID =  0x0;
+	public static int JOYSTICK_OPERATOR_ID = 1;
 	public static final int FRONT_LEFT_MOTOR_ID =  12;
 	public static final int FRONT_RIGHT_MOTOR_ID = 10;
 	public static final int REAR_LEFT_MOTOR_ID =   23;
@@ -111,4 +133,27 @@ public class Constants extends ConstantsBase{
 		return "/home/lvuser/constants";
 	}
 
+	
+	/*
+	{
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1439,
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":1418,
+        "GYRO_MODIFIER":-1,
+        "DRIVE_Kf": 0.00875,
+        "DRIVE_Kp": 0.015,
+        "DRIVE_Ki": 0,
+        "DRIVE_Kd": -0.0003,
+        "PATH_FOLLOWING_GOAL_POS_TOLERANCE": 3,
+        "PATH_FOLLOWING_MAX_ACCEL": 60,
+        "PATH_FOLLOWING_MAX_VEL": 80,
+        "PATH_FOLLOWING_PROFILE_Kffa": 0.05,
+        "MIN_LOOK_AHEAD_SPEED": 9,
+        "PATH_FOLLOWING_PROFILE_Kp": 0.4,
+        "MIN_LOOK_AHEAD": 12,
+        "PATH_FOLLOWING_PROFILE_Kv": 0.1,
+        "SEGMENT_COMPLETION_TOLERANCE": 4,
+        "JOYSTICK_ROTATION_AXIS": 2,
+        "USE_TANK_DRIVE": false,
+        "QUICKTURN_BUTTON": 5
+	}*/
 }

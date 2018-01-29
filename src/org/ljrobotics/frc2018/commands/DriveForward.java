@@ -11,38 +11,41 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class FollowPath extends Command {
+public class DriveForward extends Command {
 
-	private PathContainer pathContainer;
-	private Path path;
-	private long startTime;
+	private double startTime;
+	private double time;
+	private double speed;
 	
-	public FollowPath(PathContainer pathContainer) {
-		this.pathContainer = pathContainer;
-		this.path = this.pathContainer.buildPath();
+	/**
+	 * 
+	 * @param speed speed in percent output
+	 * @param time time in seconds
+	 */
+	public DriveForward(double speed, long time) {
+		this.speed = speed;
+		this.time = time;
 		this.requires(Drive.getInstance());
 	}
 	
 	@Override
 	protected void initialize() {
-		startTime = System.currentTimeMillis();
-		SmartDashboard.putNumber("starttime", startTime );
-		Drive.getInstance().setWantDrivePath(path, pathContainer.isReversed());
+		startTime = Timer.getFPGATimestamp();
 	}
 	
 	@Override
 	protected boolean isFinished() {
-		return Drive.getInstance().isDoneWithPath();
+		return Timer.getFPGATimestamp() > startTime + time;
 	}
 	
 	@Override
 	protected void end() {
-		SmartDashboard.putNumber("totaltime", (startTime-System.currentTimeMillis())/1000D);
 		Drive.getInstance().setOpenLoop(new DriveSignal(0,0));
 	}
 	
 	@Override
 	protected void execute() {
+		Drive.getInstance().setOpenLoop(new DriveSignal(speed,speed));
 	}
 
 }
