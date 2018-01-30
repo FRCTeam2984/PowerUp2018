@@ -77,8 +77,8 @@ public class Constants extends ConstantsBase{
 	public static double SUCK_SPEED = 1;
 	public static double SPIT_SPEED = -1;
 	
-	public static int LEFT_INTAKE_MOTOR_ID = 29;
-	public static int RIGHT_INTAKE_MOTOR_ID = 28;
+	public static int LEFT_INTAKE_MOTOR_ID = 26;//29
+	public static int RIGHT_INTAKE_MOTOR_ID = 27;//28
 	public static int TENSION_INTAKE_MOTOR_ID = 20;
 	
 	public static int MAX_SUCK_CURRENT = 20;
@@ -126,6 +126,16 @@ public class Constants extends ConstantsBase{
 	public static double CAMERA_FRAME_RATE = 30;
 	// -----------------------------------------------------------------------------------------------
 	// File location
+
+	public static int MAX_ARM_CURRENT = 20;
+
+	public static int NOMINAL_ARM_CURRENT = 10;
+
+	public static int MAX_ARM_CURRENT_TIME = 1;
+
+	public static int LEFT_ARM_MOTOR_ID = 28;
+
+	public static int RIGHT_ARM_MOTOR_ID = 29;
 
 	@Override
 	public String getFileLocation() {
