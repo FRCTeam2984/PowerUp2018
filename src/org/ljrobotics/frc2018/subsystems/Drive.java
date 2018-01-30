@@ -182,7 +182,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		speedPID.setContinuous();
 		speedPID.setInputRange(0D, 360D);
 		//TODO Add constant for output range
-		speedPID.setOutputRange(-0.5, 0.5);
+		speedPID.setOutputRange(-Constants.TURN_SPEED, Constants.TURN_SPEED);
 		
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
@@ -253,7 +253,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	
 	public boolean isDoneWithTurn() {
 		// boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD;
-		boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE;
+		boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && Math.abs(speedPID.getSetpoint() - LazyGyroscope.getInstance().getAngle()) <= Constants.TURN_DEGREE_TOLERANCE;
 		if(toReturn) {
 			leftMaster.set(ControlMode.PercentOutput, 0);
 			rightMaster.set(ControlMode.PercentOutput, 0);

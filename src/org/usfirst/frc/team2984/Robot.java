@@ -169,7 +169,11 @@ public class Robot extends IterativeRobot {
 
 			Scheduler.getInstance().add(command);*/
 			System.out.println("Adding new turn to angle instance");
-			Scheduler.getInstance().add(new TurnToAngle(180));
+			CommandGroup command = new CommandGroup();
+			command.addSequential(new TurnToAngle(180D));
+			command.addSequential(new TurnToAngle(0D));
+			command.addSequential(new TurnToAngle(90D));
+			Scheduler.getInstance().add(command);
 
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
