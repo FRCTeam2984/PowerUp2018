@@ -42,7 +42,6 @@ public class IntakeTest {
 	private Intake intake;
 	private TalonSRX left;
 	private TalonSRX right;
-	private TalonSRX tension;
 	
 	static {
 		// prevents exception during test
@@ -53,9 +52,8 @@ public class IntakeTest {
 	public void before() {
 		left = mock(TalonSRX.class);
 		right = mock(TalonSRX.class);
-		tension = mock(TalonSRX.class);
 
-		intake = new Intake(left, right, tension);
+		intake = new Intake(left, right);
 	}
 
 	private void verifyTalons(ControlMode mode, double frontLeft, double frontRight, int timesCalled) {

@@ -1,7 +1,6 @@
 package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
-import org.ljrobotics.frc2018.commands.UpdateTensionPower;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 
@@ -19,16 +18,13 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		if(instance == null) {
 			TalonSRX left = new TalonSRX(Constants.LEFT_INTAKE_MOTOR_ID);
 			TalonSRX right = new TalonSRX(Constants.RIGHT_INTAKE_MOTOR_ID);
-			TalonSRX tension = new TalonSRX(Constants.TENSION_INTAKE_MOTOR_ID);
-			instance = new Intake(left, right, tension);
+			instance = new Intake(left, right);
 		}
 		return instance;
 	}
 	
 	private TalonSRX left;
 	private TalonSRX right;
-	
-	private TalonSRX tension;
 	
 	private IntakeControlState controlState;
 	
@@ -64,7 +60,6 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 				default:
 					break;
 			}
-			updateTensionMotor();
 		}
 
 		@Override
@@ -74,12 +69,10 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		
 	}
 	
-	public Intake(TalonSRX left, TalonSRX right, TalonSRX tension) {
+	public Intake(TalonSRX left, TalonSRX right) {
 		this.left = left;
 		this.right = right;
-		this.tension = tension;
 		
-		setCurrentLimit(tension, 20, 10, 500);
 		setCurrentLimit(left, Constants.MAX_SUCK_CURRENT, Constants.NOMINAL_SUCK_CURRENT, Constants.MAX_SUCK_CURRENT_TIME);
 		setCurrentLimit(right, Constants.MAX_SUCK_CURRENT, Constants.NOMINAL_SUCK_CURRENT, Constants.MAX_SUCK_CURRENT_TIME);
 		
@@ -109,10 +102,6 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	@Override
 	public void reset() {
 
-	}
-	
-	public void updateTensionMotor() {
-		this.tension.set(ControlMode.PercentOutput, this.wantedTensionPower);
 	}
 	
 //	public void setSpeedCurrentChecked(double timestamp, double speed) {
@@ -175,7 +164,6 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		this.setDefaultCommand(new UpdateTensionPower());
 	}
 
 }
