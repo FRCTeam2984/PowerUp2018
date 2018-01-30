@@ -1,16 +1,24 @@
 
-package org.usfirst.frc.team2984.robot;
+package org.usfirst.frc.team2984;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
 import org.ljrobotics.frc2018.commands.FollowPath;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
+import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.commands.RightSwitchCommand;
+import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.paths.LeftScale;
+import org.ljrobotics.frc2018.loops.VisionProcessor;
 import org.ljrobotics.frc2018.paths.TestPath;
+import org.ljrobotics.frc2018.paths.AutoLeftSwitchSide;
+
+import org.ljrobotics.frc2018.paths.AutoRightSwitchSide;
+import org.ljrobotics.frc2018.paths.LeftScale;
+import org.ljrobotics.frc2018.paths.ShortRightSwitch;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.Drive;
@@ -30,6 +38,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -58,7 +67,7 @@ public class Robot extends IterativeRobot {
 
 	public Robot() {
 		new Constants().loadFromFile();
-		
+
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.intake = Intake.getInstance();
@@ -69,7 +78,8 @@ public class Robot extends IterativeRobot {
 		this.subsystemManager = new SubsystemManager(this.drive, this.arm, this.intake);
 
 		CrashTracker.logRobotConstruction();
-		
+
+		new Constants().loadFromFile();
 	}
 
 	/**
@@ -111,7 +121,7 @@ public class Robot extends IterativeRobot {
 			this.looper.stop();
 
 			this.subsystemManager.stop();
-			
+
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -130,18 +140,18 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logAutoInit();
 
 			this.zeroAllSensors();
-			
+
 			this.looper.start();
 
-			CommandGroup command = new CommandGroup();
-			
-			
-			PathContainer path = new TestPath();
-			command.addSequential(new ResetToPathHead(path));
-			command.addSequential(new FollowPath(path));
-			GameData gd = null;
+			// CommandGroup command = new CommandGroup();
 
-			try {
+
+			// PathContainer path = new TestPath();
+			// command.addSequential(new ResetToPathHead(path));
+			// command.addSequential(new FollowPath(path));
+			// GameData gd = null;
+
+			/*try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
 					path = new LeftScale();
@@ -149,12 +159,23 @@ public class Robot extends IterativeRobot {
 					command.addSequential(new ResetToPathHead(path));
 					command.addSequential(new FollowPath(path));
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
+					path = new ShortRightSwitch();
 					command = new RightSwitchCommand();
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
-			}
+			}*/
 
+			/*CommandGroup command = new CommandGroup();
+			command.addSequential(new ResetToPathHead(path));
+			command.addSequential(new FollowPath(path));
+
+			Scheduler.getInstance().add(command);*/
+			System.out.println("Adding new turn to angle instance");
+			CommandGroup command = new CommandGroup();
+			command.addSequential(new TurnToAngle(180D));
+			command.addSequential(new TurnToAngle(0D));
+			command.addSequential(new TurnToAngle(90D));
 			Scheduler.getInstance().add(command);
 
 		} catch (Throwable throwable) {
@@ -176,6 +197,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		try {
 			CrashTracker.logTeleopInit();
+
+			this.zeroAllSensors();
 
 			this.looper.start();
 
@@ -219,6 +242,7 @@ public class Robot extends IterativeRobot {
 
 	/**
 	 * A method that has code that is run in all periodic functions
+	 * For debugging
 	 */
 	public void allPeriodic() {
 
