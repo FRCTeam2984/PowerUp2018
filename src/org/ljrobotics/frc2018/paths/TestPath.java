@@ -15,22 +15,22 @@ public class TestPath implements PathContainer {
 	@Override
 	public Path buildPath() {
 		ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-//		sWaypoints.add(new Waypoint(0, 0, 0, 0));
-//		sWaypoints.add(new Waypoint(90, 0, 60, 60));
-//		sWaypoints.add(new Waypoint(155, 109, 60, 60));
-//		sWaypoints.add(new Waypoint(227, 141, 0, 60));
-//		sWaypoints.add(new Waypoint(245, 149, 0, 45));
+		sWaypoints.add(new Waypoint(0, 0, 0, 0));
+		sWaypoints.add(new Waypoint(90, 0, 60, 60));
+		sWaypoints.add(new Waypoint(155, 109, 60, 60));
+		sWaypoints.add(new Waypoint(227, 141, 0, 60));
+		sWaypoints.add(new Waypoint(245, 149, 0, 45));
 		
 //		sWaypoints.add(new Waypoint(0, 0, 0, 60));
 //		sWaypoints.add(new Waypoint(80, 0, 0, 60));
 		
-		sWaypoints.add(new Waypoint(0,0,0,60));
-        sWaypoints.add(new Waypoint(50,0,35,60));
-        sWaypoints.add(new Waypoint(100,50,35,60));
-        sWaypoints.add(new Waypoint(50,100,35,60));
-        sWaypoints.add(new Waypoint(0,50,35,60));
-        sWaypoints.add(new Waypoint(50,0,35,60));
-        sWaypoints.add(new Waypoint(100,0,0,60));
+//		sWaypoints.add(new Waypoint(0,0,0,60));
+//        sWaypoints.add(new Waypoint(50,0,35,60));
+//        sWaypoints.add(new Waypoint(100,50,35,60));
+//        sWaypoints.add(new Waypoint(50,100,35,60));
+//        sWaypoints.add(new Waypoint(0,50,35,60));
+//        sWaypoints.add(new Waypoint(50,0,35,60));
+//        sWaypoints.add(new Waypoint(100,0,0,60));
 
 		return PathBuilder.buildPathFromWaypoints(sWaypoints);
 	}
