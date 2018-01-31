@@ -4,20 +4,10 @@ package org.usfirst.frc.team2984.robot;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
-import org.ljrobotics.frc2018.commands.FollowPath;
 import org.ljrobotics.frc2018.commands.LeftSwitchCommand;
-import org.ljrobotics.frc2018.commands.ResetToPathHead;
-import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.commands.RightSwitchCommand;
-import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
-import org.ljrobotics.frc2018.paths.TestPath;
-import org.ljrobotics.frc2018.paths.AutoLeftSwitchSide;
-
-import org.ljrobotics.frc2018.paths.AutoRightSwitchSide;
-import org.ljrobotics.frc2018.paths.LeftScale;
-import org.ljrobotics.frc2018.paths.ShortRightSwitch;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.Drive;
@@ -27,7 +17,6 @@ import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.GameData;
 import org.ljrobotics.lib.util.IncorrectGameData;
 import org.ljrobotics.lib.util.PaddleSide;
-import org.ljrobotics.lib.util.control.PathContainer;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -37,7 +26,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
