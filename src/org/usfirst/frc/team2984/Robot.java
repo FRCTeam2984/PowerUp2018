@@ -12,6 +12,7 @@ import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.paths.LeftScale;
 import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.state.RobotState;
+import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.frc2018.subsystems.Intake;
 //import org.ljrobotics.frc2018.vision.VisionServer;
@@ -44,6 +45,7 @@ public class Robot extends IterativeRobot {
 	private Drive drive;
 	private RobotState robotState;
 	private Intake intake;
+	private Arm arm;
 
 	private Looper looper;
 
@@ -60,10 +62,11 @@ public class Robot extends IterativeRobot {
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.intake = Intake.getInstance();
+		this.arm = Arm.getInstance();
 		this.looper = new Looper();
 		// this.visionServer = VisionServer.getInstance();
 
-		this.subsystemManager = new SubsystemManager(this.drive, this.intake);
+		this.subsystemManager = new SubsystemManager(this.drive, this.arm, this.intake);
 
 		CrashTracker.logRobotConstruction();
 		

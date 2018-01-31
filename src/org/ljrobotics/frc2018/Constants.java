@@ -77,8 +77,8 @@ public class Constants extends ConstantsBase{
 	public static double SUCK_SPEED = 1;
 	public static double SPIT_SPEED = -1;
 	
-	public static int LEFT_INTAKE_MOTOR_ID = 29;
-	public static int RIGHT_INTAKE_MOTOR_ID = 28;
+	public static int LEFT_INTAKE_MOTOR_ID = 26;//29
+	public static int RIGHT_INTAKE_MOTOR_ID = 27;//28
 	public static int TENSION_INTAKE_MOTOR_ID = 20;
 	
 	public static int MAX_SUCK_CURRENT = 20;
@@ -127,6 +127,16 @@ public class Constants extends ConstantsBase{
 	// -----------------------------------------------------------------------------------------------
 	// File location
 
+	public static int MAX_ARM_CURRENT = 20;
+
+	public static int NOMINAL_ARM_CURRENT = 10;
+
+	public static int MAX_ARM_CURRENT_TIME = 1;
+
+	public static int LEFT_ARM_MOTOR_ID = 28;
+
+	public static int RIGHT_ARM_MOTOR_ID = 29;
+
 	@Override
 	public String getFileLocation() {
 		// TODO Fill in file once a location is chosen
@@ -148,12 +158,14 @@ public class Constants extends ConstantsBase{
         "PATH_FOLLOWING_MAX_VEL": 80,
         "PATH_FOLLOWING_PROFILE_Kffa": 0.05,
         "MIN_LOOK_AHEAD_SPEED": 9,
-        "PATH_FOLLOWING_PROFILE_Kp": 0.4,
+        "PATH_FOLLOWING_PROFILE_Kp": 1.5,
+        "PATH_FOLLOWING_PROFILE_Ki": 0.002,
         "MIN_LOOK_AHEAD": 12,
         "PATH_FOLLOWING_PROFILE_Kv": 0.1,
         "SEGMENT_COMPLETION_TOLERANCE": 4,
         "JOYSTICK_ROTATION_AXIS": 2,
         "USE_TANK_DRIVE": false,
-        "QUICKTURN_BUTTON": 5
+        "QUICKTURN_BUTTON": 5,
+        "JOYSTICK_POWER_POWER": 1
 	}*/
 }
