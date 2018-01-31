@@ -79,9 +79,9 @@ public class Constants extends ConstantsBase{
 	public static double SPIT_SPEED = -1;
 
 	//turn pid
-	public static double TURN_Kp = 0.0048;
-	public static double TURN_Ki = 0.0016D;
-	public static double TURN_Kd = 0.0D;
+	public static double TURN_Kp = 0.006;
+	public static double TURN_Ki = 0.003;
+	public static double TURN_Kd = 0.0001;
 	public static double TURN_Kf = 0D;
 	public static int LEFT_INTAKE_MOTOR_ID = 29;
 	public static int RIGHT_INTAKE_MOTOR_ID = 28;
@@ -89,14 +89,14 @@ public class Constants extends ConstantsBase{
 
 	//turn constants
 	//degrees
-	public static double TURN_DEGREE_TOLERANCE = 1D;
+	public static double TURN_DEGREE_TOLERANCE = 5D;
 	//gyroscope is turning under some velocity (in degrees / second)
 	public static double LOW_VELOCITY_THRESHOLD = 1;
 	public static int MAX_SUCK_CURRENT = 20;
 	public static int NOMINAL_SUCK_CURRENT = 10;
 	public static int MAX_SUCK_CURRENT_TIME = 1000;
 	// Speed
-	public static double TURN_SPEED = 1.0;
+	public static double TURN_SPEED = 0.5;
 	// -----------------------------------------------------------------------------------------------
 	// Control Config
 

@@ -1,10 +1,11 @@
 
-package org.usfirst.frc.team2984;
+package org.usfirst.frc.team2984.robot;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
 import org.ljrobotics.frc2018.commands.FollowPath;
+import org.ljrobotics.frc2018.commands.LeftScaleCommand;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
 import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.commands.RightSwitchCommand;
@@ -143,39 +144,19 @@ public class Robot extends IterativeRobot {
 
 			this.looper.start();
 
-			// CommandGroup command = new CommandGroup();
+			CommandGroup command = null;
 
+			GameData gd = null;
 
-			// PathContainer path = new TestPath();
-			// command.addSequential(new ResetToPathHead(path));
-			// command.addSequential(new FollowPath(path));
-			// GameData gd = null;
-
-			/*try {
+			try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
-					path = new LeftScale();
-					command = new CommandGroup();
-					command.addSequential(new ResetToPathHead(path));
-					command.addSequential(new FollowPath(path));
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
-					path = new ShortRightSwitch();
 					command = new RightSwitchCommand();
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
-			}*/
-
-			/*CommandGroup command = new CommandGroup();
-			command.addSequential(new ResetToPathHead(path));
-			command.addSequential(new FollowPath(path));
-
-			Scheduler.getInstance().add(command);*/
-			System.out.println("Adding new turn to angle instance");
-			CommandGroup command = new CommandGroup();
-			command.addSequential(new TurnToAngle(180D));
-			command.addSequential(new TurnToAngle(0D));
-			command.addSequential(new TurnToAngle(90D));
+			}
 			Scheduler.getInstance().add(command);
 
 		} catch (Throwable throwable) {

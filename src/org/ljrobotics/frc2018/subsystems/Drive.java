@@ -121,6 +121,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	private SynchronousPIDF leftPID;
 	private SynchronousPIDF rightPID;
 	private SynchronousPIDF speedPID;
+	
+	private boolean hasUpdatedPID;
 
 	// Hardware States
 	private NeutralMode isBrakeMode;
@@ -180,7 +182,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		speedPID = new SynchronousPIDF(Constants.TURN_Kp, Constants.TURN_Ki, 
     			Constants.TURN_Kd, Constants.TURN_Kf);
 		speedPID.setContinuous();
-		speedPID.setInputRange(0D, 360D);
+		speedPID.setInputRange(-180D, 180D);
 		//TODO Add constant for output range
 		speedPID.setOutputRange(-Constants.TURN_SPEED, Constants.TURN_SPEED);
 		
@@ -231,7 +233,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 		speedPID.reset();
 		speedPID.setSetpoint(angle);
-		
+		this.hasUpdatedPID = false;
 	}
 	
 	public SynchronousPIDF getSpeedPID() {
@@ -246,21 +248,17 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 		leftMaster.set(ControlMode.PercentOutput, speed);
 		rightMaster.set(ControlMode.PercentOutput, -speed);
-		
+		this.hasUpdatedPID = true;
 		// setVelocitySetpoint(-speed, speed);
 		
 	}
 	
 	public boolean isDoneWithTurn() {
 		// boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD;
-		boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && Math.abs(speedPID.getSetpoint() - LazyGyroscope.getInstance().getAngle()) <= Constants.TURN_DEGREE_TOLERANCE;
-		if(toReturn) {
-			leftMaster.set(ControlMode.PercentOutput, 0);
-			rightMaster.set(ControlMode.PercentOutput, 0);
-			System.out.println("I'M STOPPING! " + speedPID.getError());
-		} else {
-			System.out.println("Turning with error " + speedPID.getError());
-		}
+		boolean lessThanSpeed = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE ;
+//		boolean lessThanAngle = Math.abs(speedPID.getSetpoint() - this.getGyroAngle().getDegrees()) <= Constants.TURN_DEGREE_TOLERANCE;
+		boolean toReturn = lessThanSpeed && this.hasUpdatedPID;
+	    System.out.println("Turning with error " + speedPID.getError());
 		return (toReturn);
 	}
 	
