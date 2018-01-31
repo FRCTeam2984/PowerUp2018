@@ -5,15 +5,13 @@ import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
 import org.ljrobotics.frc2018.commands.FollowPath;
-import org.ljrobotics.frc2018.commands.LeftScaleCommand;
+import org.ljrobotics.frc2018.commands.LeftSwitchCommand;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
 import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.commands.RightSwitchCommand;
 import org.ljrobotics.frc2018.commands.TurnToAngle;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
-import org.ljrobotics.frc2018.paths.LeftScale;
-import org.ljrobotics.frc2018.loops.VisionProcessor;
 import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.paths.AutoLeftSwitchSide;
 
@@ -151,6 +149,8 @@ public class Robot extends IterativeRobot {
 			try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
+					command = new LeftSwitchCommand();
+
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
 					command = new RightSwitchCommand();
 				}
