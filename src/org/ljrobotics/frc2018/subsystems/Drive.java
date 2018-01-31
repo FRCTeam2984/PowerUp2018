@@ -246,19 +246,24 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	 * updates the wheel velocity setpoints.
 	 */
 	public void updatePathFollower(double timestamp) {
-		RigidTransform2d robot_pose = robotState.getLatestFieldToVehicle().getValue();
-		Twist2d command = pathFollower.update(timestamp, robot_pose, robotState.getDistanceDriven(),
-				robotState.getPredictedVelocity().dx);
-		if (!pathFollower.isFinished()) {
-//			command = new Twist2d(command.dx, command.dy, command.dtheta*1.5);
-			System.out.println(command);
-			SmartDashboard.putNumber("Turn Command", command.dtheta);
-			SmartDashboard.putNumber("Move Command", command.dx);
-			Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
-			updateVelocitySetpoint(setpoint.left, setpoint.right);
-		} else {
-			updateVelocitySetpoint(0, 0);
+		try {
+			RigidTransform2d robot_pose = robotState.getLatestFieldToVehicle().getValue();
+			Twist2d command = pathFollower.update(timestamp, robot_pose, robotState.getDistanceDriven(),
+					robotState.getPredictedVelocity().dx);
+			if (!pathFollower.isFinished()) {
+//				command = new Twist2d(command.dx, command.dy, command.dtheta*1.5);
+//				System.out.println(command);
+				SmartDashboard.putNumber("Turn Command", command.dtheta);
+				SmartDashboard.putNumber("Move Command", command.dx);
+				Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
+				updateVelocitySetpoint(setpoint.left, setpoint.right);
+			} else {
+				updateVelocitySetpoint(0, 0);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
+		
 	}
 
 	/**
