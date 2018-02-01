@@ -1,8 +1,6 @@
 package org.ljrobotics.frc2018;
 
-import org.ljrobotics.frc2018.commands.IntakeIdle;
-import org.ljrobotics.frc2018.commands.IntakeSpit;
-import org.ljrobotics.frc2018.commands.IntakeSuck;
+import org.ljrobotics.frc2018.commands.ArmSetpoint;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -32,6 +30,8 @@ public class OI {
 	private OI() {
 		this.stick = new Joystick(Constants.JOYSTICK_DRIVE_ID);
 		this.stick2 = new Joystick(Constants.JOYSTICK_OPERATOR_ID);
+		JoystickButton suck = new JoystickButton(this.stick2, 1);
+		suck.whenPressed(new ArmSetpoint());
 //		JoystickButton suck = new JoystickButton(this.stick2, 1);
 //		suck.whenPressed(new IntakeSuck());
 //		suck.whenReleased(new IntakeIdle());
