@@ -133,9 +133,13 @@ public class Constants extends ConstantsBase{
 
 	public static int MAX_ARM_CURRENT_TIME = 1;
 
-	public static int LEFT_ARM_MOTOR_ID = 28;
+//	public static int SLAVE_ARM_MOTOR_ID = 28;
 
-	public static int RIGHT_ARM_MOTOR_ID = 29;
+	public static int MASTER_ARM_MOTOR_ID = 4;
+
+	 public static final int MIN_ARM_ENCODER_VALUE = 0;
+	 public static final int MAX_ARM_ENCODER_VALUE = 10;
+
 
 	@Override
 	public String getFileLocation() {
