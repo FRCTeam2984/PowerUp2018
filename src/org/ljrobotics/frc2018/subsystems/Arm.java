@@ -168,8 +168,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		// SmartDashboard.putNumber("Arm Motor Current Slave",
 		// this.slave.getOutputCurrent());
 		SmartDashboard.putNumber("Arm Motor Encoder Master", this.getArmDegrees());
-
-		SmartDashboard.putNumber("Arm Motor Current Master", this.master.getOutputCurrent());
+		SmartDashboard.putNumber("Arm Motor Encoder RAW", this.master.getSelectedSensorPosition(0));
 
 		SmartDashboard.putNumber("Arm Motor Current Master", this.master.getOutputCurrent());
 	}
@@ -202,7 +201,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private double encoderTicksToDegrees(int ticks) {
-		return (double) ticks / (4096 * 360);
+		return ((double) ticks / 4096) * 360;
 	}
 
 	private double degreesToEncoderTicks(double degrees) {
@@ -222,8 +221,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		double dt = timestamp - this.lastTimeStamp;
 		this.lastTimeStamp = timestamp;
 
-		double masterVel = this.getArmDegrees();
-		double power = this.armPID.calculate(masterVel, dt);
+		double masterDegrees = this.getArmDegrees();
+		double power = this.armPID.calculate(masterDegrees, dt);
 
 		SmartDashboard.putNumber("Arm Output", power);
 
