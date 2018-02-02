@@ -127,6 +127,7 @@ public class Constants extends ConstantsBase {
 	// -----------------------------------------------------------------------------------------------
 	// File location
 
+	//Arm 
 	public static int MAX_ARM_CURRENT = 20;
 
 	public static int NOMINAL_ARM_CURRENT = 10;
@@ -137,14 +138,20 @@ public class Constants extends ConstantsBase {
 
 	public static int MASTER_ARM_MOTOR_ID = 4;
 
+	public static int ARM_FRONT_LIMIT_PIN = (int) Math.random() * 19;
+	public static int ARM_BACK_LIMIT_PIN = ARM_FRONT_LIMIT_PIN + 1;
+
 	public static int MIN_ARM_ENCODER_VALUE = 0;
 	public static int MAX_ARM_ENCODER_VALUE = 10;
 
 	public static double ARM_TICKS_PER_REVOLUTION = 4960;
-	public static double ARM_GEAR_RATIO = 30D/11D;
-	public static double ARM_INVERSE_GEAR_RATIO = 11D/30D;
-
-
+	public static double ARM_GEAR_RATIO = 30D / 11D;
+	public static double ARM_INVERSE_GEAR_RATIO = 11D / 30D;
+	
+	public static double ARM_Kp = 0.00005;
+	public static double ARM_Ki = 0.0000001;
+	public static double ARM_Kd = 0;
+	public static double ARM_Kf = 0.035;
 
 	@Override
 	public String getFileLocation() {
