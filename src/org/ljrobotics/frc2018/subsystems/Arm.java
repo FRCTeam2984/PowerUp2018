@@ -92,8 +92,9 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		int tempFrontPin = (int) Math.random() * 19;
 		this.frontLimitSwitch = new DigitalInput(tempFrontPin);
 		this.backLimitSwitch = new DigitalInput(tempFrontPin + 1);
-		
-		this.PIDKp = 0.00005;;
+
+		this.PIDKp = 0.00005;
+		;
 		this.PIDKi = 0.0000001;
 		this.PIDKd = 0;
 		this.PIDKf = 0.035;
@@ -140,21 +141,24 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private void setRestrictedSpeed(double speed) {
-//		if ((frontLimitSwitch.get() && speed > 0) || (backLimitSwitch.get() && speed < 0)) {
-//			// One or both limit switch are broken and the speed will move in a legal
-//			// direction
-//			this.master.set(ControlMode.PercentOutput, speed);
-//			updateEncoder();
-//		} else if (!(backLimitSwitch.get() || !frontLimitSwitch.get())) {
-//			// No limit switch is broken
-//			this.master.set(ControlMode.PercentOutput, speed);
-//		} else {
-//			// One or both limit switch are broken and the speed will move in an illegal
-//			// direction
-//			updateEncoder();
-//			this.master.set(ControlMode.PercentOutput, 0);
-//		}
-		this.master.set(ControlMode.PercentOutput, 0);
+		// if ((frontLimitSwitch.get() && speed > 0) || (backLimitSwitch.get() && speed
+		// < 0)) {
+		// // One or both limit switch are broken and the speed will move in a legal
+		// // direction
+		// this.master.set(ControlMode.PercentOutput, speed);
+		// updateEncoder();
+		// } else if (!(backLimitSwitch.get() || !frontLimitSwitch.get())) {
+		// // No limit switch is broken
+		// this.master.set(ControlMode.PercentOutput, speed);
+		// } else {
+		// // One or both limit switch are broken and the speed will move in an illegal
+		// // direction
+		// updateEncoder();
+		// this.master.set(ControlMode.PercentOutput, 0);
+		// }
+		SmartDashboard.putNumber("Arm Output", speed);
+
+		this.master.set(ControlMode.PercentOutput, speed);
 
 	}
 
@@ -165,11 +169,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	public void outputToSmartDashboard() {
-		// SmartDashboard.putNumber("Arm Motor Current Slave",
-		// this.slave.getOutputCurrent());
+//		SmartDashboard.putNumber("Arm Motor Current Slave", this.getArmSlaveDegrees());
 		SmartDashboard.putNumber("Arm Motor Encoder Master", this.getArmDegrees());
-		SmartDashboard.putNumber("Arm Motor Encoder RAW", this.master.getSelectedSensorPosition(0));
-
 		SmartDashboard.putNumber("Arm Motor Current Master", this.master.getOutputCurrent());
 	}
 
@@ -201,11 +202,11 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private double encoderTicksToDegrees(int ticks) {
-		return ((double) ticks / 4096) * 360;
+		return (double) ticks / Constants.ARM_TICKS_PER_REVOLUTION * Constants.ARM_GEAR_RATIO * 360D;
 	}
 
 	private double degreesToEncoderTicks(double degrees) {
-		return (double) degrees * (4096 * 360);
+		return (double) degrees * Constants.ARM_TICKS_PER_REVOLUTION * Constants.ARM_GEAR_RATIO * 360D;
 	}
 
 	private synchronized void updateAngleSetpoint(double degrees) {
@@ -217,6 +218,10 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		return encoderTicksToDegrees(this.master.getSelectedSensorPosition(0));
 	}
 
+	public double getArmSlaveDegrees() {
+		return encoderTicksToDegrees(this.slave.getSelectedSensorPosition(0));
+	}
+
 	public synchronized void updateTalonOutputs(double timestamp) {
 		double dt = timestamp - this.lastTimeStamp;
 		this.lastTimeStamp = timestamp;
@@ -224,9 +229,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		double masterDegrees = this.getArmDegrees();
 		double power = this.armPID.calculate(masterDegrees, dt);
 
-		SmartDashboard.putNumber("Arm Output", power);
-
-		this.master.set(ControlMode.PercentOutput, power);
+		this.setRestrictedSpeed(power);
 	}
 
 	@Override
@@ -236,7 +239,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		this.setDefaultCommand(new ArmIdle());
+		// this.setDefaultCommand(new ArmIdle());
 	}
 
 }
