@@ -30,7 +30,10 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 			// TalonSRX slave = new TalonSRX(Constants.SLAVE_ARM_MOTOR_ID);
 			TalonSRX slave = null;
 			TalonSRX master = new TalonSRX(Constants.MASTER_ARM_MOTOR_ID);
-			instance = new Arm(slave, master);
+			DigitalInput frontLimitSwitch = new DigitalInput(Constants.ARM_FRONT_LIMIT_PIN);
+			DigitalInput backLimitSwitch = new DigitalInput(Constants.ARM_BACK_LIMIT_PIN + 1);
+
+			instance = new Arm(slave, master, frontLimitSwitch, backLimitSwitch);
 		}
 		return instance;
 	}
@@ -41,13 +44,12 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	private DigitalInput backLimitSwitch;
 
 	private SynchronousPIDF armPID;
-	private double PIDKp;
-	private double PIDKi;
-	private double PIDKd;
-	private double PIDKf;
-
+	
 	private ArmControlState controlState;
 	private double wantedSpeed;
+	private boolean wantedFrontLimit;
+	private boolean wantedBackLimit;
+
 	private double lastTimeStamp;
 
 	public static enum ArmControlState {
@@ -78,27 +80,20 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 			default:
 				break;
 			}
-
 		}
 
 		@Override
 		public void onStop(double timestamp) {
-
 		}
 
 	}
 
-	public Arm(TalonSRX slave, TalonSRX master) {
-		int tempFrontPin = (int) Math.random() * 19;
-		this.frontLimitSwitch = new DigitalInput(tempFrontPin);
-		this.backLimitSwitch = new DigitalInput(tempFrontPin + 1);
+	public Arm(TalonSRX slave, TalonSRX master, DigitalInput frontLimitSwitch, DigitalInput backLimitSwitch) {
+		this.frontLimitSwitch = frontLimitSwitch;
+		this.backLimitSwitch = backLimitSwitch;
 
-		this.PIDKp = 0.00005;
-		;
-		this.PIDKi = 0.0000001;
-		this.PIDKd = 0;
-		this.PIDKf = 0.035;
-		this.armPID = new SynchronousPIDF(this.PIDKp, this.PIDKp, this.PIDKd, this.PIDKd);
+		
+		this.armPID = new SynchronousPIDF(Constants.ARM_Kp,Constants.ARM_Ki,Constants.ARM_Kd,Constants.ARM_Kf);
 
 		this.slave = slave;
 		this.master = master;
@@ -141,35 +136,39 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private void setRestrictedSpeed(double speed) {
-		// if ((frontLimitSwitch.get() && speed > 0) || (backLimitSwitch.get() && speed
-		// < 0)) {
-		// // One or both limit switch are broken and the speed will move in a legal
-		// // direction
-		// this.master.set(ControlMode.PercentOutput, speed);
-		// updateEncoder();
-		// } else if (!(backLimitSwitch.get() || !frontLimitSwitch.get())) {
-		// // No limit switch is broken
-		// this.master.set(ControlMode.PercentOutput, speed);
-		// } else {
-		// // One or both limit switch are broken and the speed will move in an illegal
-		// // direction
-		// updateEncoder();
-		// this.master.set(ControlMode.PercentOutput, 0);
-		// }
+		this.setRestrictedSpeedTest(speed, this.frontLimitSwitch.get(), this.backLimitSwitch.get());
 		SmartDashboard.putNumber("Arm Output", speed);
+	}
 
-		this.master.set(ControlMode.PercentOutput, speed);
-
+	protected void setRestrictedSpeedTest(double speed, boolean frontLimit, boolean backLimit) {
+	 if ((frontLimit && speed >= 0) || (backLimit && speed <= 0)) {
+			// 1 or both limit switch are broken and the speed will move in a legal
+			// direction
+			this.master.set(ControlMode.PercentOutput, speed);
+			updateEncoder();
+		} else if ((!backLimit && !frontLimit)) {
+			// No limit switch is broken
+			this.master.set(ControlMode.PercentOutput, speed);
+		} else {
+			// 1 or both limit switch are broken and the speed will move in an illegal
+			// direction
+			updateEncoder();
+			this.master.set(ControlMode.PercentOutput, 0);
+		}
 	}
 
 	public void setWantedSpeed(double power) {
+	
 		this.wantedSpeed = power;
 		this.controlState = ArmControlState.Moving;
 	}
 
+
+
 	@Override
 	public void outputToSmartDashboard() {
-//		SmartDashboard.putNumber("Arm Motor Current Slave", this.getArmSlaveDegrees());
+		// SmartDashboard.putNumber("Arm Motor Current Slave",
+		// this.getArmSlaveDegrees());
 		SmartDashboard.putNumber("Arm Motor Encoder Master", this.getArmDegrees());
 		SmartDashboard.putNumber("Arm Motor Current Master", this.master.getOutputCurrent());
 	}
@@ -185,10 +184,12 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private void updateEncoder() {
-		if (this.frontLimitSwitch.get()) {
-			this.master.setSelectedSensorPosition(Constants.MIN_ARM_ENCODER_VALUE, 0, 0);
-		} else if (this.backLimitSwitch.get()) {
-			this.master.setSelectedSensorPosition(Constants.MAX_ARM_ENCODER_VALUE, 0, 0);
+		if (frontLimitSwitch != null && backLimitSwitch != null) {
+			if (this.frontLimitSwitch.get()) {
+				this.master.setSelectedSensorPosition(Constants.MIN_ARM_ENCODER_VALUE, 0, 0);
+			} else if (this.backLimitSwitch.get()) {
+				this.master.setSelectedSensorPosition(Constants.MAX_ARM_ENCODER_VALUE, 0, 0);
+			}
 		}
 	}
 
