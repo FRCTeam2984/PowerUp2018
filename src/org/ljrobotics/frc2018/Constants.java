@@ -44,7 +44,7 @@ public class Constants extends ConstantsBase{
 
 	public static double TRACK_SCRUB_FACTOR = 0.924; //Corrective factor for skidding
 
-	public static double TRACK_WIDTH_INCHES = 19.75;
+	public static double TRACK_WIDTH_INCHES = 27.75;
 	// To edit for path following
 	
 	public static double MIN_LOOK_AHEAD = 12;
