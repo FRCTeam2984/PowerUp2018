@@ -34,7 +34,7 @@ public class ArmTest {
 		slave = mock(TalonSRX.class);
 		master = mock(TalonSRX.class);
 
-		this.arm = new Arm(slave, master, null, null);
+		this.arm = new Arm(slave, master);
 	}
 
 	private void verifyTalons(ControlMode mode, double master) {
@@ -44,40 +44,5 @@ public class ArmTest {
 		assertEquals(master, (double) captor.getValue(), 0.00001);
 	}
 
-	@Test
-	public void frontSpeedZero() {
-		arm.setRestrictedSpeedTest(0, false, false);
-		verifyTalons(ControlMode.PercentOutput, 0);
-	}
-
-	@Test
-	public void frontBrokenWithNegativeSpeed() {
-		arm.setRestrictedSpeedTest(-1, true, false);
-		verifyTalons(ControlMode.PercentOutput, 0);
-	}
-
-	@Test
-	public void frontBrokenWithPositiveSpeed() {
-		arm.setRestrictedSpeedTest(1, true, false);
-		verifyTalons(ControlMode.PercentOutput, 1);
-	}
-
-	@Test
-	public void backSpeedZero() {
-		arm.setRestrictedSpeedTest(0, false, false);
-		verifyTalons(ControlMode.PercentOutput, 0);
-	}
-
-	@Test
-	public void backBrokenWithNegativeSpeed() {
-		arm.setRestrictedSpeedTest(-1, false, true);
-		verifyTalons(ControlMode.PercentOutput, -1);
-	}
-
-	@Test
-	public void backBrokenWithPositiveSpeed() {
-		arm.setRestrictedSpeedTest(1, false, true);
-		verifyTalons(ControlMode.PercentOutput, 0);
-	}
 
 }
