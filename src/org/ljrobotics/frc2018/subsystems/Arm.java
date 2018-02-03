@@ -10,7 +10,6 @@ import org.ljrobotics.lib.util.drivers.CANTalonFactory;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -30,25 +29,19 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 			// TalonSRX slave = new TalonSRX(Constants.SLAVE_ARM_MOTOR_ID);
 			TalonSRX slave = null;
 			TalonSRX master = new TalonSRX(Constants.MASTER_ARM_MOTOR_ID);
-			DigitalInput frontLimitSwitch = new DigitalInput(Constants.ARM_FRONT_LIMIT_PIN);
-			DigitalInput backLimitSwitch = new DigitalInput(Constants.ARM_BACK_LIMIT_PIN + 1);
 
-			instance = new Arm(slave, master, frontLimitSwitch, backLimitSwitch);
+			instance = new Arm(slave, master);
 		}
 		return instance;
 	}
 
 	private TalonSRX slave;
 	private TalonSRX master;
-	private DigitalInput frontLimitSwitch;
-	private DigitalInput backLimitSwitch;
 
 	private SynchronousPIDF armPID;
-	
+
 	private ArmControlState controlState;
 	private double wantedSpeed;
-	private boolean wantedFrontLimit;
-	private boolean wantedBackLimit;
 
 	private double lastTimeStamp;
 
@@ -88,12 +81,9 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	}
 
-	public Arm(TalonSRX slave, TalonSRX master, DigitalInput frontLimitSwitch, DigitalInput backLimitSwitch) {
-		this.frontLimitSwitch = frontLimitSwitch;
-		this.backLimitSwitch = backLimitSwitch;
-
-		
-		this.armPID = new SynchronousPIDF(Constants.ARM_Kp,Constants.ARM_Ki,Constants.ARM_Kd,Constants.ARM_Kf);
+	public Arm(TalonSRX slave, TalonSRX master) {
+		SmartDashboard.putNumber("Arm Wanted Degrees", 10000);
+		this.armPID = new SynchronousPIDF(Constants.ARM_Kp, Constants.ARM_Kp, Constants.ARM_Kd, Constants.ARM_Kd);
 
 		this.slave = slave;
 		this.master = master;
@@ -136,39 +126,21 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private void setRestrictedSpeed(double speed) {
-		this.setRestrictedSpeedTest(speed, this.frontLimitSwitch.get(), this.backLimitSwitch.get());
+		updateEncoder();
+		this.master.set(ControlMode.PercentOutput, speed);
 		SmartDashboard.putNumber("Arm Output", speed);
 	}
 
-	protected void setRestrictedSpeedTest(double speed, boolean frontLimit, boolean backLimit) {
-	 if ((frontLimit && speed >= 0) || (backLimit && speed <= 0)) {
-			// 1 or both limit switch are broken and the speed will move in a legal
-			// direction
-			this.master.set(ControlMode.PercentOutput, speed);
-			updateEncoder();
-		} else if ((!backLimit && !frontLimit)) {
-			// No limit switch is broken
-			this.master.set(ControlMode.PercentOutput, speed);
-		} else {
-			// 1 or both limit switch are broken and the speed will move in an illegal
-			// direction
-			updateEncoder();
-			this.master.set(ControlMode.PercentOutput, 0);
-		}
-	}
-
 	public void setWantedSpeed(double power) {
-	
 		this.wantedSpeed = power;
 		this.controlState = ArmControlState.Moving;
 	}
 
-
-
 	@Override
 	public void outputToSmartDashboard() {
-		// SmartDashboard.putNumber("Arm Motor Current Slave",
-		// this.getArmSlaveDegrees());
+		SmartDashboard.putBoolean("Is Forward Closed", this.master.getSensorCollection().isRevLimitSwitchClosed());
+		SmartDashboard.putBoolean("Is Backward Closed", this.master.getSensorCollection().isFwdLimitSwitchClosed());
+
 		SmartDashboard.putNumber("Arm Motor Encoder Master", this.getArmDegrees());
 		SmartDashboard.putNumber("Arm Motor Current Master", this.master.getOutputCurrent());
 	}
@@ -184,13 +156,14 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private void updateEncoder() {
-		if (frontLimitSwitch != null && backLimitSwitch != null) {
-			if (this.frontLimitSwitch.get()) {
-				this.master.setSelectedSensorPosition(Constants.MIN_ARM_ENCODER_VALUE, 0, 0);
-			} else if (this.backLimitSwitch.get()) {
-				this.master.setSelectedSensorPosition(Constants.MAX_ARM_ENCODER_VALUE, 0, 0);
-			}
+		int minTicks = degreesToEncoderTicks(Constants.MIN_ARM_ENCODER_DEGREES);
+		int maxTicks = degreesToEncoderTicks(Constants.MAX_ARM_ENCODER_DEGREES);
+		if (this.master.getSensorCollection().isFwdLimitSwitchClosed()) {
+			this.master.setSelectedSensorPosition(minTicks, 0, 0);
+		} else if (this.master.getSensorCollection().isRevLimitSwitchClosed()) {
+			this.master.setSelectedSensorPosition(maxTicks, 0, 0);
 		}
+
 	}
 
 	public void setWantedState(ArmControlState state) {
@@ -203,11 +176,12 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private double encoderTicksToDegrees(int ticks) {
-		return (double) ticks / Constants.ARM_TICKS_PER_REVOLUTION * Constants.ARM_GEAR_RATIO * 360D;
+	
+		return ((double) ticks / Constants.ARM_TICKS_PER_REVOLUTION) * Constants.ARM_GEAR_RATIO * 360D;
 	}
 
-	private double degreesToEncoderTicks(double degrees) {
-		return (double) degrees * Constants.ARM_TICKS_PER_REVOLUTION * Constants.ARM_GEAR_RATIO * 360D;
+	private int degreesToEncoderTicks(double degrees) {
+		return (int) ((degrees * Constants.ARM_TICKS_PER_REVOLUTION) / (Constants.ARM_GEAR_RATIO * 360D));
 	}
 
 	private synchronized void updateAngleSetpoint(double degrees) {
@@ -226,10 +200,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	public synchronized void updateTalonOutputs(double timestamp) {
 		double dt = timestamp - this.lastTimeStamp;
 		this.lastTimeStamp = timestamp;
-
-		double masterDegrees = this.getArmDegrees();
-		double power = this.armPID.calculate(masterDegrees, dt);
-
+		double degrees = this.getArmDegrees();
+		double power = this.armPID.calculate(degrees, dt);
 		this.setRestrictedSpeed(power);
 	}
 
@@ -240,7 +212,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		// this.setDefaultCommand(new ArmIdle());
+//		this.setDefaultCommand(new ArmIdle());
 	}
 
 }
