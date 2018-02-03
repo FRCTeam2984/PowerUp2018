@@ -77,8 +77,8 @@ public class Constants extends ConstantsBase{
 	public static double SUCK_SPEED = 1;
 	public static double SPIT_SPEED = -1;
 	
-	public static int LEFT_INTAKE_MOTOR_ID = 26;//29
-	public static int RIGHT_INTAKE_MOTOR_ID = 27;//28
+	public static int LEFT_INTAKE_MOTOR_ID = 29;//29
+	public static int RIGHT_INTAKE_MOTOR_ID = 28;//28
 	public static int TENSION_INTAKE_MOTOR_ID = 20;
 	
 	public static int MAX_SUCK_CURRENT = 20;
@@ -106,10 +106,10 @@ public class Constants extends ConstantsBase{
 
 	public static int JOYSTICK_DRIVE_ID =  0x0;
 	public static int JOYSTICK_OPERATOR_ID = 1;
-	public static final int FRONT_LEFT_MOTOR_ID =  12;
-	public static final int FRONT_RIGHT_MOTOR_ID = 10;
-	public static final int REAR_LEFT_MOTOR_ID =   23;
-	public static final int REAR_RIGHT_MOTOR_ID =  22;
+	public static final int SLAVE_LEFT_MOTOR_ID =  10;
+	public static final int SLAVE_RIGHT_MOTOR_ID = 12;
+	public static final int MASTER_LEFT_MOTOR_ID =   22;
+	public static final int MASTER_RIGHT_MOTOR_ID =  23;
 	// -----------------------------------------------------------------------------------------------
 	// General
 	public static double EQUALS_EPSILON = 0.00001;
@@ -133,9 +133,9 @@ public class Constants extends ConstantsBase{
 
 	public static int MAX_ARM_CURRENT_TIME = 1;
 
-	public static int LEFT_ARM_MOTOR_ID = 28;
+	public static int LEFT_ARM_MOTOR_ID = 26;
 
-	public static int RIGHT_ARM_MOTOR_ID = 29;
+	public static int RIGHT_ARM_MOTOR_ID = 27;
 
 	@Override
 	public String getFileLocation() {

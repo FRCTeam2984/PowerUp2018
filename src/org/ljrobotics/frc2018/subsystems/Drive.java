@@ -42,15 +42,15 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	public static Drive getInstance() {
 		if (instance == null) {
-			TalonSRX frontLeft = new LazyCANTalon(Constants.FRONT_LEFT_MOTOR_ID);
-			TalonSRX frontRight = new LazyCANTalon(Constants.FRONT_RIGHT_MOTOR_ID);
-			TalonSRX rearLeft = new LazyCANTalon(Constants.REAR_LEFT_MOTOR_ID);
-			TalonSRX rearRight = new LazyCANTalon(Constants.REAR_RIGHT_MOTOR_ID);
+			TalonSRX slaveLeft = new LazyCANTalon(Constants.SLAVE_LEFT_MOTOR_ID);
+			TalonSRX slaveRight = new LazyCANTalon(Constants.SLAVE_RIGHT_MOTOR_ID);
+			TalonSRX masterLeft = new LazyCANTalon(Constants.MASTER_LEFT_MOTOR_ID);
+			TalonSRX masterRight = new LazyCANTalon(Constants.MASTER_RIGHT_MOTOR_ID);
 
 			RobotState robotState = RobotState.getInstance();
 			LazyGyroscope gyro = LazyGyroscope.getInstance();
 
-			instance = new Drive(frontLeft, frontRight, rearLeft, rearRight, robotState, gyro);
+			instance = new Drive(masterLeft, masterRight, slaveLeft, slaveRight, robotState, gyro);
 		}
 		return instance;
 	}
@@ -124,25 +124,25 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	/**
 	 * Creates a new Drive Subsystem from that controls the given motor controllers.
 	 *
-	 * @param frontLeft
+	 * @param masterLeft
 	 *            the font left talon motor controller
-	 * @param frontRight
+	 * @param masterRight
 	 *            the font right talon motor controller
-	 * @param backLeft
+	 * @param slaveLeft
 	 *            the back left talon motor controller
-	 * @param backRight
+	 * @param slaveRight
 	 *            the back right talon motor controller
 	 */
-	public Drive(TalonSRX frontLeft, TalonSRX frontRight, TalonSRX backLeft, TalonSRX backRight, RobotState robotState,
+	public Drive(TalonSRX masterLeft, TalonSRX masterRight, TalonSRX slaveLeft, TalonSRX slaveRight, RobotState robotState,
 			Gyro gyro) {
 
 		this.robotState = robotState;
 		this.gyro = gyro;
 
-		this.leftMaster = frontLeft;
-		this.rightMaster = frontRight;
-		this.leftSlave = backLeft;
-		this.rightSlave = backRight;
+		this.leftMaster = masterLeft;
+		this.rightMaster = masterRight;
+		this.leftSlave = slaveLeft;
+		this.rightSlave = slaveRight;
 
 		CANTalonFactory.updateCANTalonToDefault(this.leftMaster);
 
@@ -153,6 +153,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 		CANTalonFactory.updatePermanentSlaveTalon(this.rightSlave, this.rightMaster.getDeviceID());
 		rightMaster.getStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5);
+		rightSlave.setInverted(true);
+		leftMaster.setInverted(true);
 		rightMaster.setInverted(true);
 		
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);

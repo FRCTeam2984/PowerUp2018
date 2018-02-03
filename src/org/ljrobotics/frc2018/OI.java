@@ -32,12 +32,12 @@ public class OI {
 	private OI() {
 		this.stick = new Joystick(Constants.JOYSTICK_DRIVE_ID);
 		this.stick2 = new Joystick(Constants.JOYSTICK_OPERATOR_ID);
-//		JoystickButton suck = new JoystickButton(this.stick2, 1);
-//		suck.whenPressed(new IntakeSuck());
-//		suck.whenReleased(new IntakeIdle());
-//		
-//		JoystickButton spit = new JoystickButton(this.stick2, 4);
-//		spit.whenPressed(new IntakeSpit());
-//		spit.whenReleased(new IntakeIdle());
+		JoystickButton suck = new JoystickButton(this.stick2, 1);
+		suck.whenPressed(new IntakeSuck());
+		suck.whenReleased(new IntakeIdle());
+		
+		JoystickButton spit = new JoystickButton(this.stick2, 4);
+		spit.whenPressed(new IntakeSpit());
+		spit.whenReleased(new IntakeIdle());
 	}
 }
