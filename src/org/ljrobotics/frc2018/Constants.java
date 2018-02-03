@@ -128,23 +128,23 @@ public class Constants extends ConstantsBase {
 	// File location
 
 	//Arm 
+	public static int MIN_ARM_SPEED = -1;
+	public static int MAX_ARM_SPEED = 1;
 	public static int MAX_ARM_CURRENT = 20;
-
 	public static int NOMINAL_ARM_CURRENT = 10;
-
 	public static int MAX_ARM_CURRENT_TIME = 1;
 
-	public static int SLAVE_ARM_MOTOR_ID = 28;
+//	public static int SLAVE_ARM_MOTOR_ID = 28;
 
 	public static int MASTER_ARM_MOTOR_ID = 4;
 
 	public static int ARM_FRONT_LIMIT_PIN = (int) Math.random() * 19;
 	public static int ARM_BACK_LIMIT_PIN = ARM_FRONT_LIMIT_PIN + 1;
 
-	public static int MIN_ARM_ENCODER_VALUE = 0;
-	public static int MAX_ARM_ENCODER_VALUE = 10;
+	public static double MIN_ARM_ENCODER_DEGREES = 0;
+	public static int MAX_ARM_ENCODER_DEGREES = 180;
 
-	public static double ARM_TICKS_PER_REVOLUTION = 4960;
+	public static double ARM_TICKS_PER_REVOLUTION = 4960D;
 	public static double ARM_GEAR_RATIO = 30D / 11D;
 	public static double ARM_INVERSE_GEAR_RATIO = 11D / 30D;
 	
