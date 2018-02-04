@@ -18,6 +18,7 @@ import org.ljrobotics.lib.util.drivers.LazyGyroscope;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Twist2d;
+import org.ljrobotics.lib.util.Conversions;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -42,15 +43,15 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	public static Drive getInstance() {
 		if (instance == null) {
-			TalonSRX frontLeft = new LazyCANTalon(Constants.FRONT_LEFT_MOTOR_ID);
-			TalonSRX frontRight = new LazyCANTalon(Constants.FRONT_RIGHT_MOTOR_ID);
-			TalonSRX rearLeft = new LazyCANTalon(Constants.REAR_LEFT_MOTOR_ID);
-			TalonSRX rearRight = new LazyCANTalon(Constants.REAR_RIGHT_MOTOR_ID);
+			TalonSRX slaveLeft = new LazyCANTalon(Constants.SLAVE_LEFT_MOTOR_ID);
+			TalonSRX slaveRight = new LazyCANTalon(Constants.SLAVE_RIGHT_MOTOR_ID);
+			TalonSRX masterLeft = new LazyCANTalon(Constants.MASTER_LEFT_MOTOR_ID);
+			TalonSRX masterRight = new LazyCANTalon(Constants.MASTER_RIGHT_MOTOR_ID);
 
 			RobotState robotState = RobotState.getInstance();
 			LazyGyroscope gyro = LazyGyroscope.getInstance();
 
-			instance = new Drive(frontLeft, frontRight, rearLeft, rearRight, robotState, gyro);
+			instance = new Drive(masterLeft, masterRight, slaveLeft, slaveRight, robotState, gyro);
 		}
 		return instance;
 	}
@@ -59,7 +60,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	public enum DriveControlState {
 		VELOCITY_SETPOINT, // Under PID velocity control
 		PATH_FOLLOWING, // Following a path
-		OPEN_LOOP // Used to drive control
+		TURNING, //turnToAngle
+		OPEN_LOOP// Used to drive control
 	}
 
 	public static final int VELOCITY_CONTROL_SLOT = 0;
@@ -85,6 +87,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 				//TODO add a write to CVS file function
 				updatePathFollower( timestamp );
 				updateTalonOutputs( timestamp );
+				break;
+			case TURNING:
+				updateTurn(timestamp);
 				break;
 			default:
 
@@ -115,34 +120,38 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	
 	private SynchronousPIDF leftPID;
 	private SynchronousPIDF rightPID;
+	private SynchronousPIDF speedPID;
+	
+	private boolean hasUpdatedPID;
 
 	// Hardware States
 	private NeutralMode isBrakeMode;
 
 	private Path currentPath;
-
+	
+	
 	/**
 	 * Creates a new Drive Subsystem from that controls the given motor controllers.
 	 *
-	 * @param frontLeft
+	 * @param masterLeft
 	 *            the font left talon motor controller
-	 * @param frontRight
+	 * @param masterRight
 	 *            the font right talon motor controller
-	 * @param backLeft
+	 * @param slaveLeft
 	 *            the back left talon motor controller
-	 * @param backRight
+	 * @param slaveRight
 	 *            the back right talon motor controller
 	 */
-	public Drive(TalonSRX frontLeft, TalonSRX frontRight, TalonSRX backLeft, TalonSRX backRight, RobotState robotState,
+	public Drive(TalonSRX masterLeft, TalonSRX masterRight, TalonSRX slaveLeft, TalonSRX slaveRight, RobotState robotState,
 			Gyro gyro) {
 
 		this.robotState = robotState;
 		this.gyro = gyro;
 
-		this.leftMaster = frontLeft;
-		this.rightMaster = frontRight;
-		this.leftSlave = backLeft;
-		this.rightSlave = backRight;
+		this.leftMaster = masterLeft;
+		this.rightMaster = masterRight;
+		this.leftSlave = slaveLeft;
+		this.rightSlave = slaveRight;
 
 		CANTalonFactory.updateCANTalonToDefault(this.leftMaster);
 
@@ -153,6 +162,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 		CANTalonFactory.updatePermanentSlaveTalon(this.rightSlave, this.rightMaster.getDeviceID());
 		rightMaster.getStatusFramePeriod(StatusFrame.Status_2_Feedback0, 5);
+		rightSlave.setInverted(true);
+		leftMaster.setInverted(true);
 		rightMaster.setInverted(true);
 		
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
@@ -169,6 +180,13 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 //		leftPID.setOutputRange(-0.5, 0.5);
 //		rightPID.setOutputRange(-0.5, 0.5);
+		
+		speedPID = new SynchronousPIDF(Constants.TURN_Kp, Constants.TURN_Ki, 
+    			Constants.TURN_Kd, Constants.TURN_Kf);
+		speedPID.setContinuous();
+		speedPID.setInputRange(-180D, 180D);
+		//TODO Add constant for output range
+		speedPID.setOutputRange(-Constants.TURN_SPEED, Constants.TURN_SPEED);
 		
 		this.driveControlState = DriveControlState.OPEN_LOOP;
 
@@ -212,6 +230,40 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		this.rightMaster.set(ControlMode.PercentOutput, right);
 	}
 
+	public synchronized void setTurnAngle(double angle) {
+		this.driveControlState = DriveControlState.TURNING;
+		
+		speedPID.reset();
+		speedPID.setSetpoint(angle);
+		this.hasUpdatedPID = false;
+	}
+	
+	public SynchronousPIDF getSpeedPID() {
+		return speedPID;
+	}
+	
+	private void updateTurn(double timestamp) {
+		double dt = timestamp - this.lastTimeStamp;
+		this.lastTimeStamp = timestamp;
+		double currentAngle = LazyGyroscope.getInstance().getAngle();
+		double speed = speedPID.calculate(currentAngle, dt);
+		
+		leftMaster.set(ControlMode.PercentOutput, speed);
+		rightMaster.set(ControlMode.PercentOutput, -speed);
+		this.hasUpdatedPID = true;
+		// setVelocitySetpoint(-speed, speed);
+		
+	}
+	
+	public boolean isDoneWithTurn() {
+		// boolean toReturn = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE && LazyGyroscope.getInstance().getRate()<=Constants.LOW_VELOCITY_THRESHOLD;
+		boolean lessThanSpeed = Math.abs(speedPID.getError()) <= Constants.TURN_DEGREE_TOLERANCE ;
+//		boolean lessThanAngle = Math.abs(speedPID.getSetpoint() - this.getGyroAngle().getDegrees()) <= Constants.TURN_DEGREE_TOLERANCE;
+		boolean toReturn = lessThanSpeed && this.hasUpdatedPID;
+	    System.out.println("Turning with error " + speedPID.getError());
+		return (toReturn);
+	}
+	
 	/**
 	 * Start up velocity mode. This sets the drive train in high gear as well.
 	 *
@@ -362,30 +414,6 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		}
 	}
 
-	public double encoderTicksToInchesRight(double ticksPerSecond) {
-		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		return rotationsPerSecond * wheelCircumference;
-	}
-	
-	public double encoderTicksToInchesLeft(double ticksPerSecond) {
-		double rotationsPerSecond = ticksPerSecond / Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		return rotationsPerSecond * wheelCircumference;
-	}
-	
-	public double inchesToEncoderTicksRight(double inchesPerSecond) {
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
-		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT;
-	}
-	
-	public double inchesToEncoderTicksLeft(double inchesPerSecond) {
-		double wheelCircumference = Constants.DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
-		double rotationsPerSecond = inchesPerSecond / wheelCircumference;
-		return rotationsPerSecond * Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT;
-	}
-
 	@Override
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Left Velocity", this.getLeftVelocityInchesPerSec());
@@ -425,19 +453,19 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public double getLeftVelocityInchesPerSec() {
-		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorVelocity(0) * 10);
+		return Conversions.encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getRightVelocityInchesPerSec() {
-		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorVelocity(0) * 10);
+		return Conversions.encoderTicksToInchesRight(this.rightMaster.getSelectedSensorVelocity(0) * 10);
 	}
 
 	public double getLeftDistanceInches() {
-		return encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorPosition(0));
+		return Conversions.encoderTicksToInchesLeft(this.leftMaster.getSelectedSensorPosition(0));
 	}
 
 	public double getRightDistanceInches() {
-		return encoderTicksToInchesRight(this.rightMaster.getSelectedSensorPosition(0));
+		return Conversions.encoderTicksToInchesRight(this.rightMaster.getSelectedSensorPosition(0));
 	}
 
 	public void setGyroAngle(Rotation2d rotation) {

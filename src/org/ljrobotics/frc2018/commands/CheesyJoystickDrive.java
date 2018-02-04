@@ -16,7 +16,7 @@ public class CheesyJoystickDrive extends Command {
 
 	public CheesyJoystickDrive() {
 		this.requires(Drive.getInstance());
-		this.multiplier = 1;
+		this.multiplier = -1;
 		this.joystick = OI.getInstance().stick;
 	}
 
@@ -28,7 +28,7 @@ public class CheesyJoystickDrive extends Command {
 		double power = this.joystick.getRawAxis(1)*this.multiplier;
 		power = (Math.abs(power) < Constants.JOYSTICK_POWER_DEADBAND) ? 0 : power;
 		power = Math.pow(power, Constants.JOYSTICK_POWER_POWER);
-		double wheel = this.joystick.getRawAxis(Constants.JOYSTICK_ROTATION_AXIS)*this.multiplier;
+		double wheel = -this.joystick.getRawAxis(Constants.JOYSTICK_ROTATION_AXIS)*this.multiplier;
 		wheel = (Math.abs(wheel) < Constants.JOYSTICK_WHEEL_DEADBAND) ? 0 : wheel;
 		DriveSignal driveSignal;
 		// The rightmost trigger

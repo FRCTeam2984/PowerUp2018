@@ -110,8 +110,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	public void outputToSmartDashboard() {
-		SmartDashboard.putNumber("Arm Motor Current Right", this.right.getOutputCurrent());
-		SmartDashboard.putNumber("Arm Motor Current Left", this.left.getOutputCurrent());
+//		SmartDashboard.putNumber("Arm Motor Current Right", this.right.getOutputCurrent());
+//		SmartDashboard.putNumber("Arm Motor Current Left", this.left.getOutputCurrent());
 	}
 
 	@Override
