@@ -83,8 +83,8 @@ public class Constants extends ConstantsBase{
 	public static double TURN_Ki = 0.003;
 	public static double TURN_Kd = 0.0001;
 	public static double TURN_Kf = 0D;
-	public static int LEFT_INTAKE_MOTOR_ID = 29;
-	public static int RIGHT_INTAKE_MOTOR_ID = 28;
+	public static int LEFT_INTAKE_MOTOR_ID = 29; //29
+	public static int RIGHT_INTAKE_MOTOR_ID = 28; //28
 	public static int TENSION_INTAKE_MOTOR_ID = 20;
 
 	//turn constants
@@ -146,9 +146,9 @@ public class Constants extends ConstantsBase{
 
 	public static int MAX_ARM_CURRENT_TIME = 1;
 
-	public static int LEFT_ARM_MOTOR_ID = 28;
+	public static int LEFT_ARM_MOTOR_ID = 25;
 
-	public static int RIGHT_ARM_MOTOR_ID = 29;
+	public static int RIGHT_ARM_MOTOR_ID = 26;
 
 	@Override
 	public String getFileLocation() {
