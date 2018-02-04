@@ -4,7 +4,7 @@ package org.usfirst.frc.team2984.robot;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
-import org.ljrobotics.frc2018.commands.LeftSwitchCommand;
+import org.ljrobotics.frc2018.commands.LeftScaleCommand;
 import org.ljrobotics.frc2018.commands.RightSwitchCommand;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
@@ -137,16 +137,9 @@ public class Robot extends IterativeRobot {
 			try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
-					path = new LeftScale();
-					command = new CommandGroup();
-					command.addSequential(new ResetToPathHead(path));
-					command.addSequential(new FollowPath(path));
-
+					command = new LeftScaleCommand();
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
-					path = new RightScale();
-					command = new CommandGroup();
-					command.addSequential(new ResetToPathHead(path));
-					command.addSequential(new FollowPath(path));
+					command = new RightSwitchCommand();
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
