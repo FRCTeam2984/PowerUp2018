@@ -44,7 +44,7 @@ public class Constants extends ConstantsBase{
 
 	public static double TRACK_SCRUB_FACTOR = 0.924; //Corrective factor for skidding
 
-	public static double TRACK_WIDTH_INCHES = 19.75;
+	public static double TRACK_WIDTH_INCHES = 27.75;
 	// To edit for path following
 
 	public static double MIN_LOOK_AHEAD = 12;
@@ -119,10 +119,10 @@ public class Constants extends ConstantsBase{
 
 	public static int JOYSTICK_DRIVE_ID =  0x0;
 	public static int JOYSTICK_OPERATOR_ID = 1;
-	public static final int FRONT_LEFT_MOTOR_ID =  12;
-	public static final int FRONT_RIGHT_MOTOR_ID = 10;
-	public static final int REAR_LEFT_MOTOR_ID =   23;
-	public static final int REAR_RIGHT_MOTOR_ID =  22;
+	public static final int SLAVE_LEFT_MOTOR_ID =  10;
+	public static final int SLAVE_RIGHT_MOTOR_ID = 12;
+	public static final int MASTER_LEFT_MOTOR_ID =   22;
+	public static final int MASTER_RIGHT_MOTOR_ID =  23;
 	// -----------------------------------------------------------------------------------------------
 	// General
 	public static double EQUALS_EPSILON = 0.00001;

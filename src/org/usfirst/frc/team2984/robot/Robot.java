@@ -137,10 +137,16 @@ public class Robot extends IterativeRobot {
 			try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
-					command = new LeftSwitchCommand();
+					path = new LeftScale();
+					command = new CommandGroup();
+					command.addSequential(new ResetToPathHead(path));
+					command.addSequential(new FollowPath(path));
 
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
-					command = new RightSwitchCommand();
+					path = new RightScale();
+					command = new CommandGroup();
+					command.addSequential(new ResetToPathHead(path));
+					command.addSequential(new FollowPath(path));
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
