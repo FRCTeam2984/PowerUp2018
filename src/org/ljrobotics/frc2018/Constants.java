@@ -141,17 +141,17 @@ public class Constants extends ConstantsBase {
 	public static int ARM_FRONT_LIMIT_PIN = (int) Math.random() * 19;
 	public static int ARM_BACK_LIMIT_PIN = ARM_FRONT_LIMIT_PIN + 1;
 
-	public static double MIN_ARM_ENCODER_DEGREES = 0;
-	public static int MAX_ARM_ENCODER_DEGREES = 180;
+	public static double MIN_ARM_ENCODER_DEGREES = 10000;
+	public static int MAX_ARM_ENCODER_DEGREES = 0;
 
 	public static double ARM_TICKS_PER_REVOLUTION = 4960D;
 	public static double ARM_GEAR_RATIO = 30D / 11D;
 	public static double ARM_INVERSE_GEAR_RATIO = 11D / 30D;
 	
-	public static double ARM_Kp = 0.00005;
-	public static double ARM_Ki = 0.0000001;
-	public static double ARM_Kd = 0;
-	public static double ARM_Kf = 0.035;
+	public static double ARM_Kp = 0.0007; //0.00005
+	public static double ARM_Ki = 0.000002;
+	public static double ARM_Kd = 0.00009;
+	public static double ARM_Kf = 0;
 
 	@Override
 	public String getFileLocation() {
