@@ -1,6 +1,5 @@
 package org.ljrobotics.frc2018;
 
-import org.ljrobotics.frc2018.commands.ArmIdle;
 import org.ljrobotics.frc2018.commands.ArmSetpoint;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.Arm.ArmControlState;
@@ -8,6 +7,7 @@ import org.ljrobotics.frc2018.subsystems.Arm.ArmControlState;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -37,7 +37,7 @@ public class OI {
 		JoystickButton button1 = new JoystickButton(this.stick2, 1);
 		JoystickButton button2 = new JoystickButton(this.stick2, 2);
 
-		button1.whenPressed(new ArmSetpoint());
+		button1.whenPressed(new ArmSetpoint(5000));
 		button2.whenPressed(new InstantCommand() {
 			@Override
 			public void execute() {
