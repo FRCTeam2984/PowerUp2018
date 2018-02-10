@@ -47,6 +47,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	private double lastTimeStamp;
 
+	private int fakeEncoderValue;
+	
 	public static enum ArmControlState {
 		Moving, // Move at joystick speed
 		Angle, // Under PID angle control
@@ -187,15 +189,20 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.master.setSelectedSensorPosition(0, 0, 0);
 	}
 
-	private void updateEncoder() {
+	public void updateEncoder() {
 		int minTicks = degreesToEncoderTicks(Constants.MIN_ARM_ENCODER_DEGREES);
 		int maxTicks = degreesToEncoderTicks(Constants.MAX_ARM_ENCODER_DEGREES);
 		if (this.master.getSensorCollection().isFwdLimitSwitchClosed()) {
+			this.fakeEncoderValue = minTicks;
 			this.master.setSelectedSensorPosition(minTicks, 0, 0);
 		} else if (this.master.getSensorCollection().isRevLimitSwitchClosed()) {
+			this.fakeEncoderValue = maxTicks;
 			this.master.setSelectedSensorPosition(maxTicks, 0, 0);
 		}
-
+	}
+	
+	public int getFakeEncoderValue() {
+		return this.fakeEncoderValue;
 	}
 
 	public void setWantedState(ArmControlState state) {
@@ -207,12 +214,12 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.updateAngleSetpoint(degrees);
 	}
 
-	private double encoderTicksToDegrees(int ticks) {
+	public double encoderTicksToDegrees(int ticks) {
 
 		return ((double) ticks / Constants.ARM_TICKS_PER_REVOLUTION) * Constants.ARM_GEAR_RATIO * 360D;
 	}
 
-	private int degreesToEncoderTicks(double degrees) {
+	public int degreesToEncoderTicks(double degrees) {
 		return (int) ((degrees * Constants.ARM_TICKS_PER_REVOLUTION) / (Constants.ARM_GEAR_RATIO * 360D));
 	}
 
