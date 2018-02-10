@@ -2,6 +2,7 @@ package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.commands.ArmIdle;
+import org.ljrobotics.frc2018.commands.ArmSetpoint;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.lib.util.control.SynchronousPIDF;
@@ -41,6 +42,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	private SynchronousPIDF armPID;
 
 	private ArmControlState controlState;
+	private ArmPosition wantedPosition;
 	private double wantedSpeed;
 
 	private double lastTimeStamp;
@@ -48,7 +50,15 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	public static enum ArmControlState {
 		Moving, // Move at joystick speed
 		Angle, // Under PID angle control
+		Position, // Set arm to position (see enum below)
 		Idle // Do Nothing
+	}
+
+	public static enum ArmPosition {
+		STOWED, // Move to stowed height
+		INTAKE, // Move to intake height
+		SWITCH, // Move to switch height
+		SCALE // Move to scale height
 	}
 
 	private class IntakeLoop implements Loop {
@@ -67,6 +77,9 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 				break;
 			case Angle:
 				updateTalonOutputs(timestamp);
+				break;
+			case Position:
+				setPosition(wantedPosition);
 				break;
 			case Idle:
 				setRestrictedSpeed(0);
@@ -129,9 +142,32 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		SmartDashboard.putNumber("Arm Output", speed);
 	}
 
+	private void setPosition(ArmPosition position) {
+		switch (position) {
+		case STOWED:
+			this.setAngleSetpoint(Constants.ARM_STOWED_DEGREES);
+			break;
+		case INTAKE:
+			this.setAngleSetpoint(Constants.ARM_INTAKE_DEGREES);
+			break;
+		case SWITCH:
+			this.setAngleSetpoint(Constants.ARM_SWITCH_DEGREES);
+			break;
+		case SCALE:
+			this.setAngleSetpoint(Constants.ARM_STOWED_DEGREES);
+			break;
+		default:
+			break;
+		}
+	}
+
 	public void setWantedSpeed(double power) {
 		this.wantedSpeed = power;
 		this.controlState = ArmControlState.Moving;
+	}
+
+	public void setWantedPosition(ArmPosition position) {
+		this.wantedPosition = position;
 	}
 
 	@Override
