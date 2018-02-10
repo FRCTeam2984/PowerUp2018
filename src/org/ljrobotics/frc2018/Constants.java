@@ -167,6 +167,11 @@ public class Constants extends ConstantsBase {
 	public static double ARM_Kd = 0.00009;
 	public static double ARM_Kf = 0;
 
+	public static double ARM_STOWED_DEGREES = 10;
+	public static double ARM_INTAKE_DEGREES = 20;
+	public static double ARM_SWITCH_DEGREES = 30;
+	public static double ARM_SCALE_DEGREES = 40;
+
 	@Override
 	public String getFileLocation() {
 		// TODO Fill in file once a location is chosen
