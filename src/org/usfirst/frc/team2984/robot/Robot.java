@@ -4,13 +4,10 @@ package org.usfirst.frc.team2984.robot;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
-import org.ljrobotics.frc2018.commands.FollowPath;
-import org.ljrobotics.frc2018.commands.ResetToPathHead;
+import org.ljrobotics.frc2018.commands.LeftScaleCommand;
 import org.ljrobotics.frc2018.commands.RightSwitchCommand;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
-import org.ljrobotics.frc2018.paths.LeftScale;
-import org.ljrobotics.frc2018.paths.TestPath;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.Drive;
@@ -20,7 +17,6 @@ import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.GameData;
 import org.ljrobotics.lib.util.IncorrectGameData;
 import org.ljrobotics.lib.util.PaddleSide;
-import org.ljrobotics.lib.util.control.PathContainer;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -58,7 +54,7 @@ public class Robot extends IterativeRobot {
 
 	public Robot() {
 		new Constants().loadFromFile();
-		
+
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.intake = Intake.getInstance();
@@ -69,7 +65,8 @@ public class Robot extends IterativeRobot {
 		this.subsystemManager = new SubsystemManager(this.drive, this.arm, this.intake);
 
 		CrashTracker.logRobotConstruction();
-		
+
+		new Constants().loadFromFile();
 	}
 
 	/**
@@ -111,7 +108,7 @@ public class Robot extends IterativeRobot {
 			this.looper.stop();
 
 			this.subsystemManager.stop();
-			
+
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -130,31 +127,23 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logAutoInit();
 
 			this.zeroAllSensors();
-			
+
 			this.looper.start();
 
-			CommandGroup command = new CommandGroup();
-			
-			
-			PathContainer path = new TestPath();
-			command.addSequential(new ResetToPathHead(path));
-			command.addSequential(new FollowPath(path));
+			CommandGroup command = null;
+
 			GameData gd = null;
 
 			try {
 				gd = new GameData();
 				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
-					path = new LeftScale();
-					command = new CommandGroup();
-					command.addSequential(new ResetToPathHead(path));
-					command.addSequential(new FollowPath(path));
+					command = new LeftScaleCommand();
 				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
 					command = new RightSwitchCommand();
 				}
 			} catch (IncorrectGameData e) {
 				System.out.println(e.getErrorData());
 			}
-
 			Scheduler.getInstance().add(command);
 
 		} catch (Throwable throwable) {
@@ -176,6 +165,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		try {
 			CrashTracker.logTeleopInit();
+
+			this.zeroAllSensors();
 
 			this.looper.start();
 
@@ -219,6 +210,7 @@ public class Robot extends IterativeRobot {
 
 	/**
 	 * A method that has code that is run in all periodic functions
+	 * For debugging
 	 */
 	public void allPeriodic() {
 

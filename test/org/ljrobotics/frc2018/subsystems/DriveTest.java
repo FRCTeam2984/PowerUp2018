@@ -22,6 +22,7 @@ import org.ljrobotics.lib.util.InterpolatingDouble;
 import org.ljrobotics.lib.util.control.Path;
 import org.ljrobotics.lib.util.control.PathBuilder;
 import org.ljrobotics.lib.util.control.PathBuilder.Waypoint;
+import org.ljrobotics.lib.util.control.SynchronousPIDF;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Translation2d;
@@ -196,6 +197,13 @@ public class DriveTest {
 		Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT = Constants.DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 200;
 		when(this.frontLeft.getSelectedSensorVelocity(0)).thenReturn(200);
 		assertEquals(10*Math.PI, this.drive.getLeftVelocityInchesPerSec(), 0.00001);
+	}
+	
+	@Test
+	public void turnUpdatesCorrect() {
+		this.drive.setTurnAngle(90D);
+		SynchronousPIDF pid = this.drive.getSpeedPID();
+		assertTrue(pid.getSetpoint() == 90D);
 	}
 	
 	@Test
