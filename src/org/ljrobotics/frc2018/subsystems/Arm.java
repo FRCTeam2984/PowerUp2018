@@ -82,9 +82,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	public Arm(TalonSRX slave, TalonSRX master) {
-		SmartDashboard.putNumber("Arm Wanted Degrees", 10000);
-		this.armPID = new SynchronousPIDF(Constants.ARM_Kp, Constants.ARM_Kp, Constants.ARM_Kd, Constants.ARM_Kd);
-
+		this.armPID = new SynchronousPIDF(Constants.ARM_Kp, Constants.ARM_Ki, Constants.ARM_Kd, Constants.ARM_Kf);
 		this.slave = slave;
 		this.master = master;
 
@@ -138,9 +136,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	public void outputToSmartDashboard() {
-		SmartDashboard.putBoolean("Is Forward Closed", this.master.getSensorCollection().isRevLimitSwitchClosed());
-		SmartDashboard.putBoolean("Is Backward Closed", this.master.getSensorCollection().isFwdLimitSwitchClosed());
-
+		SmartDashboard.putNumber("Arm PID Error", this.armPID.getError());
 		SmartDashboard.putNumber("Arm Motor Encoder Master", this.getArmDegrees());
 		SmartDashboard.putNumber("Arm Motor Current Master", this.master.getOutputCurrent());
 	}
@@ -176,7 +172,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private double encoderTicksToDegrees(int ticks) {
-	
+
 		return ((double) ticks / Constants.ARM_TICKS_PER_REVOLUTION) * Constants.ARM_GEAR_RATIO * 360D;
 	}
 
@@ -212,7 +208,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-//		this.setDefaultCommand(new ArmIdle());
+		// this.setDefaultCommand(new ArmIdle());
 	}
 
 }
