@@ -84,7 +84,7 @@ public class Constants extends ConstantsBase{
 	public static double TURN_Kd = 0.0001;
 	public static double TURN_Kf = 0D;
 	public static int LEFT_INTAKE_MOTOR_ID = 29; //29
-	public static int RIGHT_INTAKE_MOTOR_ID = 28; //28
+	public static int RIGHT_INTAKE_MOTOR_ID = 10; //28
 	public static int TENSION_INTAKE_MOTOR_ID = 20;
 
 	//turn constants
@@ -119,10 +119,10 @@ public class Constants extends ConstantsBase{
 
 	public static int JOYSTICK_DRIVE_ID =  0x0;
 	public static int JOYSTICK_OPERATOR_ID = 1;
-	public static final int SLAVE_LEFT_MOTOR_ID =  10;
+	public static final int SLAVE_LEFT_MOTOR_ID =  28;
 	public static final int SLAVE_RIGHT_MOTOR_ID = 12;
-	public static final int MASTER_LEFT_MOTOR_ID =   22;
-	public static final int MASTER_RIGHT_MOTOR_ID =  23;
+	public static final int MASTER_LEFT_MOTOR_ID =   23;
+	public static final int MASTER_RIGHT_MOTOR_ID =  22;
 	// -----------------------------------------------------------------------------------------------
 	// General
 	public static double EQUALS_EPSILON = 0.00001;
@@ -159,8 +159,8 @@ public class Constants extends ConstantsBase{
 
 	/*
 	{
-        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1186,
-        "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":-1337,
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1400,
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":-1400,
         "GYRO_MODIFIER":-1,                           
         "DRIVE_Kf": 0.00875,
         "DRIVE_Kp": 0.01,   
@@ -177,9 +177,9 @@ public class Constants extends ConstantsBase{
         "MIN_LOOK_AHEAD": 15,              
         "PATH_FOLLOWING_PROFILE_Kv": 0.075,
         "SEGMENT_COMPLETION_TOLERANCE": 4, 
-        "JOYSTICK_ROTATION_AXIS": 4,      
+        "JOYSTICK_ROTATION_AXIS": 2,      
         "USE_TANK_DRIVE": false,    
         "QUICKTURN_BUTTON": 5,  
         "JOYSTICK_POWER_POWER": 1
-	}*/
+        }*/
 }
