@@ -162,15 +162,15 @@ public class Constants extends ConstantsBase {
 	public static double ARM_GEAR_RATIO = 30D / 11D;
 	public static double ARM_INVERSE_GEAR_RATIO = 11D / 30D;
 
-	public static double ARM_Kp = 0.0007; //0.00005
-	public static double ARM_Ki = 0.000002;
-	public static double ARM_Kd = 0.00009;
+	public static double ARM_Kp = 0.012; //0.00005
+	public static double ARM_Ki = 0;//0.000002
+	public static double ARM_Kd = 0; //0.00009
 	public static double ARM_Kf = 0;
 
-	public static double ARM_STOWED_DEGREES = 10;
-	public static double ARM_INTAKE_DEGREES = 20;
-	public static double ARM_SWITCH_DEGREES = 30;
-	public static double ARM_SCALE_DEGREES = 40;
+	public static double ARM_STOWED_DEGREES = 25;
+	public static double ARM_INTAKE_DEGREES = 15;
+	public static double ARM_SWITCH_DEGREES = 35;
+	public static double ARM_SCALE_DEGREES = 180;
 
 	@Override
 	public String getFileLocation() {

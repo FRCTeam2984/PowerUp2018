@@ -58,11 +58,11 @@ public class Robot extends IterativeRobot {
 		this.robotState = RobotState.getInstance();
 		this.drive = Drive.getInstance();
 		this.intake = Intake.getInstance();
-//		this.arm = Arm.getInstance();
+		this.arm = Arm.getInstance();
 		this.looper = new Looper();
 		// this.visionServer = VisionServer.getInstance();
 
-		this.subsystemManager = new SubsystemManager(this.drive,/* this.arm,*/ this.intake);
+		this.subsystemManager = new SubsystemManager(this.drive, this.arm, this.intake);
 
 		CrashTracker.logRobotConstruction();
 

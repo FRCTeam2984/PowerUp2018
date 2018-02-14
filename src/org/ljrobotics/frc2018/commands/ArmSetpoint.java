@@ -11,20 +11,19 @@ public class ArmSetpoint extends InstantCommand {
 		this.setpoint = setpoint;
 		requires(Arm.getInstance());
 	}
+	
+	public ArmSetpoint(Arm.ArmPosition position) {
+		this(position.getAngle());
+	}
 
 	public ArmSetpoint() {
-		this(10000);
+		this(0);
 	}
 
 	@Override
 	protected void execute() {
 		System.out.println("Setpointing");
-		Arm.getInstance().setAngleSetpoint(this.setpoint);
-	}
-
-	@Override
-	protected void end() {
-		// Arm.getInstance().setWantedState(ArmControlState.Idle);
+		Arm.getInstance().setPosition(this.setpoint);
 	}
 
 }

@@ -1,14 +1,14 @@
 package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
-import org.ljrobotics.frc2018.commands.ArmIdle;
-import org.ljrobotics.frc2018.commands.ArmSetpoint;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.lib.util.control.SynchronousPIDF;
 import org.ljrobotics.lib.util.drivers.CANTalonFactory;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -27,8 +27,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	public static Arm getInstance() {
 		if (instance == null) {
-			// TalonSRX slave = new TalonSRX(Constants.SLAVE_ARM_MOTOR_ID);
-			TalonSRX slave = null;
+			TalonSRX slave = new TalonSRX(Constants.SLAVE_ARM_MOTOR_ID);
 			TalonSRX master = new TalonSRX(Constants.MASTER_ARM_MOTOR_ID);
 
 			instance = new Arm(slave, master);
@@ -42,7 +41,6 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	private SynchronousPIDF armPID;
 
 	private ArmControlState controlState;
-	private ArmPosition wantedPosition;
 	private double wantedSpeed;
 
 	private double lastTimeStamp;
@@ -51,19 +49,28 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	
 	public static enum ArmControlState {
 		Moving, // Move at joystick speed
-		Angle, // Under PID angle control
-		Position, // Set arm to position (see enum below)
+		Position, // Under PID control
 		Idle // Do Nothing
 	}
 
 	public static enum ArmPosition {
-		STOWED, // Move to stowed height
-		INTAKE, // Move to intake height
-		SWITCH, // Move to switch height
-		SCALE // Move to scale height
+		STOWED(Constants.ARM_STOWED_DEGREES), // Move to stowed height
+		INTAKE(Constants.ARM_INTAKE_DEGREES), // Move to intake height
+		SWITCH(Constants.ARM_SWITCH_DEGREES), // Move to switch height
+		SCALE(Constants.ARM_SCALE_DEGREES); // Move to scale height
+		
+		private double angle;
+		
+		private ArmPosition(double angle) {
+			this.angle = angle;
+		}
+		
+		public double getAngle() {
+			return angle;
+		}
 	}
 
-	private class IntakeLoop implements Loop {
+	private class ArmLoop implements Loop {
 
 		@Override
 		public void onStart(double timestamp) {
@@ -77,11 +84,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 			case Moving:
 				setRestrictedSpeed(wantedSpeed);
 				break;
-			case Angle:
-				updateTalonOutputs(timestamp);
-				break;
 			case Position:
-				setPosition(wantedPosition);
+				updateTalonOutputs(timestamp);
 				break;
 			case Idle:
 				setRestrictedSpeed(0);
@@ -102,12 +106,12 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.master = master;
 
 		CANTalonFactory.updateCANTalonToDefault(this.master);
+		this.master.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
+		this.master.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
 
-		// CANTalonFactory.updatePermanentSlaveTalon(this.slave,
-		// this.master.getDeviceID());
+		 CANTalonFactory.updatePermanentSlaveTalon(this.slave, this.master.getDeviceID());
 
-		setCurrentLimit(master, Constants.MAX_ARM_CURRENT, Constants.NOMINAL_ARM_CURRENT,
-				Constants.MAX_ARM_CURRENT_TIME);
+		setCurrentLimit(master, Constants.MAX_ARM_CURRENT, Constants.NOMINAL_ARM_CURRENT, Constants.MAX_ARM_CURRENT_TIME);
 
 		// this.slave.setInverted(true);
 		this.master.setInverted(false);
@@ -144,32 +148,13 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		SmartDashboard.putNumber("Arm Output", speed);
 	}
 
-	private void setPosition(ArmPosition position) {
-		switch (position) {
-		case STOWED:
-			this.setAngleSetpoint(Constants.ARM_STOWED_DEGREES);
-			break;
-		case INTAKE:
-			this.setAngleSetpoint(Constants.ARM_INTAKE_DEGREES);
-			break;
-		case SWITCH:
-			this.setAngleSetpoint(Constants.ARM_SWITCH_DEGREES);
-			break;
-		case SCALE:
-			this.setAngleSetpoint(Constants.ARM_STOWED_DEGREES);
-			break;
-		default:
-			break;
-		}
-	}
-
 	public void setWantedSpeed(double power) {
 		this.wantedSpeed = power;
 		this.controlState = ArmControlState.Moving;
 	}
 
-	public void setWantedPosition(ArmPosition position) {
-		this.wantedPosition = position;
+	public void setPosition(ArmPosition position) {
+		this.setPosition(position.getAngle());
 	}
 
 	@Override
@@ -209,8 +194,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.controlState = state;
 	}
 
-	public synchronized void setAngleSetpoint(double degrees) {
-		setWantedState(ArmControlState.Angle);
+	public synchronized void setPosition(double degrees) {
+		setWantedState(ArmControlState.Position);
 		this.updateAngleSetpoint(degrees);
 	}
 
@@ -246,7 +231,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	@Override
 	public void registerEnabledLoops(Looper enabledLooper) {
-		enabledLooper.register(new IntakeLoop());
+		enabledLooper.register(new ArmLoop());
 	}
 
 	@Override
@@ -254,4 +239,9 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		// this.setDefaultCommand(new ArmIdle());
 	}
 
+	public boolean atLowerLimit() {
+		return this.master.getSensorCollection().isRevLimitSwitchClosed();
+		
+	}
+	
 }
