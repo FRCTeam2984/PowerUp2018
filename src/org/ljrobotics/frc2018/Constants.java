@@ -26,23 +26,23 @@ package org.ljrobotics.frc2018;
 
 import org.ljrobotics.lib.util.ConstantsBase;
 
-public class Constants extends ConstantsBase{
+public class Constants extends ConstantsBase {
 	// Gyroscope configuration
 
 	public static double GYRO_MODIFIER = 1;
 	// Path following configuration
 
-	public static double SEGMENT_COMPLETION_TOLERANCE = 0.1; //inches
+	public static double SEGMENT_COMPLETION_TOLERANCE = 0.1; // inches
 
-	public static double PATH_FOLLOWING_MAX_ACCEL = 120; //inches per second^2
-	public static double PATH_FOLLOWING_MAX_VEL = 120; //inches per second
+	public static double PATH_FOLLOWING_MAX_ACCEL = 120; // inches per second^2
+	public static double PATH_FOLLOWING_MAX_VEL = 120; // inches per second
 
 	public static double PATH_FOLLOWING_GOAL_POS_TOLERANCE = 0.75;
 	public static double PATH_FOLLOWING_GOAL_VEL_TOLERANCE = 12.0;
 	public static double PATH_STOP_STEERING_DISTANCE = 9.0;
 	public static double DRIVE_HIGH_GEAR_NOMINAL_OUTPUT = 0.5;
 
-	public static double TRACK_SCRUB_FACTOR = 0.924; //Corrective factor for skidding
+	public static double TRACK_SCRUB_FACTOR = 0.924; // Corrective factor for skidding
 
 	public static double TRACK_WIDTH_INCHES = 27.75;
 	// To edit for path following
@@ -61,7 +61,7 @@ public class Constants extends ConstantsBase{
 
 	public static double INERTIA_STEERING_GAIN = 0;
 
-	public static double DRIVE_MAX_SETPOINT = 100; //Inches Per Second
+	public static double DRIVE_MAX_SETPOINT = 100; // Inches Per Second
 	public static double DRIVE_WHEEL_DIAMETER_INCHES = 6;
 	public static double DRIVE_WHEEL_CIRCUMFERENCE = DRIVE_WHEEL_DIAMETER_INCHES * Math.PI;
 	public static int DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT = 248;
@@ -117,7 +117,7 @@ public class Constants extends ConstantsBase{
 	// -----------------------------------------------------------------------------------------------
 	// Motor configuration
 
-	public static int JOYSTICK_DRIVE_ID =  0x0;
+	public static int JOYSTICK_DRIVE_ID = 0x0;
 	public static int JOYSTICK_OPERATOR_ID = 1;
 	public static final int SLAVE_LEFT_MOTOR_ID =  28;
 	public static final int SLAVE_RIGHT_MOTOR_ID = 12;
@@ -140,15 +140,37 @@ public class Constants extends ConstantsBase{
 	// -----------------------------------------------------------------------------------------------
 	// File location
 
+	//Arm
+	public static int MIN_ARM_SPEED = -1;
+	public static int MAX_ARM_SPEED = 1;
 	public static int MAX_ARM_CURRENT = 20;
-
 	public static int NOMINAL_ARM_CURRENT = 10;
-
 	public static int MAX_ARM_CURRENT_TIME = 1;
 
-	public static int LEFT_ARM_MOTOR_ID = 25;
+//	public static int SLAVE_ARM_MOTOR_ID = 28;
 
-	public static int RIGHT_ARM_MOTOR_ID = 26;
+	public static int SLAVE_ARM_MOTOR_ID = 25;
+	public static int MASTER_ARM_MOTOR_ID = 26;
+
+	public static int ARM_FRONT_LIMIT_PIN = (int) Math.random() * 19;
+	public static int ARM_BACK_LIMIT_PIN = ARM_FRONT_LIMIT_PIN + 1;
+
+	public static double MIN_ARM_ENCODER_DEGREES = 10000;
+	public static int MAX_ARM_ENCODER_DEGREES = 0;
+
+	public static double ARM_TICKS_PER_REVOLUTION = 4960D;
+	public static double ARM_GEAR_RATIO = 30D / 11D;
+	public static double ARM_INVERSE_GEAR_RATIO = 11D / 30D;
+
+	public static double ARM_Kp = 0.0007; //0.00005
+	public static double ARM_Ki = 0.000002;
+	public static double ARM_Kd = 0.00009;
+	public static double ARM_Kf = 0;
+
+	public static double ARM_STOWED_DEGREES = 10;
+	public static double ARM_INTAKE_DEGREES = 20;
+	public static double ARM_SWITCH_DEGREES = 30;
+	public static double ARM_SCALE_DEGREES = 40;
 
 	@Override
 	public String getFileLocation() {
@@ -156,30 +178,29 @@ public class Constants extends ConstantsBase{
 		return "/home/lvuser/constants";
 	}
 
-
 	/*
 	{
         "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1400,
         "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":-1400,
-        "GYRO_MODIFIER":-1,                           
+        "GYRO_MODIFIER":-1,
         "DRIVE_Kf": 0.00875,
-        "DRIVE_Kp": 0.01,   
-        "DRIVE_Ki": 0,   
+        "DRIVE_Kp": 0.01,
+        "DRIVE_Ki": 0,
         "DRIVE_Kd": 0.000,
         "PATH_FOLLOWING_GOAL_POS_TOLERANCE": 3,
-        "PATH_FOLLOWING_MAX_ACCEL": 60         
+        "PATH_FOLLOWING_MAX_ACCEL": 60
         "PATH_FOLLOWING_MAX_VEL": 80, 
         "PATH_FOLLOWING_PROFILE_Kffa": 0.08,
-        "TRACK_SCRUB_FACTOR": 1.0,          
+        "TRACK_SCRUB_FACTOR": 1.0,
         "MIN_LOOK_AHEAD_SPEED": 12,
         "PATH_FOLLOWING_PROFILE_Kp": 1.5,
         "PATH_FOLLOWING_PROFILE_Ki": 0.001,
-        "MIN_LOOK_AHEAD": 15,              
+        "MIN_LOOK_AHEAD": 15,
         "PATH_FOLLOWING_PROFILE_Kv": 0.075,
-        "SEGMENT_COMPLETION_TOLERANCE": 4, 
-        "JOYSTICK_ROTATION_AXIS": 2,      
-        "USE_TANK_DRIVE": false,    
-        "QUICKTURN_BUTTON": 5,  
+        "SEGMENT_COMPLETION_TOLERANCE": 4,
+        "JOYSTICK_ROTATION_AXIS": 2,
+        "USE_TANK_DRIVE": false,
+        "QUICKTURN_BUTTON": 5,
         "JOYSTICK_POWER_POWER": 1
         }*/
 }
