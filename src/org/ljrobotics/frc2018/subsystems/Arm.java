@@ -1,6 +1,7 @@
 package org.ljrobotics.frc2018.subsystems;
 
 import org.ljrobotics.frc2018.Constants;
+import org.ljrobotics.frc2018.commands.ArmJoystick;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.lib.util.control.SynchronousPIDF;
@@ -96,12 +97,16 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 		@Override
 		public void onStop(double timestamp) {
+			setWantedState(ArmControlState.Idle);
 		}
 
 	}
 
 	public Arm(TalonSRX slave, TalonSRX master) {
 		this.armPID = new SynchronousPIDF(Constants.ARM_Kp, Constants.ARM_Ki, Constants.ARM_Kd, Constants.ARM_Kf);
+		
+		this.armPID.setOutputRange(-0.1, 0.5);
+		
 		this.slave = slave;
 		this.master = master;
 
@@ -113,7 +118,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 		setCurrentLimit(master, Constants.MAX_ARM_CURRENT, Constants.NOMINAL_ARM_CURRENT, Constants.MAX_ARM_CURRENT_TIME);
 
-		// this.slave.setInverted(true);
+		 this.slave.setInverted(true);
 		this.master.setInverted(false);
 
 		this.master.configOpenloopRamp(0.125, 0);
@@ -225,7 +230,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		double dt = timestamp - this.lastTimeStamp;
 		this.lastTimeStamp = timestamp;
 		double degrees = this.getArmDegrees();
-		double power = this.armPID.calculate(degrees, dt);
+		double power = -this.armPID.calculate(degrees, dt);
 		this.setRestrictedSpeed(power);
 	}
 
@@ -237,6 +242,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	@Override
 	protected void initDefaultCommand() {
 		// this.setDefaultCommand(new ArmIdle());
+//		this.setDefaultCommand(new ArmJoystick());
 	}
 
 	public boolean atLowerLimit() {

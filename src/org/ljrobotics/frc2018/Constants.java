@@ -141,36 +141,31 @@ public class Constants extends ConstantsBase {
 	// File location
 
 	//Arm
-	public static int MIN_ARM_SPEED = -1;
-	public static int MAX_ARM_SPEED = 1;
+	public static double MIN_ARM_SPEED = -1;
+	public static double MAX_ARM_SPEED = 0;
 	public static int MAX_ARM_CURRENT = 20;
 	public static int NOMINAL_ARM_CURRENT = 10;
 	public static int MAX_ARM_CURRENT_TIME = 1;
 
-//	public static int SLAVE_ARM_MOTOR_ID = 28;
+	public static int SLAVE_ARM_MOTOR_ID = 31;
+	public static int MASTER_ARM_MOTOR_ID = 30;
 
-	public static int SLAVE_ARM_MOTOR_ID = 25;
-	public static int MASTER_ARM_MOTOR_ID = 26;
+	public static double MIN_ARM_ENCODER_DEGREES = 15;
+	public static int MAX_ARM_ENCODER_DEGREES = 180;
 
-	public static int ARM_FRONT_LIMIT_PIN = (int) Math.random() * 19;
-	public static int ARM_BACK_LIMIT_PIN = ARM_FRONT_LIMIT_PIN + 1;
+	public static double ARM_TICKS_PER_REVOLUTION = -960;
+	public static double ARM_GEAR_RATIO = 15D / 48D;
+	public static double ARM_INVERSE_GEAR_RATIO = 48D / 15D;
 
-	public static double MIN_ARM_ENCODER_DEGREES = 10000;
-	public static int MAX_ARM_ENCODER_DEGREES = 0;
-
-	public static double ARM_TICKS_PER_REVOLUTION = 4960D;
-	public static double ARM_GEAR_RATIO = 30D / 11D;
-	public static double ARM_INVERSE_GEAR_RATIO = 11D / 30D;
-
-	public static double ARM_Kp = 0.012; //0.00005
-	public static double ARM_Ki = 0;//0.000002
+	public static double ARM_Kp = 0.005; //0.00005
+	public static double ARM_Ki = 0.0001;//0.000002
 	public static double ARM_Kd = 0; //0.00009
 	public static double ARM_Kf = 0;
 
-	public static double ARM_STOWED_DEGREES = 25;
+	public static double ARM_STOWED_DEGREES = 45;
 	public static double ARM_INTAKE_DEGREES = 15;
-	public static double ARM_SWITCH_DEGREES = 35;
-	public static double ARM_SCALE_DEGREES = 180;
+	public static double ARM_SWITCH_DEGREES = 65;
+	public static double ARM_SCALE_DEGREES = 170;
 
 	@Override
 	public String getFileLocation() {
