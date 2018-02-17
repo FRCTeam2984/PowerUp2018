@@ -10,7 +10,7 @@ import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Translation2d;
 
-public class ShortLeftSwitch implements PathContainer {
+public class CenterLeftSwitch implements PathContainer {
 
     @Override
     public Path buildPath() {
