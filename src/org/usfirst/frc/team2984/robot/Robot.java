@@ -19,6 +19,7 @@ import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.GameData;
 import org.ljrobotics.lib.util.IncorrectGameData;
 import org.ljrobotics.lib.util.PaddleSide;
+import org.ljrobotics.lib.util.drivers.LazyGyroscope;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -113,6 +114,8 @@ public class Robot extends IterativeRobot {
 			this.looper.stop();
 
 			this.subsystemManager.stop();
+			
+			LazyGyroscope.getInstance().calibrate();
 
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
