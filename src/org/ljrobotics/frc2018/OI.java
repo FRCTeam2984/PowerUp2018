@@ -85,5 +85,10 @@ public class OI {
 				new SetLEDMode(LEDControl.LEDState.ON));
 		Triggerer.getInstance().addCommand(Triggers.CubeOut,
 				new SetLEDMode(LEDControl.LEDState.OFF));
+		
+		Triggerer.getInstance().addCommand(Triggers.ArmUp,
+				new SetLEDMode(LEDControl.LEDState.ON));
+		Triggerer.getInstance().addCommand(Triggers.ArmDown,
+				new SetLEDMode(LEDControl.LEDState.OFF));
 	}
 }
