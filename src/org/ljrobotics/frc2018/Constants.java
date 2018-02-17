@@ -151,7 +151,7 @@ public class Constants extends ConstantsBase {
 	public static int MASTER_ARM_MOTOR_ID = 30;
 
 	public static double MIN_ARM_ENCODER_DEGREES = 15;
-	public static int MAX_ARM_ENCODER_DEGREES = 180;
+	public static int MAX_ARM_ENCODER_DEGREES = 173;
 
 	public static double ARM_TICKS_PER_REVOLUTION = -960;
 	public static double ARM_GEAR_RATIO = 15D / 48D;
