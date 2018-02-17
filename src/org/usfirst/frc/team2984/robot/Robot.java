@@ -12,6 +12,7 @@ import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.frc2018.subsystems.Intake;
+import org.ljrobotics.frc2018.subsystems.LEDControl;
 //import org.ljrobotics.frc2018.vision.VisionServer;
 import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.GameData;
@@ -42,6 +43,7 @@ public class Robot extends IterativeRobot {
 	private RobotState robotState;
 	private Intake intake;
 	private Arm arm;
+	private LEDControl led;
 
 	private Looper looper;
 
@@ -59,10 +61,11 @@ public class Robot extends IterativeRobot {
 		this.drive = Drive.getInstance();
 		this.intake = Intake.getInstance();
 		this.arm = Arm.getInstance();
+		this.led = LEDControl.getInstance();
 		this.looper = new Looper();
 		// this.visionServer = VisionServer.getInstance();
 
-		this.subsystemManager = new SubsystemManager(this.drive, this.arm, this.intake);
+		this.subsystemManager = new SubsystemManager(this.drive, this.arm, this.intake, this.led);
 
 		CrashTracker.logRobotConstruction();
 

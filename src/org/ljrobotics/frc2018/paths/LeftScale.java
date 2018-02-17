@@ -22,8 +22,8 @@ public class LeftScale implements PathContainer {
         sWaypoints.add(new Waypoint(180,295,40,60));
         sWaypoints.add(new Waypoint(260,295,0,60));
         sWaypoints.add(new Waypoint(300,295,0,60));
-        sWaypoints.add(new Waypoint(325,295,15,30));
-        sWaypoints.add(new Waypoint(325,265,0,20));
+        sWaypoints.add(new Waypoint(325,295,0,30));
+//        sWaypoints.add(new Waypoint(325,265,0,20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

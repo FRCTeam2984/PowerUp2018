@@ -7,6 +7,7 @@ import org.ljrobotics.frc2018.loops.Looper;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,13 +19,18 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		if(instance == null) {
 			TalonSRX left = new TalonSRX(Constants.LEFT_INTAKE_MOTOR_ID);
 			TalonSRX right = new TalonSRX(Constants.RIGHT_INTAKE_MOTOR_ID);
-			instance = new Intake(left, right);
+			AnalogInput leftDistance = new AnalogInput(Constants.INTAKE_LEFT_DISTANCE_PORT);
+			AnalogInput rightDistance = new AnalogInput(Constants.INTAKE_RIGHT_DISTANCE_PORT);
+			instance = new Intake(left, right, leftDistance, rightDistance);
 		}
 		return instance;
 	}
 	
 	private TalonSRX left;
 	private TalonSRX right;
+	
+	private AnalogInput leftDistance;
+	private AnalogInput rightDistance;
 	
 	private IntakeControlState controlState;
 	
@@ -47,6 +53,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 
 		@Override
 		public void onLoop(double timestamp) {
+			updateLEDs();
 			switch (controlState) {
 				case Suck:
 					setSpeed(Constants.SUCK_SPEED);
@@ -69,7 +76,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		
 	}
 	
-	public Intake(TalonSRX left, TalonSRX right) {
+	public Intake(TalonSRX left, TalonSRX right, AnalogInput leftDistance, AnalogInput rightDistance) {
 		this.left = left;
 		this.right = right;
 		
@@ -85,6 +92,9 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		this.controlState = IntakeControlState.Idle;
 		
 		this.wantedTensionPower = 0;
+		
+		this.leftDistance = leftDistance;
+		this.rightDistance = rightDistance;
 	}
 	
 	private void setCurrentLimit(TalonSRX talon, int max, int nominal, int time) {
@@ -103,30 +113,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	public void reset() {
 
 	}
-	
-//	public void setSpeedCurrentChecked(double timestamp, double speed) {
-//		double leftCurrent = this.left.getOutputCurrent();
-//		double rightCurrent = this.right.getOutputCurrent();
-//		if(this.overCurrentProtectionTimeStart + Constants.INTAKE_OVERCURRENT_PROTECTION_TIME > timestamp) {
-//			this.left.set(ControlMode.PercentOutput, 0);
-//			this.right.set(ControlMode.PercentOutput, 0);
-//			return;
-//		}
-//		if(Math.max(leftCurrent, rightCurrent) < Constants.MAX_SUCK_CURRENT) {
-//			this.left.set(ControlMode.PercentOutput, speed);
-//			this.right.set(ControlMode.PercentOutput, speed);
-//		} else {
-//			if(this.overCurrentProtectionTimeStart > timestamp - 1) {
-//				this.left.set(ControlMode.PercentOutput, speed);
-//				this.right.set(ControlMode.PercentOutput, speed);
-//			}
-//			this.overCurrentProtectionTimeStart = timestamp;
-//			this.left.set(ControlMode.PercentOutput, 0);
-//			this.right.set(ControlMode.PercentOutput, 0);
-//		}
-//		
-//	}
-	
+		
 	private void setSpeed(double speed) {
 		this.left.set(ControlMode.PercentOutput, speed);
 		this.right.set(ControlMode.PercentOutput, speed);
@@ -140,6 +127,8 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Intake Motor Current Right", this.right.getOutputCurrent());
 		SmartDashboard.putNumber("Intake Motor Current Left", this.left.getOutputCurrent());
+		SmartDashboard.putNumber("Intake Distance Left", this.leftDistance.getVoltage());
+		SmartDashboard.putNumber("Intake Distance Right", this.rightDistance.getVoltage());
 	}
 
 	@Override
@@ -160,6 +149,15 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	@Override
 	public void registerEnabledLoops(Looper enabledLooper) {
 		enabledLooper.register(new IntakeLoop());
+	}
+	
+	public void updateLEDs() {
+		double minVoltage = Math.min(this.leftDistance.getVoltage(), this.rightDistance.getVoltage());
+		if(minVoltage < 2.0) {
+			LEDControl.getInstance().setWantedState(LEDControl.LEDState.OFF);
+		} else {
+			LEDControl.getInstance().setWantedState(LEDControl.LEDState.ON);
+		}
 	}
 
 	@Override
