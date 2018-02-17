@@ -6,6 +6,8 @@ import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.lib.util.control.SynchronousPIDF;
 import org.ljrobotics.lib.util.drivers.CANTalonFactory;
+import org.ljrobotics.lib.util.events.Triggerer;
+import org.ljrobotics.lib.util.events.Triggers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -214,9 +216,20 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private synchronized void updateAngleSetpoint(ArmPosition pos) {
+		this.updateTriggers(pos);
 		this.currentWantedPos = pos;
 		SmartDashboard.putNumber("Arm Wanted Degrees", pos.getAngle());
 		armPID.setSetpoint(pos.getAngle());
+	}
+	
+	private void updateTriggers(ArmPosition pos) {
+		if(pos != this.currentWantedPos) {
+			if(pos == ArmPosition.SCALE) {
+				Triggerer.getInstance().trigger(Triggers.ArmUp);
+			} else {
+				Triggerer.getInstance().trigger(Triggers.ArmDown);
+			}
+		}
 	}
 
 	public double getArmDegrees() {
