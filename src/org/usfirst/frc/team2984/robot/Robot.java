@@ -4,12 +4,13 @@ package org.usfirst.frc.team2984.robot;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.OI;
 import org.ljrobotics.frc2018.SubsystemManager;
-import org.ljrobotics.frc2018.commands.LeftScaleCommand;
-import org.ljrobotics.frc2018.commands.RightSwitchCommand;
+import org.ljrobotics.frc2018.commands.auto.LeftScaleCommand;
+import org.ljrobotics.frc2018.commands.auto.RightSwitchCommand;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.frc2018.loops.RobotStateEstimator;
 import org.ljrobotics.frc2018.state.RobotState;
 import org.ljrobotics.frc2018.subsystems.Arm;
+import org.ljrobotics.frc2018.subsystems.AutoSelectorSwitch;
 import org.ljrobotics.frc2018.subsystems.Drive;
 import org.ljrobotics.frc2018.subsystems.Intake;
 import org.ljrobotics.frc2018.subsystems.LEDControl;
@@ -63,6 +64,7 @@ public class Robot extends IterativeRobot {
 		this.arm = Arm.getInstance();
 		this.led = LEDControl.getInstance();
 		this.looper = new Looper();
+		AutoSelectorSwitch.getInstance();
 		// this.visionServer = VisionServer.getInstance();
 
 		this.subsystemManager = new SubsystemManager(this.drive, this.arm, this.intake, this.led);
@@ -133,20 +135,7 @@ public class Robot extends IterativeRobot {
 
 			this.looper.start();
 
-			CommandGroup command = null;
-
-			GameData gd = null;
-
-			try {
-				gd = new GameData();
-				if (gd.GetPaddleSide(0) == PaddleSide.LEFT) {
-					command = new LeftScaleCommand();
-				} else if (gd.GetPaddleSide(0) == PaddleSide.RIGHT) {
-					command = new RightSwitchCommand();
-				}
-			} catch (IncorrectGameData e) {
-				System.out.println(e.getErrorData());
-			}
+			Command command = AutoSelectorSwitch.getInstance().getAutoCommand();
 			Scheduler.getInstance().add(command);
 
 		} catch (Throwable throwable) {
