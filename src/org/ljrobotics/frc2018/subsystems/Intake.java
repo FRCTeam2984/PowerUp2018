@@ -3,6 +3,8 @@ package org.ljrobotics.frc2018.subsystems;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
+import org.ljrobotics.lib.util.events.Triggerer;
+import org.ljrobotics.lib.util.events.Triggers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -34,9 +36,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	
 	private IntakeControlState controlState;
 	
-	private double overCurrentProtectionTimeStart;
-	
-	private double wantedTensionPower;
+	private boolean in;
 	
 	public static enum IntakeControlState {
 		Suck, //Pull in the Cube
@@ -53,7 +53,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 
 		@Override
 		public void onLoop(double timestamp) {
-			updateLEDs();
+			updateEvents();
 			switch (controlState) {
 				case Suck:
 					setSpeed(Constants.SUCK_SPEED);
@@ -91,10 +91,10 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		
 		this.controlState = IntakeControlState.Idle;
 		
-		this.wantedTensionPower = 0;
-		
 		this.leftDistance = leftDistance;
 		this.rightDistance = rightDistance;
+		
+		this.in = false;
 	}
 	
 	private void setCurrentLimit(TalonSRX talon, int max, int nominal, int time) {
@@ -119,10 +119,6 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		this.right.set(ControlMode.PercentOutput, speed);
 	}
 	
-	public void setTensionPower(double power) {
-		this.wantedTensionPower = power;
-	}
-
 	@Override
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Intake Motor Current Right", this.right.getOutputCurrent());
@@ -151,12 +147,22 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		enabledLooper.register(new IntakeLoop());
 	}
 	
-	public void updateLEDs() {
-		double minVoltage = Math.min(this.leftDistance.getVoltage(), this.rightDistance.getVoltage());
-		if(minVoltage < 2.0) {
-			LEDControl.getInstance().setWantedState(LEDControl.LEDState.OFF);
+	private void updateEvents() {
+		this.updateEvents(this.leftDistance.getVoltage(), this.rightDistance.getAverageVoltage());
+	}
+	
+	protected void updateEvents(double left, double right) {
+		double minVoltage = Math.min(left, right);
+		if(minVoltage < Constants.IN_VOLTAGE_THRESH) {
+			if(this.in) {
+				Triggerer.getInstance().trigger(Triggers.CubeOut);
+				this.in = false;
+			}
 		} else {
-			LEDControl.getInstance().setWantedState(LEDControl.LEDState.ON);
+			if(!this.in) {
+				Triggerer.getInstance().trigger(Triggers.CubeIn);
+				this.in = true;
+			}
 		}
 	}
 

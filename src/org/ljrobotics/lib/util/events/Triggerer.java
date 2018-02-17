@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 public class Triggerer {
 
 	private static Triggerer instance;
+	public Triggers lastTrigger;
 	
 	public static Triggerer getInstance() {
 		if(instance == null) {
@@ -31,14 +32,20 @@ public class Triggerer {
 		this.commandHandlers.get(trigger).add(command);
 	}
 	
-	public void trigger(Triggers trigger) {
+	/**
+	 * @param trigger the trigger to execute upon
+	 * @return whether or not it was successfully triggered
+	 */
+	public boolean trigger(Triggers trigger) {
+		this.lastTrigger = trigger;
 		if(!this.commandHandlers.containsKey(trigger)) {
-			return;
+			return false;
 		}
 		List<Command> commands = this.commandHandlers.get(trigger);
 		for(Command command : commands) {
 			Scheduler.getInstance().add(command);
 		}
+		return true;
 	}
 	
 }

@@ -77,6 +77,7 @@ public class Constants extends ConstantsBase {
 	// Intake
 	public static double SUCK_SPEED = 1;
 	public static double SPIT_SPEED = -1;
+	public static double IN_VOLTAGE_THRESH = 1.8;
 
 	//turn pid
 	public static double TURN_Kp = 0.006;

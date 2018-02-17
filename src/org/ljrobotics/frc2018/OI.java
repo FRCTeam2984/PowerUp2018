@@ -7,6 +7,8 @@ import org.ljrobotics.frc2018.commands.IntakeSuck;
 import org.ljrobotics.frc2018.commands.SetLEDMode;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.LEDControl;
+import org.ljrobotics.lib.util.events.Triggerer;
+import org.ljrobotics.lib.util.events.Triggers;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWM;
@@ -77,5 +79,11 @@ public class OI {
 		// JoystickButton spit = new JoystickButton(this.stick2, 4);
 		// spit.whenPressed(new IntakeSpit());
 		// spit.whenReleased(new IntakeIdle());
+		
+		
+		Triggerer.getInstance().addCommand(Triggers.CubeIn,
+				new SetLEDMode(LEDControl.LEDState.ON));
+		Triggerer.getInstance().addCommand(Triggers.CubeOut,
+				new SetLEDMode(LEDControl.LEDState.OFF));
 	}
 }
