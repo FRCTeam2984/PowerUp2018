@@ -4,6 +4,7 @@ import org.ljrobotics.frc2018.commands.ArmSetpoint;
 import org.ljrobotics.frc2018.commands.IntakeIdle;
 import org.ljrobotics.frc2018.commands.IntakeSpit;
 import org.ljrobotics.frc2018.commands.IntakeSuck;
+import org.ljrobotics.frc2018.commands.LimitSpeed;
 import org.ljrobotics.frc2018.commands.SetLEDMode;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.LEDControl;
@@ -87,8 +88,8 @@ public class OI {
 				new SetLEDMode(LEDControl.LEDState.OFF));
 		
 		Triggerer.getInstance().addCommand(Triggers.ArmUp,
-				new SetLEDMode(LEDControl.LEDState.ON));
+				new LimitSpeed(0.25));
 		Triggerer.getInstance().addCommand(Triggers.ArmDown,
-				new SetLEDMode(LEDControl.LEDState.OFF));
+				new LimitSpeed(1));
 	}
 }
