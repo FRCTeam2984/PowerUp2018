@@ -158,10 +158,6 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.controlState = ArmControlState.Moving;
 	}
 
-	public void setPosition(ArmPosition position) {
-		this.setPosition(position.getAngle());
-	}
-
 	@Override
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Arm PID Error", this.armPID.getError());
@@ -199,9 +195,9 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.controlState = state;
 	}
 
-	public synchronized void setPosition(double degrees) {
+	public synchronized void setPosition(ArmPosition pos) {
 		setWantedState(ArmControlState.Position);
-		this.updateAngleSetpoint(degrees);
+		this.updateAngleSetpoint(pos);
 	}
 
 	public double encoderTicksToDegrees(int ticks) {
@@ -213,9 +209,9 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		return (int) ((degrees * Constants.ARM_TICKS_PER_REVOLUTION) / (Constants.ARM_GEAR_RATIO * 360D));
 	}
 
-	private synchronized void updateAngleSetpoint(double degrees) {
-		SmartDashboard.putNumber("Arm Wanted Degrees", degrees);
-		armPID.setSetpoint(degrees);
+	private synchronized void updateAngleSetpoint(ArmPosition pos) {
+		SmartDashboard.putNumber("Arm Wanted Degrees", pos.getAngle());
+		armPID.setSetpoint(pos.getAngle());
 	}
 
 	public double getArmDegrees() {
