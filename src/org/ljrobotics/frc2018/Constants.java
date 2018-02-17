@@ -95,6 +95,10 @@ public class Constants extends ConstantsBase {
 	public static int MAX_SUCK_CURRENT = 20;
 	public static int NOMINAL_SUCK_CURRENT = 10;
 	public static int MAX_SUCK_CURRENT_TIME = 1000;
+	
+	public static int INTAKE_LEFT_DISTANCE_PORT = 0;
+	public static int INTAKE_RIGHT_DISTANCE_PORT = 1;
+	
 	// Speed
 	public static double TURN_SPEED = 0.5;
 	// -----------------------------------------------------------------------------------------------

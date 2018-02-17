@@ -53,7 +53,7 @@ public class IntakeTest {
 		left = mock(TalonSRX.class);
 		right = mock(TalonSRX.class);
 
-		intake = new Intake(left, right);
+		intake = new Intake(left, right, null, null);
 	}
 
 	private void verifyTalons(ControlMode mode, double frontLeft, double frontRight, int timesCalled) {

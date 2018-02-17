@@ -1,7 +1,6 @@
 package org.ljrobotics.lib.util.drivers;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.AnalogInput;
 
 /**
  * This class is a thin wrapper around the ADXRS450_Gyro
