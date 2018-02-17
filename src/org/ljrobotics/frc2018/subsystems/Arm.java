@@ -45,6 +45,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	private double wantedSpeed;
 
 	private double lastTimeStamp;
+	
+	private ArmPosition currentWantedPos;
 
 	private int fakeEncoderValue;
 	
@@ -128,6 +130,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.master.setSelectedSensorPosition(0, 0, 0);
 
 		this.wantedSpeed = 0;
+		
+		this.currentWantedPos = ArmPosition.INTAKE;
 	}
 
 	private void setCurrentLimit(TalonSRX talon, int max, int nominal, int time) {
@@ -210,6 +214,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	}
 
 	private synchronized void updateAngleSetpoint(ArmPosition pos) {
+		this.currentWantedPos = pos;
 		SmartDashboard.putNumber("Arm Wanted Degrees", pos.getAngle());
 		armPID.setSetpoint(pos.getAngle());
 	}
