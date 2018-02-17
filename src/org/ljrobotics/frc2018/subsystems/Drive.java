@@ -435,7 +435,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	public void zeroSensors() {
 		this.leftMaster.setSelectedSensorPosition(0, 0, 0);
 		this.rightMaster.setSelectedSensorPosition(0, 0, 0);
-		this.gyro.calibrate();
+		this.gyro.reset();
 	}
 
 	@Override
