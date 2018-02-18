@@ -1,12 +1,12 @@
 package org.ljrobotics.frc2018;
 
 import org.ljrobotics.frc2018.commands.ArmSetpoint;
+import org.ljrobotics.frc2018.commands.ConditionalStowArm;
 import org.ljrobotics.frc2018.commands.IntakeIdle;
 import org.ljrobotics.frc2018.commands.IntakeSpit;
 import org.ljrobotics.frc2018.commands.IntakeSuck;
 import org.ljrobotics.frc2018.commands.LimitSpeed;
 import org.ljrobotics.frc2018.commands.SetLEDMode;
-import org.ljrobotics.frc2018.commands.StowArmAndStopIntake;
 import org.ljrobotics.frc2018.subsystems.Arm;
 import org.ljrobotics.frc2018.subsystems.LEDControl;
 import org.ljrobotics.lib.util.events.Triggerer;
@@ -15,7 +15,6 @@ import org.ljrobotics.lib.util.events.Triggers;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -89,8 +88,8 @@ public class OI {
 		Triggerer.getInstance().addCommand(Triggers.CubeOut,
 				new SetLEDMode(LEDControl.LEDState.OFF));
 		
-//		Triggerer.getInstance().addCommand(Triggers.CubeIn, 
-//				new StowArmAndStopIntake());
+		Triggerer.getInstance().addCommand(Triggers.CubeIn, 
+				new ConditionalStowArm());
 		
 		Triggerer.getInstance().addCommand(Triggers.ArmUp,
 				new LimitSpeed(0.25));
