@@ -8,6 +8,7 @@ public class StowArmAndStopIntake extends CommandGroup{
 
 	public StowArmAndStopIntake() {
 		this.addParallel(new IntakeIdle());
+		this.addParallel(new ArmSetpoint(Arm.ArmPosition.STOWED));
 	}
 	
 }
