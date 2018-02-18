@@ -2,6 +2,7 @@ package org.ljrobotics.frc2018.commands.auto;
 
 import org.ljrobotics.frc2018.commands.ArmSetpoint;
 import org.ljrobotics.frc2018.commands.FollowPath;
+import org.ljrobotics.frc2018.commands.IntakeIdle;
 import org.ljrobotics.frc2018.commands.IntakeSpit;
 import org.ljrobotics.frc2018.commands.ResetToPathHead;
 import org.ljrobotics.frc2018.commands.TurnToAngle;
@@ -26,6 +27,9 @@ public class ScaleCommand extends CommandGroup{
 		this.addSequential(new ArmSetpoint(Arm.ArmPosition.SCALE));
 		this.addSequential(new WaitSecond(1500));
 		this.addSequential(new IntakeSpit());
+		this.addSequential(new WaitSecond(1000));
+		this.addSequential(new ArmSetpoint(Arm.ArmPosition.INTAKE));
+		this.addSequential(new IntakeIdle());
 	}
 	
 }
