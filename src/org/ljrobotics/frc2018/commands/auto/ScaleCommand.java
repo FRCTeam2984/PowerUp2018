@@ -17,6 +17,8 @@ public class ScaleCommand extends CommandGroup{
 	public ScaleCommand(PathContainer path, double endingAngle) {
 		this.addParallel(new ZeroArm());
 		this.addSequential(new ResetToPathHead(path));
+		this.addSequential(new ArmSetpoint(Arm.ArmPosition.INTAKE));
+		this.addSequential(new WaitSecond(100));
 		this.addSequential(new ArmSetpoint(Arm.ArmPosition.STOWED));
 		this.addSequential(new WaitSecond(500));
 		this.addSequential(new FollowPath(path));

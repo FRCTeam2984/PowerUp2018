@@ -118,6 +118,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.master.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
 		this.master.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
 
+		this.master.configOpenloopRamp(0.5, 0);
+		
 		 CANTalonFactory.updatePermanentSlaveTalon(this.slave, this.master.getDeviceID());
 
 		setCurrentLimit(master, Constants.MAX_ARM_CURRENT, Constants.NOMINAL_ARM_CURRENT, Constants.MAX_ARM_CURRENT_TIME);
@@ -261,6 +263,10 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	public boolean atLowerLimit() {
 		return this.master.getSensorCollection().isRevLimitSwitchClosed();
+	}
+	
+	public ArmPosition getLastState() {
+		return this.currentWantedPos;
 		
 	}
 	

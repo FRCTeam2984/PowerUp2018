@@ -41,6 +41,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	public static enum IntakeControlState {
 		Suck, //Pull in the Cube
 		Spit, //Spit out the Cube
+		SpitSlow, //Spit at 25% power
 		Idle //Do Nothing
 	}
 	
@@ -60,6 +61,9 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 					break;
 				case Spit:
 					setSpeed(Constants.SPIT_SPEED);
+					break;
+				case SpitSlow:
+					setSpeed(Constants.SPIT_SPEED/2);
 					break;
 				case Idle:
 					setSpeed( 0);

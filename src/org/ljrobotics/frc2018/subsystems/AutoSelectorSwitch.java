@@ -81,6 +81,7 @@ public class AutoSelectorSwitch {
 	}
 
 	public Command getAutoCommand() {
+		System.out.println("Auto mode " + this.getAutoMode());
 		GameData gameData = null;
 		try{
 			gameData = new GameData();
@@ -102,15 +103,15 @@ public class AutoSelectorSwitch {
 			case 3:
 				paddleSide = gameData.GetPaddleSide(1);
 				pathContainer = (paddleSide == PaddleSide.LEFT) ? new LeftLeftScale() : new LeftRightScale();
-				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? 90 : -90);
+				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
 			case 4:
 				paddleSide = gameData.GetPaddleSide(1);
 				pathContainer = (paddleSide == PaddleSide.LEFT) ? new CenterLeftScale() : new CenterRightScale();
-				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? 90 : -90);
+				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
 			case 5:
 				paddleSide = gameData.GetPaddleSide(1);
 				pathContainer = (paddleSide == PaddleSide.LEFT) ? new RightLeftScale() : new RightRightScale();
-				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? 90 : -90);
+				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
 			case 6:
 				return new SteightPathCommand();
 			default:

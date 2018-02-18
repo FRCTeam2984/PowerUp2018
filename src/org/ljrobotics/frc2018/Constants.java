@@ -169,7 +169,7 @@ public class Constants extends ConstantsBase {
 
 	public static double ARM_STOWED_DEGREES = 45;
 	public static double ARM_INTAKE_DEGREES = 15;
-	public static double ARM_SWITCH_DEGREES = 65;
+	public static double ARM_SWITCH_DEGREES = 75;
 	public static double ARM_SCALE_DEGREES = 170;
 
 	@Override
@@ -179,28 +179,31 @@ public class Constants extends ConstantsBase {
 	}
 
 	/*
-	{
-        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1400,
-        "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":-1400,
-        "GYRO_MODIFIER":-1,
-        "DRIVE_Kf": 0.00875,
-        "DRIVE_Kp": 0.01,
-        "DRIVE_Ki": 0,
-        "DRIVE_Kd": 0.000,
-        "PATH_FOLLOWING_GOAL_POS_TOLERANCE": 3,
-        "PATH_FOLLOWING_MAX_ACCEL": 60
-        "PATH_FOLLOWING_MAX_VEL": 80, 
-        "PATH_FOLLOWING_PROFILE_Kffa": 0.08,
-        "TRACK_SCRUB_FACTOR": 1.0,
-        "MIN_LOOK_AHEAD_SPEED": 12,
-        "PATH_FOLLOWING_PROFILE_Kp": 1.5,
-        "PATH_FOLLOWING_PROFILE_Ki": 0.001,
-        "MIN_LOOK_AHEAD": 15,
-        "PATH_FOLLOWING_PROFILE_Kv": 0.075,
-        "SEGMENT_COMPLETION_TOLERANCE": 4,
-        "JOYSTICK_ROTATION_AXIS": 2,
-        "USE_TANK_DRIVE": false,
-        "QUICKTURN_BUTTON": 5,
-        "JOYSTICK_POWER_POWER": 1
-        }*/
+	{                                                                                                                                                     
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1400,                                                                                                
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":-1400,                                                                                                
+        "GYRO_MODIFIER":-1,                                                                                                                           
+        "DRIVE_Kf": 0.00875,                                                                                                                          
+        "DRIVE_Kp": 0.01,                                                                                                                             
+        "DRIVE_Ki": 0,                                                                                                                                
+        "DRIVE_Kd": 0.000,                                                                                                                            
+        "PATH_FOLLOWING_GOAL_POS_TOLERANCE": 3,                                                                                                       
+        "PATH_FOLLOWING_MAX_ACCEL": 60                                                                                                                
+        "PATH_FOLLOWING_MAX_VEL": 80,                                                                                                                 
+        "PATH_FOLLOWING_PROFILE_Kffa": 0.08,                                                                                                          
+        "TRACK_SCRUB_FACTOR": 1.0,                                                                                                                    
+        "MIN_LOOK_AHEAD_SPEED": 12,                                                                                                                   
+        "PATH_FOLLOWING_PROFILE_Kp": 1.5,                                                                                                             
+        "PATH_FOLLOWING_PROFILE_Ki": 0.001,                                                                                                           
+        "MIN_LOOK_AHEAD": 15,                                                                                                                         
+        "PATH_FOLLOWING_PROFILE_Kv": 0.075,                                                                                                           
+        "SEGMENT_COMPLETION_TOLERANCE": 4,                                                                                                            
+        "JOYSTICK_ROTATION_AXIS": 2,                                                                                                                  
+        "USE_TANK_DRIVE": false,                                                                                                                      
+        "QUICKTURN_BUTTON": 5,                                                                                                                        
+        "JOYSTICK_POWER_POWER": 1,                                                                                                                    
+        "ARM_Kp": 0.007,                                                                                                                              
+        "ARM_Ki": 0.0012,                                                                                                                             
+        "ARM_Kd": 0.002                                                                                                                               
+        }        */
 }
