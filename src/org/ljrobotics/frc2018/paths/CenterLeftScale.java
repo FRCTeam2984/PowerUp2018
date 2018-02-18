@@ -23,7 +23,6 @@ public class CenterLeftScale implements PathContainer {
         sWaypoints.add(new Waypoint(260,270,0,60));
         sWaypoints.add(new Waypoint(300,270,0,60));
         sWaypoints.add(new Waypoint(335,270,0,30));
-//        sWaypoints.add(new Waypoint(325,265,0,20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

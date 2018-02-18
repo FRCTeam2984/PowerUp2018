@@ -19,11 +19,10 @@ public class CenterRightScale implements PathContainer {
         sWaypoints.add(new Waypoint(50,155,20,60));
         sWaypoints.add(new Waypoint(80,110,0,60));
         sWaypoints.add(new Waypoint(110,75,40,60));
-        sWaypoints.add(new Waypoint(180,25,40,60));
-        sWaypoints.add(new Waypoint(260,25,0,60));
-        sWaypoints.add(new Waypoint(300,25,0,60));
-        sWaypoints.add(new Waypoint(325,25,15,30));
-        sWaypoints.add(new Waypoint(325,55,0,20));
+        sWaypoints.add(new Waypoint(180,55,40,60));
+        sWaypoints.add(new Waypoint(260,55,0,60));
+        sWaypoints.add(new Waypoint(300,55,0,60));
+        sWaypoints.add(new Waypoint(335,55,0,30));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
