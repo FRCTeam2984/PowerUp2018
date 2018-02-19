@@ -16,6 +16,7 @@ import org.ljrobotics.frc2018.paths.RightLeftScale;
 import org.ljrobotics.frc2018.paths.RightLeftSwitch;
 import org.ljrobotics.frc2018.paths.RightRightScale;
 import org.ljrobotics.frc2018.paths.RightRightSwitch;
+import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.GameData;
 import org.ljrobotics.lib.util.IncorrectGameData;
 import org.ljrobotics.lib.util.PaddleSide;
@@ -44,6 +45,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class AutoSelectorSwitch {
 
 	private static AutoSelectorSwitch instance;
+	private GameData gameData;
 
 	public static AutoSelectorSwitch getInstance() {
 		if (instance == null) {
@@ -63,6 +65,7 @@ public class AutoSelectorSwitch {
 		this.ones = ones;
 		this.twos = twos;
 		this.fours = fours;
+		this.gameData = null;
 	}
 
 	public int getAutoMode() {
@@ -81,46 +84,57 @@ public class AutoSelectorSwitch {
 	}
 
 	public Command getAutoCommand() {
-		System.out.println("Auto mode " + this.getAutoMode());
-		GameData gameData = null;
-		try{
-			gameData = new GameData();
-			PaddleSide paddleSide;
-			PathContainer pathContainer;
-			switch (getAutoMode()) {
-			case 0:
-				paddleSide = gameData.GetPaddleSide(0);
-				pathContainer = (paddleSide == PaddleSide.LEFT) ? new LeftLeftSwitch() : new LeftRightSwitch();
-				return new SwitchCommand(pathContainer);
-			case 1:
-				paddleSide = gameData.GetPaddleSide(0);
-				pathContainer = (paddleSide == PaddleSide.LEFT) ? new CenterLeftSwitch() : new CenterRightSwitch();
-				return new SwitchCommand(pathContainer);
-			case 2:
-				paddleSide = gameData.GetPaddleSide(0);
-				pathContainer = (paddleSide == PaddleSide.LEFT) ? new RightLeftSwitch() : new RightRightSwitch();
-				return new SwitchCommand(pathContainer);
-			case 3:
-				paddleSide = gameData.GetPaddleSide(1);
-				pathContainer = (paddleSide == PaddleSide.LEFT) ? new LeftLeftScale() : new LeftRightScale();
-				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
-			case 4:
-				paddleSide = gameData.GetPaddleSide(1);
-				pathContainer = (paddleSide == PaddleSide.LEFT) ? new CenterLeftScale() : new CenterRightScale();
-				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
-			case 5:
-				paddleSide = gameData.GetPaddleSide(1);
-				pathContainer = (paddleSide == PaddleSide.LEFT) ? new RightLeftScale() : new RightRightScale();
-				return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
-			case 6:
-				return new SteightPathCommand();
-			default:
-				return new WaitSecond(0);
-			}
-		} catch (IncorrectGameData e) {
-			System.out.println(e.getErrorData());
+		if(this.gameData == null) {
+			System.out.println("Could not read game data");
+			CrashTracker.logMessage("Did not find game data!");
+			return new WaitSecond(1);
 		}
-		return new WaitSecond(0);
+		System.out.println("Auto mode " + this.getAutoMode());
+		PaddleSide paddleSide;
+		PathContainer pathContainer;
+		switch (getAutoMode()) {
+		case 0:
+			paddleSide = gameData.GetPaddleSide(0);
+			pathContainer = (paddleSide == PaddleSide.LEFT) ? new LeftLeftSwitch() : new LeftRightSwitch();
+			return new SwitchCommand(pathContainer);
+		case 1:
+			paddleSide = gameData.GetPaddleSide(0);
+			pathContainer = (paddleSide == PaddleSide.LEFT) ? new CenterLeftSwitch() : new CenterRightSwitch();
+			return new SwitchCommand(pathContainer);
+		case 2:
+			paddleSide = gameData.GetPaddleSide(0);
+			pathContainer = (paddleSide == PaddleSide.LEFT) ? new RightLeftSwitch() : new RightRightSwitch();
+			return new SwitchCommand(pathContainer);
+		case 3:
+			paddleSide = gameData.GetPaddleSide(1);
+			pathContainer = (paddleSide == PaddleSide.LEFT) ? new LeftLeftScale() : new LeftRightScale();
+			return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
+		case 4:
+			paddleSide = gameData.GetPaddleSide(1);
+			pathContainer = (paddleSide == PaddleSide.LEFT) ? new CenterLeftScale() : new CenterRightScale();
+			return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
+		case 5:
+			paddleSide = gameData.GetPaddleSide(1);
+			pathContainer = (paddleSide == PaddleSide.LEFT) ? new RightLeftScale() : new RightRightScale();
+			return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
+		case 6:
+			return new SteightPathCommand();
+		default:
+			return new WaitSecond(0);
+		}
+	}
+
+	public void querryGameData() {
+		try {
+			this.gameData = new GameData();
+			System.out.println("Game Data Found! " + this.gameData);
+		} catch (IncorrectGameData e) {
+			System.out.println("No Game Data Found Yet");
+		}
+	}
+
+	public boolean hasGameData() {
+		return this.gameData != null;
 	}
 
 	public class PathChooser {
@@ -133,7 +147,7 @@ public class AutoSelectorSwitch {
 			this.right = right;
 			this.scale = scale;
 		}
-		
+
 		public PathContainer getCorrect() {
 			GameData gameData = null;
 			int id = this.scale ? 1 : 0;

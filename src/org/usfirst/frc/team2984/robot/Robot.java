@@ -127,6 +127,7 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		this.allPeriodic();
 		this.zeroAllSensors();
+		AutoSelectorSwitch.getInstance().querryGameData();
 	}
 
 	@Override
@@ -135,6 +136,8 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logAutoInit();
 
 			this.zeroAllSensors();
+			
+			AutoSelectorSwitch.getInstance().querryGameData();
 
 			this.looper.start();
 
