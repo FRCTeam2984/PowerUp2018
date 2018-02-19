@@ -90,6 +90,8 @@ public class Robot extends IterativeRobot {
 			this.subsystemManager.registerEnabledLoops(this.looper);
 			// this.looper.register(VisionProcessor.getInstance());
 			this.looper.register(RobotStateEstimator.getInstance());
+			
+			LazyGyroscope.getInstance().calibrate();
 
 			// this.visionServer.addVisionUpdateReceiver(VisionProcessor.getInstance());
 		} catch (Throwable throwable) {
@@ -115,8 +117,6 @@ public class Robot extends IterativeRobot {
 
 			this.subsystemManager.stop();
 			
-			LazyGyroscope.getInstance().calibrate();
-
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
