@@ -22,7 +22,7 @@ public class SwitchCommand extends CommandGroup{
 		this.addSequential(new WaitSecond(100));
 		this.addParallel(new ArmSetpoint(Arm.ArmPosition.SWITCH));
 		this.addSequential(new FollowPath(path));
-		this.addSequential(new DriveForward(0.2, 1.5));
+		this.addSequential(new DriveForward(0.2, 2));
 		this.addSequential(new IntakeSpitSlow());
 		this.addSequential(new WaitSecond(1000));
 		this.addSequential(new IntakeIdle());
