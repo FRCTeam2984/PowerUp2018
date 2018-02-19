@@ -23,6 +23,9 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 			TalonSRX right = new TalonSRX(Constants.RIGHT_INTAKE_MOTOR_ID);
 			AnalogInput leftDistance = new AnalogInput(Constants.INTAKE_LEFT_DISTANCE_PORT);
 			AnalogInput rightDistance = new AnalogInput(Constants.INTAKE_RIGHT_DISTANCE_PORT);
+			
+			leftDistance.setAverageBits(4);
+			rightDistance.setAverageBits(4);
 			instance = new Intake(left, right, leftDistance, rightDistance);
 		}
 		return instance;
@@ -127,8 +130,8 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Intake Motor Current Right", this.right.getOutputCurrent());
 		SmartDashboard.putNumber("Intake Motor Current Left", this.left.getOutputCurrent());
-		SmartDashboard.putNumber("Intake Distance Left", this.leftDistance.getVoltage());
-		SmartDashboard.putNumber("Intake Distance Right", this.rightDistance.getVoltage());
+		SmartDashboard.putNumber("Intake Distance Left", this.leftDistance.getAverageVoltage());
+		SmartDashboard.putNumber("Intake Distance Right", this.rightDistance.getAverageVoltage());
 	}
 
 	@Override
@@ -152,7 +155,7 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	}
 	
 	private void updateEvents() {
-		this.updateEvents(this.leftDistance.getVoltage(), this.rightDistance.getAverageVoltage());
+		this.updateEvents(this.leftDistance.getAverageVoltage(), this.rightDistance.getAverageVoltage());
 	}
 	
 	protected void updateEvents(double left, double right) {
