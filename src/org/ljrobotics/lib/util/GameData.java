@@ -72,5 +72,9 @@ public class GameData {
 		return toReturn.toArray(new PaddleSide[toReturn.size()]);
 		
 	}
+	
+	public String toString() {
+		return " GameData: { " + this.gameString + " } ";
+	}
 
 }

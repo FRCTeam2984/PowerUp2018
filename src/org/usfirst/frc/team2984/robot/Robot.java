@@ -19,6 +19,7 @@ import org.ljrobotics.lib.util.CrashTracker;
 import org.ljrobotics.lib.util.GameData;
 import org.ljrobotics.lib.util.IncorrectGameData;
 import org.ljrobotics.lib.util.PaddleSide;
+import org.ljrobotics.lib.util.drivers.LazyGyroscope;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -89,6 +90,8 @@ public class Robot extends IterativeRobot {
 			this.subsystemManager.registerEnabledLoops(this.looper);
 			// this.looper.register(VisionProcessor.getInstance());
 			this.looper.register(RobotStateEstimator.getInstance());
+			
+			LazyGyroscope.getInstance().calibrate();
 
 			// this.visionServer.addVisionUpdateReceiver(VisionProcessor.getInstance());
 		} catch (Throwable throwable) {
@@ -113,7 +116,7 @@ public class Robot extends IterativeRobot {
 			this.looper.stop();
 
 			this.subsystemManager.stop();
-
+			
 		} catch (Throwable throwable) {
 			CrashTracker.logThrowableCrash(throwable);
 			throw throwable;
@@ -124,6 +127,7 @@ public class Robot extends IterativeRobot {
 	public void disabledPeriodic() {
 		this.allPeriodic();
 		this.zeroAllSensors();
+		AutoSelectorSwitch.getInstance().querryGameData();
 	}
 
 	@Override
@@ -132,6 +136,8 @@ public class Robot extends IterativeRobot {
 			CrashTracker.logAutoInit();
 
 			this.zeroAllSensors();
+			
+			AutoSelectorSwitch.getInstance().querryGameData();
 
 			this.looper.start();
 

@@ -6,6 +6,8 @@ import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
 import org.ljrobotics.lib.util.control.SynchronousPIDF;
 import org.ljrobotics.lib.util.drivers.CANTalonFactory;
+import org.ljrobotics.lib.util.events.Triggerer;
+import org.ljrobotics.lib.util.events.Triggers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
@@ -45,6 +47,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	private double wantedSpeed;
 
 	private double lastTimeStamp;
+	
+	private ArmPosition currentWantedPos;
 
 	private int fakeEncoderValue;
 	
@@ -90,6 +94,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 				break;
 			case Idle:
 				setRestrictedSpeed(0);
+				armPID.resetIntegrator();
 			default:
 				break;
 			}
@@ -114,6 +119,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.master.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
 		this.master.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, 0);
 
+		this.master.configOpenloopRamp(0.5, 0);
+		
 		 CANTalonFactory.updatePermanentSlaveTalon(this.slave, this.master.getDeviceID());
 
 		setCurrentLimit(master, Constants.MAX_ARM_CURRENT, Constants.NOMINAL_ARM_CURRENT, Constants.MAX_ARM_CURRENT_TIME);
@@ -128,6 +135,8 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.master.setSelectedSensorPosition(0, 0, 0);
 
 		this.wantedSpeed = 0;
+		
+		this.currentWantedPos = ArmPosition.INTAKE;
 	}
 
 	private void setCurrentLimit(TalonSRX talon, int max, int nominal, int time) {
@@ -156,10 +165,6 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 	public void setWantedSpeed(double power) {
 		this.wantedSpeed = power;
 		this.controlState = ArmControlState.Moving;
-	}
-
-	public void setPosition(ArmPosition position) {
-		this.setPosition(position.getAngle());
 	}
 
 	@Override
@@ -199,9 +204,9 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		this.controlState = state;
 	}
 
-	public synchronized void setPosition(double degrees) {
+	public synchronized void setPosition(ArmPosition pos) {
 		setWantedState(ArmControlState.Position);
-		this.updateAngleSetpoint(degrees);
+		this.updateAngleSetpoint(pos);
 	}
 
 	public double encoderTicksToDegrees(int ticks) {
@@ -213,9 +218,21 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 		return (int) ((degrees * Constants.ARM_TICKS_PER_REVOLUTION) / (Constants.ARM_GEAR_RATIO * 360D));
 	}
 
-	private synchronized void updateAngleSetpoint(double degrees) {
-		SmartDashboard.putNumber("Arm Wanted Degrees", degrees);
-		armPID.setSetpoint(degrees);
+	private synchronized void updateAngleSetpoint(ArmPosition pos) {
+		this.updateTriggers(pos);
+		this.currentWantedPos = pos;
+		SmartDashboard.putNumber("Arm Wanted Degrees", pos.getAngle());
+		armPID.setSetpoint(pos.getAngle());
+	}
+	
+	private void updateTriggers(ArmPosition pos) {
+		if(pos != this.currentWantedPos) {
+			if(pos == ArmPosition.SCALE) {
+				Triggerer.getInstance().trigger(Triggers.ArmUp);
+			} else {
+				Triggerer.getInstance().trigger(Triggers.ArmDown);
+			}
+		}
 	}
 
 	public double getArmDegrees() {
@@ -247,6 +264,10 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 
 	public boolean atLowerLimit() {
 		return this.master.getSensorCollection().isRevLimitSwitchClosed();
+	}
+	
+	public ArmPosition getLastState() {
+		return this.currentWantedPos;
 		
 	}
 	

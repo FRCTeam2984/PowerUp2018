@@ -22,7 +22,7 @@ public class DriveForward extends Command {
 	 * @param speed speed in percent output
 	 * @param time time in seconds
 	 */
-	public DriveForward(double speed, long time) {
+	public DriveForward(double speed, double time) {
 		this.speed = speed;
 		this.time = time;
 		this.requires(Drive.getInstance());

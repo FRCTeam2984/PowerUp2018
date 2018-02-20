@@ -119,6 +119,20 @@ public class DriveTest {
 		drive.setOpenLoop(new DriveSignal(-10, -5));
 		verifyTalons(ControlMode.PercentOutput, -1, -1);
 	}
+	
+	@Test
+	public void setOpenLoopWithSpeedLimitedToHalfSetsToHalf() {
+		drive.setSpeedLimit(0.5);
+		drive.setOpenLoop(new DriveSignal(1, 1));
+		verifyTalons(ControlMode.PercentOutput, 0.5, 0.5);
+	}
+	
+	@Test
+	public void setOpenLoopWithSpeedLimitedToHalfSetsToQuarter() {
+		drive.setSpeedLimit(0.5);
+		drive.setOpenLoop(new DriveSignal(0.5, 0.5));
+		verifyTalons(ControlMode.PercentOutput, 0.25, 0.25);
+	}
 
 	@Test
 	public void setBreakModeSetsBreakModeOnFirstCall() {

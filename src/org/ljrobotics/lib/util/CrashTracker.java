@@ -44,6 +44,10 @@ public class CrashTracker {
     private static void logMarker(String mark) {
         logMarker(mark, null);
     }
+    
+    public static void logMessage(String message) {
+    	logMarker(message, null);
+    }
 
     private static void logMarker(String mark, Throwable nullableException) {
 

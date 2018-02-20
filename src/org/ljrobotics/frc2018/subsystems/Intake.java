@@ -3,6 +3,8 @@ package org.ljrobotics.frc2018.subsystems;
 import org.ljrobotics.frc2018.Constants;
 import org.ljrobotics.frc2018.loops.Loop;
 import org.ljrobotics.frc2018.loops.Looper;
+import org.ljrobotics.lib.util.events.Triggerer;
+import org.ljrobotics.lib.util.events.Triggers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -21,6 +23,9 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 			TalonSRX right = new TalonSRX(Constants.RIGHT_INTAKE_MOTOR_ID);
 			AnalogInput leftDistance = new AnalogInput(Constants.INTAKE_LEFT_DISTANCE_PORT);
 			AnalogInput rightDistance = new AnalogInput(Constants.INTAKE_RIGHT_DISTANCE_PORT);
+			
+			leftDistance.setAverageBits(4);
+			rightDistance.setAverageBits(4);
 			instance = new Intake(left, right, leftDistance, rightDistance);
 		}
 		return instance;
@@ -34,13 +39,12 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 	
 	private IntakeControlState controlState;
 	
-	private double overCurrentProtectionTimeStart;
-	
-	private double wantedTensionPower;
+	private boolean in;
 	
 	public static enum IntakeControlState {
 		Suck, //Pull in the Cube
 		Spit, //Spit out the Cube
+		SpitSlow, //Spit at 25% power
 		Idle //Do Nothing
 	}
 	
@@ -53,13 +57,16 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 
 		@Override
 		public void onLoop(double timestamp) {
-			updateLEDs();
+			updateEvents();
 			switch (controlState) {
 				case Suck:
 					setSpeed(Constants.SUCK_SPEED);
 					break;
 				case Spit:
 					setSpeed(Constants.SPIT_SPEED);
+					break;
+				case SpitSlow:
+					setSpeed(Constants.SPIT_SPEED/2);
 					break;
 				case Idle:
 					setSpeed( 0);
@@ -91,10 +98,10 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		
 		this.controlState = IntakeControlState.Idle;
 		
-		this.wantedTensionPower = 0;
-		
 		this.leftDistance = leftDistance;
 		this.rightDistance = rightDistance;
+		
+		this.in = false;
 	}
 	
 	private void setCurrentLimit(TalonSRX talon, int max, int nominal, int time) {
@@ -119,16 +126,12 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		this.right.set(ControlMode.PercentOutput, speed);
 	}
 	
-	public void setTensionPower(double power) {
-		this.wantedTensionPower = power;
-	}
-
 	@Override
 	public void outputToSmartDashboard() {
 		SmartDashboard.putNumber("Intake Motor Current Right", this.right.getOutputCurrent());
 		SmartDashboard.putNumber("Intake Motor Current Left", this.left.getOutputCurrent());
-		SmartDashboard.putNumber("Intake Distance Left", this.leftDistance.getVoltage());
-		SmartDashboard.putNumber("Intake Distance Right", this.rightDistance.getVoltage());
+		SmartDashboard.putNumber("Intake Distance Left", this.leftDistance.getAverageVoltage());
+		SmartDashboard.putNumber("Intake Distance Right", this.rightDistance.getAverageVoltage());
 	}
 
 	@Override
@@ -151,12 +154,22 @@ public class Intake extends Subsystem implements LoopingSubsystem {
 		enabledLooper.register(new IntakeLoop());
 	}
 	
-	public void updateLEDs() {
-		double minVoltage = Math.min(this.leftDistance.getVoltage(), this.rightDistance.getVoltage());
-		if(minVoltage < 2.0) {
-			LEDControl.getInstance().setWantedState(LEDControl.LEDState.OFF);
+	private void updateEvents() {
+		this.updateEvents(this.leftDistance.getAverageVoltage(), this.rightDistance.getAverageVoltage());
+	}
+	
+	protected void updateEvents(double left, double right) {
+		double minVoltage = Math.min(left, right);
+		if(minVoltage < Constants.IN_VOLTAGE_THRESH) {
+			if(this.in) {
+				Triggerer.getInstance().trigger(Triggers.CubeOut);
+				this.in = false;
+			}
 		} else {
-			LEDControl.getInstance().setWantedState(LEDControl.LEDState.ON);
+			if(!this.in) {
+				Triggerer.getInstance().trigger(Triggers.CubeIn);
+				this.in = true;
+			}
 		}
 	}
 

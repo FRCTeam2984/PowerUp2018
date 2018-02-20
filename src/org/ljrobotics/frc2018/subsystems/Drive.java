@@ -97,7 +97,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		}
 		
 		public void onStop( double timestamp ) {
-
+			
 		}
 
 	}
@@ -113,6 +113,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	// Control States
 	private DriveControlState driveControlState;
 	private double lastTimeStamp;
+	private double speedLimit;
 
 	// Controllers
 	private PathFollower pathFollower;
@@ -169,8 +170,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		
-		leftMaster.configOpenloopRamp(0.5, 0);
-		rightMaster.configOpenloopRamp(0.5, 0);
+		leftMaster.configOpenloopRamp(0.375, 0);
+		rightMaster.configOpenloopRamp(0.375, 0);
 		
 		leftPID = new SynchronousPIDF(Constants.DRIVE_Kp, Constants.DRIVE_Ki, Constants.DRIVE_Kd,
 				Constants.DRIVE_Kf);
@@ -194,6 +195,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		this.setNeutralMode(NeutralMode.Brake);
 		
 		this.gyroZero = Rotation2d.fromDegrees(0);
+		this.speedLimit = 1;
 	}
 	
 	@Override
@@ -226,8 +228,12 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		double right = driveSignal.getRight();
 		left = Math.min(Math.max(left, -1), 1);
 		right = Math.min(Math.max(right, -1), 1);
-		this.leftMaster.set(ControlMode.PercentOutput, left);
-		this.rightMaster.set(ControlMode.PercentOutput, right);
+		this.leftMaster.set(ControlMode.PercentOutput, left * this.speedLimit);
+		this.rightMaster.set(ControlMode.PercentOutput, right * this.speedLimit);
+	}
+	
+	public void setSpeedLimit(double limit) {
+		this.speedLimit = limit;
 	}
 
 	public synchronized void setTurnAngle(double angle) {
@@ -435,7 +441,7 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	public void zeroSensors() {
 		this.leftMaster.setSelectedSensorPosition(0, 0, 0);
 		this.rightMaster.setSelectedSensorPosition(0, 0, 0);
-		this.gyro.calibrate();
+		this.gyro.reset();
 	}
 
 	@Override

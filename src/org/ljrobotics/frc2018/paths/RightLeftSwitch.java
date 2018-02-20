@@ -17,9 +17,9 @@ public class RightLeftSwitch implements PathContainer {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(20,50,0,0));
         sWaypoints.add(new Waypoint(35,50,10,40));
-        sWaypoints.add(new Waypoint(80,220,10,40));
-        sWaypoints.add(new Waypoint(100,220,0,30));
-        sWaypoints.add(new Waypoint(113,220,0,30));
+        sWaypoints.add(new Waypoint(80,240,10,40));
+        sWaypoints.add(new Waypoint(100,240,0,30));
+        sWaypoints.add(new Waypoint(113,240,0,30));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

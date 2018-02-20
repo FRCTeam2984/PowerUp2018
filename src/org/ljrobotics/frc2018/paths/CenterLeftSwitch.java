@@ -15,9 +15,9 @@ public class CenterLeftSwitch implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(20,150,0,0));
-        sWaypoints.add(new Waypoint(35,150,10,40));
-        sWaypoints.add(new Waypoint(80,220,10,40));
+        sWaypoints.add(new Waypoint(20,155,0,0));
+        sWaypoints.add(new Waypoint(45,155,10,20));
+        sWaypoints.add(new Waypoint(80,220,10,30));
         sWaypoints.add(new Waypoint(100,220,0,30));
         sWaypoints.add(new Waypoint(113,220,0,20));
 
@@ -26,7 +26,7 @@ public class CenterLeftSwitch implements PathContainer {
 
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(20, 150), Rotation2d.fromDegrees(0.0));
+        return new RigidTransform2d(new Translation2d(20, 155), Rotation2d.fromDegrees(0.0));
     }
 
     @Override

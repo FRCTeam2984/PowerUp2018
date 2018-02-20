@@ -23,6 +23,8 @@ import org.ljrobotics.lib.util.InterpolatingDouble;
 import org.ljrobotics.lib.util.control.Path;
 import org.ljrobotics.lib.util.control.PathBuilder;
 import org.ljrobotics.lib.util.control.PathBuilder.Waypoint;
+import org.ljrobotics.lib.util.events.Triggerer;
+import org.ljrobotics.lib.util.events.Triggers;
 import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Translation2d;
@@ -54,17 +56,21 @@ public class IntakeTest {
 		right = mock(TalonSRX.class);
 
 		intake = new Intake(left, right, null, null);
+		Triggerer.getInstance().lastTrigger = null;
 	}
-
-	private void verifyTalons(ControlMode mode, double frontLeft, double frontRight, int timesCalled) {
-		final ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-		verify(this.left, times(timesCalled)).set(eq(mode), captor.capture());
-		List<Double> captures = captor.getAllValues();
-		assertEquals(frontLeft, (double) captures.get(captures.size()-1), 0.00001);
-
-		verify(this.right, times(timesCalled)).set(eq(mode), captor.capture());
-		captures = captor.getAllValues();
-		assertEquals(frontRight, (double) captures.get(captures.size()-1), 0.00001);
+	
+	@Test
+	public void whenCubeInEventGetsDispatched() {
+		intake.updateEvents(Constants.IN_VOLTAGE_THRESH + 1, Constants.IN_VOLTAGE_THRESH + 1);
+		assertEquals(Triggers.CubeIn, Triggerer.getInstance().lastTrigger);
+	}
+	
+	@Test
+	public void whenCubeInTwiceEventGetsDispatchedOnce() {
+		intake.updateEvents(Constants.IN_VOLTAGE_THRESH + 1, Constants.IN_VOLTAGE_THRESH + 1);
+		Triggerer.getInstance().lastTrigger = null;
+		intake.updateEvents(Constants.IN_VOLTAGE_THRESH + 1, Constants.IN_VOLTAGE_THRESH + 1);
+		assertEquals(null, Triggerer.getInstance().lastTrigger);
 	}
 
 }
