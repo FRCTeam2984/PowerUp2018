@@ -170,8 +170,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		
-		leftMaster.configOpenloopRamp(0.5, 0);
-		rightMaster.configOpenloopRamp(0.5, 0);
+		leftMaster.configOpenloopRamp(0.375, 0);
+		rightMaster.configOpenloopRamp(0.375, 0);
 		
 		leftPID = new SynchronousPIDF(Constants.DRIVE_Kp, Constants.DRIVE_Ki, Constants.DRIVE_Kd,
 				Constants.DRIVE_Kf);

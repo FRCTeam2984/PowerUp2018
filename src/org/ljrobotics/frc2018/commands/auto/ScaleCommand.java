@@ -1,6 +1,7 @@
 package org.ljrobotics.frc2018.commands.auto;
 
 import org.ljrobotics.frc2018.commands.ArmSetpoint;
+import org.ljrobotics.frc2018.commands.DriveForward;
 import org.ljrobotics.frc2018.commands.FollowPath;
 import org.ljrobotics.frc2018.commands.IntakeIdle;
 import org.ljrobotics.frc2018.commands.IntakeSpit;
@@ -30,6 +31,8 @@ public class ScaleCommand extends CommandGroup{
 		this.addSequential(new WaitSecond(1000));
 		this.addSequential(new ArmSetpoint(Arm.ArmPosition.INTAKE));
 		this.addSequential(new IntakeIdle());
+		this.addSequential(new TurnToAngle(180));
+		this.addSequential(new DriveForward(0.3, 5));
 	}
 	
 }

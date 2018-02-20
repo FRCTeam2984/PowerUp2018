@@ -94,6 +94,7 @@ public class Arm extends Subsystem implements LoopingSubsystem {
 				break;
 			case Idle:
 				setRestrictedSpeed(0);
+				armPID.resetIntegrator();
 			default:
 				break;
 			}

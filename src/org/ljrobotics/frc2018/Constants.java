@@ -179,8 +179,8 @@ public class Constants extends ConstantsBase {
 	}
 
 	/*
-	{
-		"DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1400,                                                                                                
+	{                                                                                                                                                     
+        "DRIVE_ENCODER_TICKS_PER_ROTATION_RIGHT":1400,                                                                                                
         "DRIVE_ENCODER_TICKS_PER_ROTATION_LEFT":-1400,                                                                                                
         "GYRO_MODIFIER":-1,                                                                                                                           
         "DRIVE_Kf": 0.00875,                                                                                                                          
@@ -204,6 +204,9 @@ public class Constants extends ConstantsBase {
         "JOYSTICK_POWER_POWER": 1,                                                                                                                    
         "ARM_Kp": 0.007,                                                                                                                              
         "ARM_Ki": 0.0022,                                                                                                                             
-        "ARM_Kd": 0.002                                                                                                                               
+        "ARM_Kd": 0.002,                                                                                                                              
+        "TURN_Kp": 0.008,                                                                                                                             
+        "TURN_Ki": 0.005,                                                                                                                             
+        "TURN_Kd": 0.002                                                                                                                              
         }        */
 }
