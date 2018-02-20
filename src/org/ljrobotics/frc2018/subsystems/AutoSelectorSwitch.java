@@ -4,6 +4,8 @@ import org.ljrobotics.frc2018.commands.WaitSecond;
 import org.ljrobotics.frc2018.commands.auto.ScaleCommand;
 import org.ljrobotics.frc2018.commands.auto.SteightPathCommand;
 import org.ljrobotics.frc2018.commands.auto.SwitchCommand;
+import org.ljrobotics.frc2018.commands.auto.TwoCubeCenterLeft;
+import org.ljrobotics.frc2018.commands.auto.TwoCubeCenterRight;
 import org.ljrobotics.frc2018.paths.CenterLeftScale;
 import org.ljrobotics.frc2018.paths.CenterLeftSwitch;
 import org.ljrobotics.frc2018.paths.CenterRightScale;
@@ -111,6 +113,13 @@ public class AutoSelectorSwitch {
 			return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
 		case 4:
 			paddleSide = gameData.GetPaddleSide(1);
+			if(gameData.GetPaddleSide(0) == paddleSide) {
+				if(paddleSide == PaddleSide.LEFT) {
+					return new TwoCubeCenterLeft();
+				} else {
+					return new TwoCubeCenterRight();
+				}
+			}
 			pathContainer = (paddleSide == PaddleSide.LEFT) ? new CenterLeftScale() : new CenterRightScale();
 			return new ScaleCommand(pathContainer, (paddleSide == PaddleSide.LEFT) ? -90 : 90);
 		case 5:
