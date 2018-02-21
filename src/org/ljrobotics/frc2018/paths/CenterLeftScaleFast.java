@@ -10,7 +10,7 @@ import org.ljrobotics.lib.util.math.RigidTransform2d;
 import org.ljrobotics.lib.util.math.Rotation2d;
 import org.ljrobotics.lib.util.math.Translation2d;
 
-public class CenterLeftScale implements PathContainer {
+public class CenterLeftScaleFast implements PathContainer {
 
     @Override
     public Path buildPath() {

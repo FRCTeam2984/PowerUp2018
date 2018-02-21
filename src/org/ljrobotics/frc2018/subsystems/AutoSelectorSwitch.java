@@ -4,6 +4,8 @@ import org.ljrobotics.frc2018.commands.WaitSecond;
 import org.ljrobotics.frc2018.commands.auto.ScaleCommand;
 import org.ljrobotics.frc2018.commands.auto.SteightPathCommand;
 import org.ljrobotics.frc2018.commands.auto.SwitchCommand;
+import org.ljrobotics.frc2018.commands.auto.TwoCubeCenterLeft;
+import org.ljrobotics.frc2018.commands.auto.TwoCubeCenterRight;
 import org.ljrobotics.frc2018.paths.CenterLeftScale;
 import org.ljrobotics.frc2018.paths.CenterLeftSwitch;
 import org.ljrobotics.frc2018.paths.CenterRightScale;
