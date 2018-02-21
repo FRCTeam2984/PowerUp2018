@@ -29,8 +29,8 @@ public class TwoCubeCenterLeft extends CommandGroup{
 		this.addSequential(new WaitSecond(300));
 		this.addSequential(new FollowPath(path));
 		this.addSequential(new ArmSetpoint(Arm.ArmPosition.SCALE));
-		this.addSequential(new TurnToAngle(90));
-		this.addSequential(new WaitSecond(2000));
+		this.addSequential(new TurnToAngle(-90));
+		this.addSequential(new WaitSecond(1000));
 		this.addSequential(new IntakeSpit());
 		this.addSequential(new WaitSecond(1000));
 		this.addSequential(new ArmSetpoint(Arm.ArmPosition.INTAKE));

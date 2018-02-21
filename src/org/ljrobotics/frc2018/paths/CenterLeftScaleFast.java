@@ -16,12 +16,12 @@ public class CenterLeftScaleFast implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(20,155,0,0));
-        sWaypoints.add(new Waypoint(50,155,20,120));
-        sWaypoints.add(new Waypoint(80,210,0,120));
-        sWaypoints.add(new Waypoint(110,255,40,120));
-        sWaypoints.add(new Waypoint(180,280,40,120));
-        sWaypoints.add(new Waypoint(260,280,0,120));
-        sWaypoints.add(new Waypoint(300,280,0,120));
+        sWaypoints.add(new Waypoint(50,155,20,60));
+        sWaypoints.add(new Waypoint(75,210,0,60));
+        sWaypoints.add(new Waypoint(110,280,40,60));
+        sWaypoints.add(new Waypoint(180,280,0,60));
+        sWaypoints.add(new Waypoint(260,280,0,60));
+        sWaypoints.add(new Waypoint(300,280,0,60));
         sWaypoints.add(new Waypoint(335,280,0,30));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
