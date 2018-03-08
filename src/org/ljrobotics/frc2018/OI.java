@@ -4,6 +4,7 @@ import org.ljrobotics.frc2018.commands.ArmSetpoint;
 import org.ljrobotics.frc2018.commands.ConditionalStowArm;
 import org.ljrobotics.frc2018.commands.IntakeIdle;
 import org.ljrobotics.frc2018.commands.IntakeSpit;
+import org.ljrobotics.frc2018.commands.IntakeSpitSlow;
 import org.ljrobotics.frc2018.commands.IntakeSuck;
 import org.ljrobotics.frc2018.commands.LimitSpeed;
 import org.ljrobotics.frc2018.commands.SetLEDMode;
@@ -52,6 +53,10 @@ public class OI {
 		spit.whenPressed(new IntakeSpit());
 		spit.whenReleased(new IntakeIdle());
 		
+		JoystickButton spitSlow = new JoystickButton(this.stick2, 8);
+		spitSlow.whenPressed(new IntakeSpitSlow());
+		spitSlow.whenReleased(new IntakeIdle());
+		
 		JoystickButton on = new JoystickButton(this.stick2, 9);
 		JoystickButton off = new JoystickButton(this.stick2, 10);
 		on.whenPressed(new SetLEDMode(LEDControl.LEDState.ON));
@@ -61,6 +66,7 @@ public class OI {
 		JoystickButton button2 = new JoystickButton(this.stick2, 1);
 		JoystickButton button3 = new JoystickButton(this.stick2, 3);
 		JoystickButton button4 = new JoystickButton(this.stick2, 4);
+		
 
 		button1.whenPressed(new ArmSetpoint(Arm.ArmPosition.STOWED));
 		button2.whenPressed(new ArmSetpoint(Arm.ArmPosition.INTAKE));
