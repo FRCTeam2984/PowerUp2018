@@ -457,6 +457,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 		SmartDashboard.putNumber("Left Position", this.getLeftDistanceInches());
 		SmartDashboard.putNumber("Right Position", this.getRightDistanceInches());
+		
+		SmartDashboard.putNumber("Current", this.leftMaster.getOutputCurrent());
 
 		SmartDashboard.putNumber("Gyro Angle", this.getGyroAngle().getDegrees());
 	}

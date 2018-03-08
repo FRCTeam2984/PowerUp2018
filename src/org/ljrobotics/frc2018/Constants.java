@@ -74,7 +74,7 @@ public class Constants extends ConstantsBase {
 	public static double DRIVE_Kd = 0;
 	public static double DRIVE_Kf = 0.035;
 	
-	public static int DRIVE_MAX_CURRENT = 20;
+	public static int DRIVE_MAX_CURRENT = 10;
 	public static int DRIVE_MAX_CURRENT_TIME = 500;
 	// -----------------------------------------------------------------------------------------------
 	// Intake
