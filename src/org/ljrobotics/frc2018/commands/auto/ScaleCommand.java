@@ -30,10 +30,7 @@ public class ScaleCommand extends CommandGroup{
 		this.addSequential(new WaitSecond(2000));
 		this.addSequential(new IntakeSpit());
 		this.addSequential(new WaitSecond(1000));
-		this.addSequential(new ArmSetpoint(Arm.ArmPosition.INTAKE));
 		this.addSequential(new IntakeIdle());
-		this.addSequential(new TurnToAngle(180));
-		this.addSequential(new DriveForward(0.3, 5));
 	}
 	
 }
