@@ -210,6 +210,8 @@ public class Constants extends ConstantsBase {
 	"ARM_Kd": 0.002,
 	"TURN_Kp": 0.008,
 	"TURN_Ki": 0.005,
-	"TURN_Kd": 0.002
+	"TURN_Kd": 0.002,
+	"DRIVE_MAX_CURRENT": 20
+
 	}        */
 }
