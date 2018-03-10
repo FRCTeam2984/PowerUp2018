@@ -130,6 +130,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 	private Path currentPath;
 	
+	private long overCurrentTime;
+	private boolean isOverCurrent;
 	
 	/**
 	 * Creates a new Drive Subsystem from that controls the given motor controllers.
@@ -196,6 +198,31 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 		
 		this.gyroZero = Rotation2d.fromDegrees(0);
 		this.speedLimit = 1;
+		
+		this.overCurrentTime = System.currentTimeMillis();
+		this.isOverCurrent = false;
+	}
+	
+	public boolean isOverCurrent() {
+		if(this.isOverCurrent) {
+			double leftCurrent = this.leftMaster.getOutputCurrent();
+			double rightCurrent = this.leftMaster.getOutputCurrent();
+			if(Math.max(leftCurrent, rightCurrent) > Constants.DRIVE_MAX_CURRENT) {
+				if(System.currentTimeMillis() - this.overCurrentTime > Constants.DRIVE_MAX_CURRENT_TIME) {
+					return true;
+				}
+			} else {
+				this.isOverCurrent = false;
+			}
+		} else {
+			double leftCurrent = this.leftMaster.getOutputCurrent();
+			double rightCurrent = this.leftMaster.getOutputCurrent();
+			if(Math.max(leftCurrent, rightCurrent) > Constants.DRIVE_MAX_CURRENT) {
+				this.isOverCurrent = true;
+				this.overCurrentTime = System.currentTimeMillis();
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -348,6 +375,9 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 	}
 
 	public synchronized boolean isDoneWithPath() {
+		if(isOverCurrent()) {
+			return true;
+		}
 		if (driveControlState == DriveControlState.PATH_FOLLOWING && pathFollower != null) {
 			return pathFollower.isFinished();
 		} else {
@@ -427,6 +457,8 @@ public class Drive extends Subsystem implements LoopingSubsystem {
 
 		SmartDashboard.putNumber("Left Position", this.getLeftDistanceInches());
 		SmartDashboard.putNumber("Right Position", this.getRightDistanceInches());
+		
+		SmartDashboard.putNumber("Current", this.leftMaster.getOutputCurrent());
 
 		SmartDashboard.putNumber("Gyro Angle", this.getGyroAngle().getDegrees());
 	}
