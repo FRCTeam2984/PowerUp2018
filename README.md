@@ -1,6 +1,20 @@
 # PowerUp2018
 Code for team 2984's 2018 season
 
+# Bringing up a new dev PC for robotics
+
+1. Instructions from: https://wpilib.screenstepslive.com/s/currentCS/m/java
+
+  Install Java JDK v8
+  Install Eclipse Oxygen
+  Install WPI plugins (from Screensteps Live 
+
+2. Instructions from: http://www.ctr-electronics.com/hro.html#product_tabs_technical_resources
+
+  Download the Phoenix “No Installer” package for non windows (or "installer" for windows)
+  Drag JARs into /home/[username]/wpilib/usr/java/lib
+  
+
 # Contributing
 To contribute first clone the project into a folder by running:
 ```bash
@@ -24,6 +38,9 @@ This completes adding of libraries excluding NetworkTables. To add network table
 Now you are all setup to start programming. Make sure to write unit tests for any code you write.
 
 # To upload
+
+Drag JARs from /libs (all except JUnitStandlone and from PowerUp2018/libs folder into /home/[username]/wpilib/usr/java/lib
+
 Connect to the roborio with usb or to the robots WIFI.
 
 Run nm-connection-editor and add a shared connection if it doesn't connect to wired automatically
